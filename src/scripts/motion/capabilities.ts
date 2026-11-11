@@ -16,14 +16,16 @@ export const prefersReducedMotion = () => mq('(prefers-reduced-motion: reduce)')
 /** Mouse or trackpad (not touch-first). */
 export const hasFinePointer = () => mq('(hover: hover) and (pointer: fine)');
 
+/** Only clearly weak devices. Ordinary 4-core laptops get the full
+ *  experience; the runtime frame-rate guard handles anything slower. */
 function isLowPower(): boolean {
   const nav = navigator as Navigator & {
     deviceMemory?: number;
     connection?: { saveData?: boolean };
   };
   if (nav.connection?.saveData) return true;
-  if (nav.hardwareConcurrency && nav.hardwareConcurrency <= 4) return true;
-  if (nav.deviceMemory && nav.deviceMemory <= 4) return true;
+  if (nav.hardwareConcurrency && nav.hardwareConcurrency <= 2) return true;
+  if (nav.deviceMemory && nav.deviceMemory <= 2) return true;
   return false;
 }
 
@@ -43,11 +45,17 @@ export function getTier(): Tier {
   // Testing aid: ?motion=full|lite|none forces a tier (e.g. to preview the
   // phone fallback on a laptop). Harmless in production.
   const forced = new URLSearchParams(location.search).get('motion');
-  if (forced === 'full' || forced === 'lite' || forced === 'none') cached = forced;
-  else if (prefersReducedMotion()) cached = 'none';
-  else if (!mq('(min-width: 64rem)') || !hasFinePointer() || isLowPower() || !hasWebGL2()) cached = 'lite';
-  else cached = 'full';
+  let reason = '';
+  if (forced === 'full' || forced === 'lite' || forced === 'none') [cached, reason] = [forced, 'forced by ?motion='];
+  else if (prefersReducedMotion()) [cached, reason] = ['none', 'system "reduce motion" / animation effects are off'];
+  else if (!mq('(min-width: 64rem)')) [cached, reason] = ['lite', 'window narrower than 1024px'];
+  else if (!hasFinePointer()) [cached, reason] = ['lite', 'no mouse/trackpad detected'];
+  else if (isLowPower()) [cached, reason] = ['lite', 'low-power device or data saver'];
+  else if (!hasWebGL2()) [cached, reason] = ['lite', 'WebGL2 unavailable (or software-only graphics)'];
+  else [cached, reason] = ['full', 'capable desktop'];
   document.documentElement.dataset.motion = cached; // for CSS hooks / debugging
+  // Shows in DevTools → Console, so it's clear why the live scene did/didn't run.
+  console.info(`[motion] tier: ${cached} — ${reason}`);
   return cached;
 }
 
