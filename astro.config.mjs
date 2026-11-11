@@ -15,9 +15,9 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Fraunces', // ← display font placeholder
+      name: 'Instrument Serif', // ← display font (hero headline, headings)
       cssVariable: '--font-display-src',
-      weights: ['300 900'],
+      weights: [400],
       styles: ['normal', 'italic'],
       subsets: ['latin'],
       fallbacks: ['Georgia', 'serif'],

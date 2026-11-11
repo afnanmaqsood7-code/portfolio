@@ -19,11 +19,13 @@ import '../styles/global.css';
 
 interface Props {
   title?: string;
+  /** 'glass' = floating liquid-glass navbar over a full-bleed hero (home). */
+  headerVariant?: 'default' | 'glass';
   description?: string;
   ogImage?: string;
 }
 
-const { title, description = site.description, ogImage = '/og/default.png' } = Astro.props;
+const { title, description = site.description, ogImage = '/og/default.png', headerVariant = 'default' } = Astro.props;
 const fullTitle = title ? `${title} — ${site.name}` : `${site.name} — Product, Brand & Web Designer`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogUrl = new URL(ogImage, Astro.site);
@@ -59,7 +61,7 @@ const ogUrl = new URL(ogImage, Astro.site);
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Header />
+    <Header variant={headerVariant} />
     <main id="main" tabindex="-1">
       <slot />
     </main>

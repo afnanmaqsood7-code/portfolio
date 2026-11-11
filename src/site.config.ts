@@ -6,11 +6,15 @@ export const site = {
   name: 'Afnan Maqsood',
   url: 'https://www.example.com', // TODO: real domain (used for canonical + OG + sitemap)
   positioning: "Product designer with a painter's hand.", // TODO: final one-liner
-  /** Home hero copy. The blurred intro is decorative; the typed line is the H1. */
-  heroIntro: ["Hey there, you've found the studio of", 'Afnan Maqsood, designer & painter'],
-  heroLine: "I'm Afnan, a product and brand designer with a painter's hand. What are we making?",
-  /** Hero background video (scrubbed by the mouse): Afnan's own clip
-   *  (Adobe Firefly), self-hosted in /public/hero. Black background. */
+  /** Home hero copy (TODO: Afnan's final words). `heroTitle` renders with
+   *  `heroTitleItalic` in italic, e.g. "Designed *by hand*." */
+  heroTitle: 'Designed',
+  heroTitleItalic: 'by hand',
+  heroSubtitle:
+    "I'm Afnan, a product, brand and web designer in Ontario with a painter's eye. Leave your email and I'll get back to you.",
+  heroCta: 'View my work',
+  /** Hero background video (autoplay loop with fade-to-black): Afnan's own
+   *  clip (Adobe Firefly), self-hosted in /public/hero. Black background. */
   heroVideo: '/hero/afnan.mp4',
   location: 'Based in Ontario, open to relocating within Canada',
   description:

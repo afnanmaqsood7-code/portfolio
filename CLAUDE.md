@@ -99,7 +99,7 @@ src/
   `name` in `astro.config.mjs`. Components use **semantic** tokens only
   (`--color-bg`, `--color-surface`, `--color-text`, `--color-text-muted`,
   `--color-border`, `--color-accent`, `--color-on-accent`, `--color-focus`).
-- Fonts: display **Fraunces** (`--font-display`), text **Inter**
+- Fonts: display **Instrument Serif** (`--font-display`), text **Inter**
   (`--font-text`), mono **JetBrains Mono** (`--font-mono`, project list) —
   placeholders.
 - Light: paper `#e9ece4`, paper-deep `#dde2d6`, ink `#1f2a24`, ink-soft
@@ -210,44 +210,38 @@ image) but time-capped at ~1.1s, then the stroke wipes off to reveal the page.
 `aria-hidden`, pointer-transparent; any key/click skips it. Page renders
 underneath the whole time (no LCP blocking).
 
-### 2. Hero — scrubbable video + typewriter (REPLACES the WebGL fluid hero)
-Afnan supplied a hero spec (written for an agency called "Mainframe", in
-React + Vite + Tailwind) and asked for its EXACT animation with HER data.
-Built in Astro + plain CSS/TS (no React/Tailwind — stack rule), in
-`src/components/home/Hero.astro`:
-- Background `<video>` (muted, playsinline, preload auto, NEVER autoplays),
-  absolute inside the hero (not fixed behind the whole site), object-fit
-  cover. Source = `site.heroVideo` = **`/public/hero/afnan.mp4` — Afnan's
-  own clip** (Adobe Firefly: her in a white hijab and blouse with a long
-  skirt, full-length → close-up, 4 s, PURE BLACK background). Encoded:
-  H.264 1280×720, CRF 24, keyframe every 4 frames (`-g 4 -keyint_min 4
-  -sc_threshold 0 -movflags +faststart -an`), ~500 KB. The third-party
-  "Mainframe" clip is no longer used.
-- Because the video is black: hero background #000 and WHITE text/caret;
-  white pills (border white 25%, hover black with white text), white
-  outline pill. Desktop: video `translateX(22%)` so she stands right of the
-  text (black edges blend) + left-to-right black fade behind the text.
-  Phones: video centred (`object-position: 50%`) + bottom black fade.
-- Mouse scrub: `mousemove` on window, `delta = x - prevX`, target +=
-  delta / innerWidth × 0.8 × duration, clamped; seeks queued via `seeked`
-  (never flood). Starts at 0. Touch devices: scroll position scrubs instead.
-  Console logs `[hero] video loaded (…)` or `[hero] video failed to load`.
-  Testing note: python's http.server has no byte-range support, so video
-  seeking fails there — test with `astro dev`/`preview` or a range server.
-- Blurred intro (aria-hidden, blur 4px): `site.heroIntro` (2 lines).
-- Typewriter H1: `site.heroLine`, 38 ms/char after 600 ms, blinking caret
-  (hidden when done). Screen readers get the full sentence (visually-hidden
-  copy); the typed span is aria-hidden. No JS → full sentence.
-- Pills fade up (opacity + 8px) 400 ms after load, independent of typing:
-  See product work (`/?lens=product#work`), See brand work, Download resume,
-  About me; outline pill "Reach me: <email>" + copy icon → clipboard copy,
-  "Copied" flash + live-region announcement (fallback: mailto).
-- Site fonts kept (the spec's Helvetica
-  Now links are unofficial copies of a commercial font). Pills keep a 44px
-  min height (accessibility rule).
-- Reduced motion: first video frame, full sentence, no caret, no scrub.
-- Removed: the earlier PaintStroke hero and the WebGL fluid plan; no
-  three.js is used on the site at the moment (`three` still installed).
+### 2. Hero — liquid-glass hero (from Afnan's "recreation prompt", HERO ONLY)
+Afnan supplied a full landing-page prompt (React/Vite/Tailwind/framer-motion,
+an agency called "Asme") and asked to use ONLY its hero section, with her
+data. Built in Astro + plain CSS/TS (stack rule), `src/components/home/Hero.astro`
++ the `glass` variant of `src/components/layout/Header.astro`
+(`<BaseLayout headerVariant="glass">` on the home page only):
+- `.liquid-glass` utility in `global.css` (rgba 0.01 bg, blur 4px, inset
+  highlight, 1.4px gradient rim via masked ::before) — for dark/video bgs.
+- Display font switched site-wide to **Instrument Serif** (astro.config.mjs,
+  Google via Astro Fonts; Fraunces removed).
+- Section: min-height 100svh, black, flex column. Background `<video>`
+  (`site.heroVideo` = Afnan's own `/public/hero/afnan.mp4`), muted, autoplay,
+  playsinline, preload auto, object-fit cover, object-position center bottom,
+  starts at opacity 0. Fade logic (rAF, no CSS transitions): canplay → play +
+  fade to 1 over 500 ms; timeupdate with ≤ 0.55 s left → fade to 0;
+  ended → opacity 0, 100 ms, currentTime 0, play, fade in. Radial shade on
+  top for text legibility.
+- Glass navbar pill (max 64rem): globe icon + "Afnan Maqsood", links (Work,
+  Play, Studio, About) on ≥ 48rem; right: Sound toggle, "Resume" text link,
+  "Contact" glass pill. Phones: links in a JS-free `<details>` "Menu".
+- Content (centred, translateY(-12%) on ≥ 48rem): H1 `site.heroTitle` +
+  italic `site.heroTitleItalic` ("Designed *by hand*."), Instrument Serif,
+  clamp(3.5rem…8rem), nowrap ≥ 48rem; glass email pill (input + white round
+  arrow button) → opens the visitor's mail app with a pre-filled message to
+  Afnan (static site, no backend; a form service would need approval);
+  subtitle `site.heroSubtitle`; glass CTA `site.heroCta` → `#work`.
+- Social row: three glass round buttons — LinkedIn, email, resume download.
+- Reduced motion: no autoplay; still frame near the end of the clip.
+- Known issue: the clip centres Afnan, so the centred headline sits over her
+  face — options offered (shift video / left-align text / different clip).
+- Replaced: the earlier typewriter + mouse-scrub hero and the third-party
+  "Mainframe" clip.
 
 ### 3. Custom cursor
 DOM element (not WebGL), transform-only, lerped via `gsap.quickTo`. States by
@@ -394,7 +388,8 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
 - Domain `https://www.example.com`, email `hello@example.com`, LinkedIn
   placeholder, resume placeholder path — all in `src/site.config.ts` (TODO).
 - Positioning line: "Product designer with a painter's hand." (TODO).
-- Hero copy: `site.heroIntro` / `site.heroLine` (TODO: Afnan's final words).
+- Hero copy: `site.heroTitle`, `heroTitleItalic`, `heroSubtitle`, `heroCta`
+  (TODO: Afnan's final words).
 - Lens: three options mapped as above; grid only.
 - Lightbox: hand-built on native `<dialog>` (no library).
 - Play: video + external links by default; iframe embeds where a web build exists.
@@ -411,5 +406,5 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
 - [ ] Phase 4 — Play, Studio (lightbox), About.
 - [ ] Phase 5 — immersive motion layer, expanded to the award-level brief
       (steps a–g above). Approved. Step (a) done. Desk scene built then removed.
-   Sage & clay palette applied. Video-scrub hero (Mainframe spec) done.
+   Sage & clay palette applied. Liquid-glass video hero (hero-only prompt) done.
 - [ ] Phase 6 — perf / a11y / SEO pass, Vercel deploy steps.
