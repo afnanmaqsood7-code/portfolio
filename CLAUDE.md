@@ -221,7 +221,9 @@ data. Built in Astro + plain CSS/TS (stack rule), `src/components/home/Hero.astr
 - Display font switched site-wide to **Instrument Serif** (astro.config.mjs,
   Google via Astro Fonts; Fraunces removed).
 - Section: min-height 100svh, black, flex column. Background `<video>`
-  (`site.heroVideo` = Afnan's own `/public/hero/afnan.mp4`), muted, autoplay,
+  (`site.heroVideo` = the PROMPT's own clip, at Afnan's request — third-party
+  CloudFront URL, may break; her own clip stays in `/public/hero/afnan.mp4`
+  as a one-line fallback), muted, autoplay,
   playsinline, preload auto, object-fit cover, object-position center bottom,
   starts at opacity 0. Fade logic (rAF, no CSS transitions): canplay → play +
   fade to 1 over 500 ms; timeupdate with ≤ 0.55 s left → fade to 0;
@@ -238,8 +240,6 @@ data. Built in Astro + plain CSS/TS (stack rule), `src/components/home/Hero.astr
   subtitle `site.heroSubtitle`; glass CTA `site.heroCta` → `#work`.
 - Social row: three glass round buttons — LinkedIn, email, resume download.
 - Reduced motion: no autoplay; still frame near the end of the clip.
-- Known issue: the clip centres Afnan, so the centred headline sits over her
-  face — options offered (shift video / left-align text / different clip).
 - Replaced: the earlier typewriter + mouse-scrub hero and the third-party
   "Mainframe" clip.
 

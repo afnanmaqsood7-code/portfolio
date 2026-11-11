@@ -13,9 +13,12 @@ export const site = {
   heroSubtitle:
     "I'm Afnan, a product, brand and web designer in Ontario with a painter's eye. Leave your email and I'll get back to you.",
   heroCta: 'View my work',
-  /** Hero background video (autoplay loop with fade-to-black): Afnan's own
-   *  clip (Adobe Firefly), self-hosted in /public/hero. Black background. */
-  heroVideo: '/hero/afnan.mp4',
+  /** Hero background video (autoplay loop with fade-to-black). Currently the
+   *  clip from Afnan's hero prompt — hosted on a THIRD-PARTY server, so it may
+   *  disappear one day. Her own clip is kept at '/hero/afnan.mp4' (swap back
+   *  by changing this one line). */
+  heroVideo:
+    'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_074625_a81f018a-956b-43fb-9aee-4d1508e30e6a.mp4',
   location: 'Based in Ontario, open to relocating within Canada',
   description:
     'Afnan Maqsood is a product, brand and web designer in Ontario, Canada, with 5+ years of experience and a painter’s eye.',
