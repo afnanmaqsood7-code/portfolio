@@ -282,6 +282,63 @@ No three.js. CSS scroll-driven animations (`animation-timeline: view()` /
 progress bar, inside `@supports` + reduced-motion guards (zero JS cost).
 Lenis still active for consistent scroll feel.
 
+### 9. Desk scene — scroll-driven 3D character (STATUS: PROPOSED, AWAITING APPROVAL)
+Brief: isometric three.js scene of Afnan at a desk, typing, pinned across the
+featured-work section. Inspired by "person at a desk" studio sites — original
+build, no copied code/assets.
+- **Model:** `/public/models/avatar.glb` via GLTFLoader + DRACOLoader +
+  MeshoptDecoder (all ship inside `three`, no new npm deps). Draco decoder
+  files self-hosted in `/public/draco/` (loaded only if the GLB is Draco
+  compressed). Until the GLB exists: stylised placeholder (figure, desk,
+  chair, monitor) from primitives, with procedurally animated typing.
+- **Clips:** AnimationMixer; all clip names logged to the console as
+  `[desk] clips: …`. Mapping in `src/scripts/webgl/desk/config.ts`
+  (`typing: ['Typing', …]`, `idle: ['Idle', …]`, case-insensitive match).
+- **Camera:** OrthographicCamera at an isometric angle; scroll slowly
+  orbits (~±15° around Y) and zooms (~1 → 1.25).
+- **Background:** CSS, not WebGL: token `--color-scene` (default bright blue
+  `#2f4bff`; white text 5.9:1 AA) + thin horizontal lines
+  (repeating-linear-gradient) whose offset moves up with scroll. Canvas is
+  transparent on top. Big per-chapter label in a monospace token font
+  (`--font-mono`, placeholder JetBrains Mono via Astro Fonts API): project
+  `year` (new optional frontmatter field) or "01", "02"…
+- **Pin + chapters:** ScrollTrigger pins the stage; section height =
+  chapters × ~100vh. Each featured project is a real HTML `<article>`
+  (title, summary, link) beside the stage; the active one is revealed as the
+  scroll enters its chapter. Inactive chapters stay in the DOM (screen
+  readers read all); focusing a chapter link scrolls to that chapter.
+  Chapters follow the active role lens.
+- **Typing speed:** mixer `timeScale` (or procedural frequency) eased
+  between ~0.8 (idle) and ~2.2 (fast scroll) from Lenis velocity.
+- **Monitor:** ShaderMaterial screen (unlit) holding the current project's
+  optimized cover (same URL as the HTML `<img>`); switch = ~250 ms flicker
+  (scanlines, noise, brightness pop, then crossfade).
+- **Ending:** camera pushes into the monitor (target → screen centre, zoom
+  ×~8) until the screen fills the viewport, then hands off to the project
+  grid below (grid + role lens stay as the one-click index).
+- **Lighting:** hemisphere + one soft directional light; soft contact
+  shadows as blurred blob textures under desk and chair (cheap), not
+  real-time shadow maps.
+- **Idle touches:** chair sways ±4°; head turns toward the cursor (clamped
+  ±15°, lerped) when the pointer is within the scene. GLB: applied to a bone
+  matched by name (`Head`, `mixamorigHead`, …) after `mixer.update`.
+- **Click monitor** → current project's case study (raycast; cursor shows
+  "View"). Keyboard/SR equivalent = the chapter's HTML link.
+- **Rendering:** shares the ONE renderer/canvas with the hero fluid; only
+  the visible scene renders. three.js + model lazy-loaded by
+  IntersectionObserver ~1 viewport before the section; painted placeholder
+  image in the stage until the first frame. Pauses off screen / hidden tab;
+  DPR ≤ 2.
+- **Fallbacks:** tier lite (mobile, low power, no WebGL) → no pin; a short
+  looping muted `playsinline` video of the scene (static poster if
+  Save-Data) above a normal list of project cards. Tier none (reduced
+  motion) → static render only, never autoplay. WebGL error → same as lite.
+- **Open questions for Afnan:** (1) scene then grid, or scene replaces the
+  grid on desktop; (2) drop step (d)'s WebGL ripple on the grid so the desk
+  scene is the work section's single big moment; (3) hero fluid now settles
+  into the blue scene colour instead of the first project image; (4) build
+  the desk scene next, before steps (b)/(c).
+
 ### Performance budget
 Initial JS on home before idle: Lenis + GSAP core/ScrollTrigger/SplitText
 (~50 KB gz). three.js (~130 KB gz) + shaders: dynamic `import()` after the
