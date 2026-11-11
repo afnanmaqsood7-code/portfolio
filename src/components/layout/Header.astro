@@ -145,6 +145,11 @@ const isCurrent = (href: string) => {
     color: #fff;
   }
   .glass-bar {
+    /* A touch darker than the base liquid glass so white nav text stays
+       readable over bright parts of the hero video (e.g. a white hijab). */
+    background: rgb(0 0 0 / 0.32);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     max-width: 64rem;
     margin-inline: auto;
     padding: 0.75rem 1.5rem;

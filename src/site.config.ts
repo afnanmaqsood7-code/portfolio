@@ -6,19 +6,15 @@ export const site = {
   name: 'Afnan Maqsood',
   url: 'https://www.example.com', // TODO: real domain (used for canonical + OG + sitemap)
   positioning: "Product designer with a painter's hand.", // TODO: final one-liner
-  /** Home hero copy (TODO: Afnan's final words). `heroTitle` renders with
-   *  `heroTitleItalic` in italic, e.g. "Designed *by hand*." */
-  heroTitle: 'Designed',
-  heroTitleItalic: 'by hand',
+  /** Home hero copy (TODO: Afnan's final words). A waving hand follows the title. */
+  heroTitle: "Hi there, I'm Afnan!",
   heroSubtitle:
-    "I'm Afnan, a product, brand and web designer in Ontario with a painter's eye. Leave your email and I'll get back to you.",
+    'a product, brand and web designer with a painter\u2019s hand, on a mission to design products and brands that make everyday life feel a little easier.',
   heroCta: 'View my work',
-  /** Hero background video (autoplay loop with fade-to-black). Currently the
-   *  clip from Afnan's hero prompt — hosted on a THIRD-PARTY server, so it may
-   *  disappear one day. Her own clip is kept at '/hero/afnan.mp4' (swap back
-   *  by changing this one line). */
-  heroVideo:
-    'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_074625_a81f018a-956b-43fb-9aee-4d1508e30e6a.mp4',
+  /** Hero background video (autoplay loop with fade-to-black): Afnan's own
+   *  clip (Adobe Firefly), self-hosted. Black background; shown on the RIGHT
+   *  of the intro on desktop. */
+  heroVideo: '/hero/afnan.mp4',
   location: 'Based in Ontario, open to relocating within Canada',
   description:
     'Afnan Maqsood is a product, brand and web designer in Ontario, Canada, with 5+ years of experience and a painter’s eye.',

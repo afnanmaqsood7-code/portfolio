@@ -7,8 +7,10 @@
  *   loops with a fade-to-black: fade in 500 ms on canplay, fade out 500 ms
  *   when ≤ 0.55 s remain, on ended → black, 100 ms pause, restart, fade in.
  *   Opacity is animated with requestAnimationFrame (no CSS transition).
- * - Big serif headline with one italic word, a liquid-glass email pill, a
- *   subtitle, a glass CTA, and three glass icon buttons.
+ * - Intro in Afnan's chosen style (bold, wide "Hi there, I'm Afnan! 👋" +
+ *   a friendly one-line description), LEFT-aligned; her video sits on the
+ *   RIGHT (desktop) so the text never covers her. Then a liquid-glass email
+ *   pill, a glass CTA, and three glass icon buttons.
  * - The email pill opens the visitor's mail app (static site, no server).
  * - Reduced motion: no autoplay; a still frame is shown instead.
  */
@@ -30,8 +32,9 @@ import { site } from '../../site.config';
 
   <div class="hero__content">
     <h1 id="hero-title" class="hero__title">
-      {site.heroTitle} <em>{site.heroTitleItalic}</em>.
+      {site.heroTitle} <span class="hero__wave" aria-hidden="true">👋</span>
     </h1>
+    <p class="hero__subtitle">{site.heroSubtitle}</p>
 
     <form class="hero__form liquid-glass" data-hello-form action={`mailto:${site.email}`} method="get">
       <label class="visually-hidden" for="hero-email">Your email</label>
@@ -42,8 +45,6 @@ import { site } from '../../site.config';
         </svg>
       </button>
     </form>
-
-    <p class="hero__subtitle">{site.heroSubtitle}</p>
 
     <a href="#work" class="hero__cta liquid-glass">{site.heroCta}</a>
   </div>
@@ -174,14 +175,33 @@ import { site } from '../../site.config';
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center bottom;
+    object-position: center 15%;
   }
-  /* Soft shade so white text stays readable over the video. */
+  /* Phones: the video fills the top of the screen; the intro sits below it. */
+  @media (max-width: 47.99rem) {
+    .hero__video {
+      height: 62svh;
+      /* Fade the video's own bottom edge into the black (no hard line). */
+      -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+      mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+    }
+    .hero__shade { display: none; }
+  }
+  @media (min-width: 48rem) {
+    /* Desktop: slide her to the right of the intro. The clip's background is
+       pure black, so the moved edge blends into the black hero. */
+    .hero__video { transform: translateX(24%); }
+  }
+  /* Keeps the white intro readable: bottom fade on phones (text sits over
+     her), left fade on desktop (text sits beside her). */
   .hero__shade {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at center, rgb(0 0 0 / 0.15) 0%, rgb(0 0 0 / 0.55) 100%);
+    background: linear-gradient(to top, #000 0%, #000 40%, rgb(0 0 0 / 0.5) 50%, transparent 62%);
     pointer-events: none;
+  }
+  @media (min-width: 48rem) {
+    .hero__shade { background: linear-gradient(to right, #000 0%, rgb(0 0 0 / 0.65) 35%, transparent 55%); }
   }
 
   .hero__content {
@@ -190,29 +210,43 @@ import { site } from '../../site.config';
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-start; /* phones: intro below the video */
     gap: 1.5rem;
-    padding: 7rem 1.5rem 3rem; /* top room for the floating navbar */
-    text-align: center;
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding: 52svh var(--container-pad) 2rem; /* phones: start where the video fades out */
+    text-align: left;
   }
   @media (min-width: 48rem) {
-    .hero__content { transform: translateY(-12%); }
+    .hero__content { justify-content: center; padding-top: 7rem; /* room for the navbar */ }
+    .hero__video { object-position: center bottom; }
+    .hero__content > * { max-width: 40rem; }
   }
 
+  /* Bold, wide headline in the style Afnan chose ("Hi there, I'm …! 👋"). */
   .hero__title {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(3.5rem, 2rem + 8vw, 8rem); /* ~text-7xl → text-9xl */
-    line-height: 1;
-    letter-spacing: -0.025em;
+    font-family: var(--font-hero);
+    font-weight: 800;
+    font-size: clamp(2.6rem, 1.4rem + 4.6vw, 5.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
     color: #fff;
     text-wrap: balance;
   }
-  @media (min-width: 48rem) {
-    .hero__title { white-space: nowrap; }
+  .hero__wave {
+    display: inline-block;
+    transform-origin: 70% 75%;
+    animation: hero-wave 2.4s ease-in-out 0.6s infinite;
   }
-  .hero__title em { font-style: italic; }
+  @keyframes hero-wave {
+    0%, 60%, 100% { transform: rotate(0deg); }
+    10%, 30% { transform: rotate(14deg); }
+    20% { transform: rotate(-8deg); }
+    40% { transform: rotate(-4deg); }
+    50% { transform: rotate(10deg); }
+  }
 
   .hero__form {
     width: 100%;
@@ -251,9 +285,8 @@ import { site } from '../../site.config';
 
   .hero__subtitle {
     max-width: 36rem;
-    padding-inline: 1rem;
-    font-size: 0.875rem;
-    line-height: 1.65;
+    font-size: clamp(1.05rem, 0.95rem + 0.6vw, 1.5rem);
+    line-height: 1.45;
     color: #fff;
   }
 
@@ -275,9 +308,11 @@ import { site } from '../../site.config';
     position: relative;
     z-index: 10;
     display: flex;
-    justify-content: center;
     gap: 1rem;
-    padding-bottom: 3rem;
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding: 0 var(--container-pad) 3rem;
   }
   .hero__icon {
     display: grid;

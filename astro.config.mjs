@@ -33,6 +33,15 @@ export default defineConfig({
     },
     {
       provider: fontProviders.google(),
+      name: 'Unbounded', // ← bold, wide hero headline ("Hi there, I'm Afnan!")
+      cssVariable: '--font-hero-src',
+      weights: ['600 800'],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['Arial Black', 'sans-serif'],
+    },
+    {
+      provider: fontProviders.google(),
       name: 'JetBrains Mono', // ← monospace placeholder (desk scene labels)
       cssVariable: '--font-mono-src',
       weights: ['400 700'],

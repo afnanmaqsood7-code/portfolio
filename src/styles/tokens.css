@@ -41,6 +41,7 @@
   --font-display: var(--font-display-src, Georgia, serif);
   --font-text: var(--font-text-src, system-ui, sans-serif);
   --font-mono: var(--font-mono-src, ui-monospace, monospace);
+  --font-hero: var(--font-hero-src, 'Arial Black', sans-serif); /* home hero headline only */
 
   /* Fluid type scale: clamp(min @ 360px, preferred, max @ 1440px) */
   --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.94rem);

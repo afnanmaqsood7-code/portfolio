@@ -100,8 +100,8 @@ src/
   (`--color-bg`, `--color-surface`, `--color-text`, `--color-text-muted`,
   `--color-border`, `--color-accent`, `--color-on-accent`, `--color-focus`).
 - Fonts: display **Instrument Serif** (`--font-display`), text **Inter**
-  (`--font-text`), mono **JetBrains Mono** (`--font-mono`, project list) —
-  placeholders.
+  (`--font-text`), hero headline **Unbounded** (`--font-hero`), mono
+  **JetBrains Mono** (`--font-mono`, project list) — placeholders.
 - Light: paper `#e9ece4`, paper-deep `#dde2d6`, ink `#1f2a24`, ink-soft
   `#4c5a51`, line `#c5ccbe`, accent (text-safe clay) `#a24826`, accent-ink
   `#fbf8f2`, clay-bright `#b4532f` (decorative only, never text).
@@ -221,9 +221,9 @@ data. Built in Astro + plain CSS/TS (stack rule), `src/components/home/Hero.astr
 - Display font switched site-wide to **Instrument Serif** (astro.config.mjs,
   Google via Astro Fonts; Fraunces removed).
 - Section: min-height 100svh, black, flex column. Background `<video>`
-  (`site.heroVideo` = the PROMPT's own clip, at Afnan's request — third-party
-  CloudFront URL, may break; her own clip stays in `/public/hero/afnan.mp4`
-  as a one-line fallback), muted, autoplay,
+  (`site.heroVideo` = Afnan's own `/public/hero/afnan.mp4` — she asked for
+  "the girl on the right"; the prompt's third-party clip is no longer used),
+  muted, autoplay,
   playsinline, preload auto, object-fit cover, object-position center bottom,
   starts at opacity 0. Fade logic (rAF, no CSS transitions): canplay → play +
   fade to 1 over 500 ms; timeupdate with ≤ 0.55 s left → fade to 0;
@@ -232,12 +232,21 @@ data. Built in Astro + plain CSS/TS (stack rule), `src/components/home/Hero.astr
 - Glass navbar pill (max 64rem): globe icon + "Afnan Maqsood", links (Work,
   Play, Studio, About) on ≥ 48rem; right: Sound toggle, "Resume" text link,
   "Contact" glass pill. Phones: links in a JS-free `<details>` "Menu".
-- Content (centred, translateY(-12%) on ≥ 48rem): H1 `site.heroTitle` +
-  italic `site.heroTitleItalic` ("Designed *by hand*."), Instrument Serif,
-  clamp(3.5rem…8rem), nowrap ≥ 48rem; glass email pill (input + white round
-  arrow button) → opens the visitor's mail app with a pre-filled message to
-  Afnan (static site, no backend; a form service would need approval);
-  subtitle `site.heroSubtitle`; glass CTA `site.heroCta` → `#work`.
+- INTRO in the style of Afnan's reference ("Hi there, I'm Gloria! 👋" + a
+  one-line mission): H1 `site.heroTitle` ("Hi there, I'm Afnan!") in
+  **Unbounded 800** (`--font-hero`, hero only) + a waving 👋 (CSS keyframes,
+  aria-hidden; stops under reduced motion), then `site.heroSubtitle`
+  (lowercase "a product, brand and web designer with a painter's hand, …").
+  LEFT-aligned, max 40rem.
+- "The girl on the right": desktop → video `translateX(24%)` (black clip
+  edges blend) + left-to-right black fade; phones → video fills the top
+  62svh (`object-position: center 15%`, bottom edge mask-faded) and the
+  intro starts at 52svh below her face.
+- Then the glass email pill (opens the visitor's mail app pre-filled to
+  Afnan — static site, no backend) and the glass CTA `site.heroCta` → `#work`.
+- Glass navbar on the hero is a little darker than the base liquid glass
+  (rgb 0 0 0 / 0.32, blur 10px) so white links stay readable over her
+  white hijab.
 - Social row: three glass round buttons — LinkedIn, email, resume download.
 - Reduced motion: no autoplay; still frame near the end of the clip.
 - Replaced: the earlier typewriter + mouse-scrub hero and the third-party
@@ -388,8 +397,8 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
 - Domain `https://www.example.com`, email `hello@example.com`, LinkedIn
   placeholder, resume placeholder path — all in `src/site.config.ts` (TODO).
 - Positioning line: "Product designer with a painter's hand." (TODO).
-- Hero copy: `site.heroTitle`, `heroTitleItalic`, `heroSubtitle`, `heroCta`
-  (TODO: Afnan's final words).
+- Hero copy: `site.heroTitle`, `heroSubtitle`, `heroCta` (TODO: Afnan's
+  final words).
 - Lens: three options mapped as above; grid only.
 - Lightbox: hand-built on native `<dialog>` (no library).
 - Play: video + external links by default; iframe embeds where a web build exists.
