@@ -220,15 +220,10 @@ data. Built in Astro + plain CSS/TS (stack rule), `src/components/home/Hero.astr
   highlight, 1.4px gradient rim via masked ::before) — for dark/video bgs.
 - Display font switched site-wide to **Instrument Serif** (astro.config.mjs,
   Google via Astro Fonts; Fraunces removed).
-- Section: min-height 100svh, black, flex column. Background `<video>`
-  (`site.heroVideo` = Afnan's own `/public/hero/afnan.mp4` — she asked for
-  "the girl on the right"; the prompt's third-party clip is no longer used),
-  muted, autoplay,
-  playsinline, preload auto, object-fit cover, object-position center bottom,
-  starts at opacity 0. Fade logic (rAF, no CSS transitions): canplay → play +
-  fade to 1 over 500 ms; timeupdate with ≤ 0.55 s left → fade to 0;
-  ended → opacity 0, 100 ms, currentTime 0, play, fade in. Radial shade on
-  top for text legibility.
+- Section: min-height 100svh, plain BLACK, flex column. **No photo or video**
+  — Afnan asked to remove her photo; the hero video, its fade-loop script,
+  `site.heroVideo` and `/public/hero/afnan.mp4` were deleted. Do not add a
+  photo/video of her unless she asks.
 - Glass navbar pill (max 64rem): globe icon + "Afnan Maqsood", links (Work,
   Play, Studio, About) on ≥ 48rem; right: Sound toggle, "Resume" text link,
   "Contact" glass pill. Phones: links in a JS-free `<details>` "Menu".
@@ -238,17 +233,11 @@ data. Built in Astro + plain CSS/TS (stack rule), `src/components/home/Hero.astr
   aria-hidden; stops under reduced motion), then `site.heroSubtitle`
   (lowercase "a product, brand and web designer with a painter's hand, …").
   LEFT-aligned, max 40rem.
-- "The girl on the right": desktop → video `translateX(24%)` (black clip
-  edges blend) + left-to-right black fade; phones → video fills the top
-  62svh (`object-position: center 15%`, bottom edge mask-faded) and the
-  intro starts at 52svh below her face.
 - Then the glass email pill (opens the visitor's mail app pre-filled to
   Afnan — static site, no backend) and the glass CTA `site.heroCta` → `#work`.
 - Glass navbar on the hero is a little darker than the base liquid glass
-  (rgb 0 0 0 / 0.32, blur 10px) so white links stay readable over her
-  white hijab.
+  (rgb 0 0 0 / 0.32, blur 10px) for readable white links.
 - Social row: three glass round buttons — LinkedIn, email, resume download.
-- Reduced motion: no autoplay; still frame near the end of the clip.
 - Replaced: the earlier typewriter + mouse-scrub hero and the third-party
   "Mainframe" clip.
 

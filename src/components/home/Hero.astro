@@ -1,34 +1,18 @@
 ---
 /**
- * Home hero — from Afnan's hero prompt (liquid-glass style), with her content.
+ * Home hero — liquid-glass style from Afnan's hero prompt, with her intro in
+ * the style of her reference ("Hi there, I'm Afnan! 👋" + a one-line mission).
  * Built in Astro + plain CSS/TS (no React/Tailwind/framer-motion: stack rule).
  *
- * - Full-viewport black section; background video autoplays (muted) and
- *   loops with a fade-to-black: fade in 500 ms on canplay, fade out 500 ms
- *   when ≤ 0.55 s remain, on ended → black, 100 ms pause, restart, fade in.
- *   Opacity is animated with requestAnimationFrame (no CSS transition).
- * - Intro in Afnan's chosen style (bold, wide "Hi there, I'm Afnan! 👋" +
- *   a friendly one-line description), LEFT-aligned; her video sits on the
- *   RIGHT (desktop) so the text never covers her. Then a liquid-glass email
- *   pill, a glass CTA, and three glass icon buttons.
- * - The email pill opens the visitor's mail app (static site, no server).
- * - Reduced motion: no autoplay; a still frame is shown instead.
+ * - Full-viewport black section (no photo or video — removed at Afnan's
+ *   request), intro LEFT-aligned.
+ * - Liquid-glass email pill (opens the visitor's mail app, static site),
+ *   a glass CTA, and three glass icon buttons.
  */
 import { site } from '../../site.config';
 ---
 
 <section class="hero" aria-labelledby="hero-title" data-hero>
-  <video
-    class="hero__video"
-    data-hero-video
-    src={site.heroVideo}
-    muted
-    autoplay
-    playsinline
-    preload="auto"
-    aria-hidden="true"
-  ></video>
-  <div class="hero__shade" aria-hidden="true"></div>
 
   <div class="hero__content">
     <h1 id="hero-title" class="hero__title">
@@ -75,12 +59,9 @@ import { site } from '../../site.config';
 </section>
 
 <script>
-  import { getTier } from '../../scripts/motion/capabilities';
-
   const root = document.querySelector<HTMLElement>('[data-hero]');
   if (root) {
     initHelloForm(root);
-    initVideo(root);
   }
 
   /** "Enter your email" → opens a pre-filled email to Afnan (no server). */
@@ -97,66 +78,6 @@ import { site } from '../../site.config';
     });
   }
 
-  /** Autoplay loop with a 500 ms fade to/from black (rAF-driven opacity). */
-  function initVideo(el: HTMLElement) {
-    const video = el.querySelector<HTMLVideoElement>('[data-hero-video]');
-    if (!video) return;
-    const FADE_MS = 500;
-    const FADE_OUT_AT = 0.55; // seconds before the end
-
-    if (getTier() === 'none') {
-      // Reduced motion: no playback; show a calm still (late frame).
-      video.removeAttribute('autoplay');
-      video.pause();
-      const still = () => { video.currentTime = Math.max(0, video.duration - 0.6); };
-      if (video.readyState >= 1) still();
-      else video.addEventListener('loadedmetadata', still, { once: true });
-      video.style.opacity = '1';
-      return;
-    }
-
-    video.style.opacity = '0';
-    let raf = 0;
-    let fadingOut = false;
-
-    const fadeTo = (target: number, onDone?: () => void) => {
-      cancelAnimationFrame(raf);
-      const from = parseFloat(video.style.opacity || '0');
-      const start = performance.now();
-      const step = (now: number) => {
-        const t = Math.min(1, (now - start) / FADE_MS);
-        video.style.opacity = String(from + (target - from) * t);
-        if (t < 1) raf = requestAnimationFrame(step);
-        else onDone?.();
-      };
-      raf = requestAnimationFrame(step);
-    };
-
-    const start = () => {
-      fadingOut = false;
-      void video.play().catch(() => {});
-      fadeTo(1);
-    };
-
-    video.addEventListener('canplay', start, { once: true });
-    video.addEventListener('timeupdate', () => {
-      if (!fadingOut && video.duration && video.duration - video.currentTime <= FADE_OUT_AT) {
-        fadingOut = true;
-        fadeTo(0);
-      }
-    });
-    video.addEventListener('ended', () => {
-      cancelAnimationFrame(raf);
-      video.style.opacity = '0';
-      setTimeout(() => {
-        video.currentTime = 0;
-        start();
-      }, 100);
-    });
-    video.addEventListener('error', () => console.warn('[hero] video failed to load:', video.currentSrc));
-    // If it was already playable before this script ran.
-    if (video.readyState >= 3) start();
-  }
 </script>
 
 <style>
@@ -169,41 +90,6 @@ import { site } from '../../site.config';
     background: #000;
     color: #fff;
   }
-  .hero__video {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 15%;
-  }
-  /* Phones: the video fills the top of the screen; the intro sits below it. */
-  @media (max-width: 47.99rem) {
-    .hero__video {
-      height: 62svh;
-      /* Fade the video's own bottom edge into the black (no hard line). */
-      -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
-      mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
-    }
-    .hero__shade { display: none; }
-  }
-  @media (min-width: 48rem) {
-    /* Desktop: slide her to the right of the intro. The clip's background is
-       pure black, so the moved edge blends into the black hero. */
-    .hero__video { transform: translateX(24%); }
-  }
-  /* Keeps the white intro readable: bottom fade on phones (text sits over
-     her), left fade on desktop (text sits beside her). */
-  .hero__shade {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, #000 0%, #000 40%, rgb(0 0 0 / 0.5) 50%, transparent 62%);
-    pointer-events: none;
-  }
-  @media (min-width: 48rem) {
-    .hero__shade { background: linear-gradient(to right, #000 0%, rgb(0 0 0 / 0.65) 35%, transparent 55%); }
-  }
-
   .hero__content {
     position: relative;
     z-index: 10;
@@ -211,17 +97,15 @@ import { site } from '../../site.config';
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: flex-start; /* phones: intro below the video */
+    justify-content: center;
     gap: 1.5rem;
     width: 100%;
     max-width: var(--container-max);
     margin-inline: auto;
-    padding: 52svh var(--container-pad) 2rem; /* phones: start where the video fades out */
+    padding: 7rem var(--container-pad) 2rem; /* top room for the floating navbar */
     text-align: left;
   }
   @media (min-width: 48rem) {
-    .hero__content { justify-content: center; padding-top: 7rem; /* room for the navbar */ }
-    .hero__video { object-position: center bottom; }
     .hero__content > * { max-width: 40rem; }
   }
 
