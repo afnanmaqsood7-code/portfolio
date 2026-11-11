@@ -113,6 +113,16 @@ import { site } from '../../site.config';
     if (!video) return;
     const SENSITIVITY = 0.8;
 
+    // Diagnostics in DevTools → Console, so it's obvious if the clip can't load
+    // (it is hosted on a third-party server).
+    video.addEventListener('loadeddata', () =>
+      console.info(`[hero] video loaded (${video.duration.toFixed(1)}s). Move the mouse left/right to scrub.`),
+    );
+    video.addEventListener('error', () => {
+      root.classList.add('hero--video-failed');
+      console.warn('[hero] video failed to load:', video.currentSrc || video.src, video.error?.message ?? '');
+    });
+
     let target = 0;
     let seeking = false;
     const seek = (t: number) => {
