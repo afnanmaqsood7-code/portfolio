@@ -36,8 +36,9 @@ role lens.
 | Content | MDX content collections (`@astrojs/mdx`, added Phase 2) |
 | Styling | Plain CSS + custom properties. **No Tailwind.** |
 | Fonts | Astro built-in Fonts API, Google provider, self-hosted at build |
-| WebGL | three.js + custom GLSL shaders (Phase 5) |
-| Motion | GSAP + ScrollTrigger, Lenis (Phase 5) |
+| WebGL | three.js + custom GLSL shaders (motion phase) |
+| Motion | GSAP (core, ScrollTrigger, SplitText), Lenis (motion phase) |
+| Sound | Web Audio API (built in, no files) |
 | Transitions | Astro View Transitions / `<ClientRouter />` (Phase 5) |
 | Sitemap | `@astrojs/sitemap` (official, Phase 6) |
 | Types | TypeScript, strict, kept simple |
@@ -156,17 +157,148 @@ with `history.replaceState`. Rules shared by build and browser in
 visible.** Lens affects the project grid only (default; revisit if asked).
 Buttons are real toggles (`aria-pressed`), announced via a live region.
 
-## Motion plan (Phase 5 only — no animation before then)
-1. **Living paint hero:** WebGL stable-fluids / ink sim reacting to
-   pointer + touch like paint pushed by a brush. Colours from tokens; brush
-   textures from `/src/assets/paint` blended so it reads as hand painted, not
-   smoke. Hero text stays crisp HTML on top. On scroll the fluid calms and
-   resolves into the first featured project image.
-2. **Thumbnails:** subtle liquid distortion on hover with ONE shared canvas.
-3. **Page transitions:** painted brush-stroke wipe (View Transitions + mask).
-4. Lenis smooth scroll + GSAP ScrollTrigger reveals.
-5. Case studies: gentle reveals only, no heavy WebGL.
-Scripts must be safe to re-run on `astro:page-load` (ClientRouter arrives in P5).
+## Motion system — "award-level" brief (STATUS: approach proposed, AWAITING APPROVAL)
+Inspiration for feel and quality only: lusion.co, dversostudio.io, funtech.inc.
+**Never copy their code, assets or exact designs.** Everything is original and
+built around "product designer who is also a painter". Shaders are written
+from the published stable-fluids method (Stam 1999 / GPU Gems ch. 38), not
+ported from existing fluid repos.
+
+Motion stack: three.js + custom GLSL, GSAP (core, ScrollTrigger, SplitText —
+all in the free `gsap` package), Lenis, Astro View Transitions. **Ask before
+adding anything else.** UI sounds are synthesised with the Web Audio API (no
+audio files, no library).
+
+### Architecture
+- `src/scripts/motion/` — `capabilities.ts` (one decision: `full` | `lite` |
+  `none`), `lenis.ts`, `cursor.ts`, `magnetic.ts`, `micro.ts`, `sound.ts`,
+  `preloader.ts`, `hero-text.ts`, `scroll/` (marquee, studio strip, counters,
+  section colours), `lifecycle.ts` (init on `astro:page-load`, cleanup on
+  `astro:before-swap`; every module returns a `destroy()`).
+- `src/scripts/webgl/` — ONE renderer and ONE fixed full-screen canvas
+  ("stage") shared by the hero fluid and the gallery planes. `stage.ts`,
+  `fluid/` (sim passes + display shader), `gallery/` (DOM-synced planes),
+  `shaders/*.glsl`.
+- Tiers: **full** = desktop-class, WebGL2, no reduced motion → everything.
+  **lite** = small screens (< 64rem), low power (≤ 4 cores, deviceMemory ≤ 4,
+  Save-Data), or WebGL failure → no three.js; static painted hero image, CSS
+  hover, Lenis off on touch, simple GSAP fades. **none** = reduced motion →
+  no preloader, no smooth scroll, no cursor, no parallax/marquee/pinning;
+  instant or 0.2s opacity fades only.
+- Runtime guard: if average FPS < 45 for 2s, halve sim resolution; still low
+  → fade WebGL out to the static image. DPR capped at 2 (sim at ¼ res).
+- Rendering pauses when the stage is off screen (IntersectionObserver), the
+  tab is hidden (`visibilitychange`), or nothing changed (gallery idles).
+- No-JS / WebGL-fail: all content is plain HTML + `<img>`; motion only ever
+  enhances. Nothing waits on animation to become readable or focusable.
+
+### 1. Preloader (home, first visit per session, < 1.5s)
+Inline `<head>` script checks `sessionStorage['am-intro']`; only then adds
+`html.has-intro` (no JS → never shown; reduced motion → skipped). Overlay:
+painted stroke drawn via an animated SVG mask over the stroke from
+`/src/assets/paint`, counter 0→100 driven by real readiness (fonts + hero
+image) but time-capped at ~1.1s, then the stroke wipes off to reveal the page.
+`aria-hidden`, pointer-transparent; any key/click skips it. Page renders
+underneath the whole time (no LCP blocking).
+
+### 2. WebGL hero (signature moment)
+- GPU stable fluids on half-float render targets: advect → pointer splats →
+  vorticity (low, for "wet paint" curls) → divergence → ~20 Jacobi pressure
+  iterations → gradient subtract → advect dye. Velocity grid ~128px, dye
+  ~512–1024px.
+- Splats are stamped with a brush texture from `/src/assets/paint` (bristle
+  streaks, not round blobs), sized by pointer speed. Touch supported.
+- Display shader maps dye channels to token colours (accent + ink + a second
+  paint colour read from CSS vars at init and on theme change), adds a
+  paper/canvas texture from `/src/assets/paint`, and a subtle wet sheen from
+  dye-gradient normals.
+- Depth: fluid rendered to a texture on a plane in a perspective camera plus
+  a painted foreground layer; both tilt a few degrees with the mouse (lerped).
+- Scroll (ScrollTrigger scrub, hero pinned briefly): camera dollies forward,
+  dissipation rises and splat force drops (paint calms), the first featured
+  cover is revealed through the dye as a mask, then the plane shrinks onto the
+  first project card's rect and hands off to the gallery plane (seamless).
+- Hero text is real HTML. SplitText splits name + positioning into chars
+  inside line masks; chars rise and settle with stagger. Screen readers get
+  the unsplit text (aria-label on the parent, chars aria-hidden).
+- Static fallback: a painted hero image (`/src/assets/paint/hero-fallback`),
+  served through astro:assets, always in the HTML; the canvas fades in over it.
+
+### 3. Custom cursor
+DOM element (not WebGL), transform-only, lerped via `gsap.quickTo`. States by
+`data-cursor`: `view` (projects, grows + "View"), `play` (videos, "Play"),
+`brush` (painted elements → small brush dab from `/src/assets/paint`). Only on
+`(hover: hover) and (pointer: fine)` in tier full/lite; native cursor stays
+visible over text inputs; keyboard focus styles are untouched.
+
+### 4. Project gallery (home)
+- DOM `<img>` stays in the HTML for a11y/no-JS; in tier full it goes
+  `opacity: 0` and a plane on the shared stage is synced to its rect each
+  frame (Lenis drives the scroll position).
+- Fragment shader: hover ripple (radial, from pointer UV, decays), RGB split
+  offset along the pointer's movement direction. Vertex shader: bend
+  proportional to Lenis scroll velocity (stretch then relax).
+- Titles: SplitText lines in masks, revealed on enter (ScrollTrigger, once).
+- Magnetic hover (cards subtle, buttons stronger) via `gsap.quickTo`, fine
+  pointers only.
+
+### 5. Scroll storytelling
+- Lenis site-wide, driven by `gsap.ticker`, synced with ScrollTrigger. Off on
+  touch devices (native momentum) and reduced motion. Anchor links + skip link
+  routed through Lenis so focus still moves.
+- Studio preview: pinned section, horizontal track scrubbed by scroll (tier
+  full, ≥ 64rem). Lite/touch: native horizontal scroll-snap strip.
+- Disciplines marquee (Product, Brand, Web, Motion, Painting): GSAP loop;
+  speed += |scroll velocity|, direction follows scroll direction; pauses on
+  hover/focus; duplicates aria-hidden; reduced motion → static row.
+- Count-up metrics: final number is in the HTML (no-JS correct, SR reads the
+  final value via visually-hidden text); animates from 0 on enter, once.
+- Section colours: each section declares `data-theme-section` (paper, deep,
+  ink, accent-wash); ScrollTrigger tweens `--section-bg` / `--section-fg` on
+  `<body>`. Every pair is a pre-verified AA token pair in tokens.css.
+
+### 6. Page transitions
+Astro `<ClientRouter />`. Shared element: card cover and case-study hero cover
+share `transition:name="cover-<slug>"` → native View Transition morph;
+browser back reverses it automatically. Painted wipe: `::view-transition-*`
+pseudo-elements masked with a brush stroke from `/src/assets/paint`. Before
+navigating from a WebGL card, the DOM image is made visible so the snapshot
+is real. Fallback where View Transitions are unsupported: simple fade.
+Reduced motion: no wipe, instant swap.
+
+### 7. Micro interactions
+- Brush underline: `::after` masked by a stroke from `/src/assets/paint`,
+  drawn left→right on hover/focus (mask-size/position transition).
+- Buttons: circular fill grows from the pointer entry point (CSS vars set on
+  `pointerenter`, `clip-path: circle()`), reverses toward exit point.
+- Role lens: one sliding pill indicator moved to the pressed button (FLIP).
+- Sound toggle in header: `aria-pressed`, **off by default**, saved in
+  localStorage; soft synthesized ticks on hover/press; never autoplays.
+
+### 8. Case study pages (calm)
+No three.js. CSS scroll-driven animations (`animation-timeline: view()` /
+`scroll()`) for fade-and-rise reveals, gentle image parallax and a reading
+progress bar, inside `@supports` + reduced-motion guards (zero JS cost).
+Lenis still active for consistent scroll feel.
+
+### Performance budget
+Initial JS on home before idle: Lenis + GSAP core/ScrollTrigger/SplitText
+(~50 KB gz). three.js (~130 KB gz) + shaders: dynamic `import()` after the
+`load` event + `requestIdleCallback`, home only, tier full only. Lighthouse
+mobile runs as tier lite (no three.js), target ≥ 90.
+
+### Build order (stop for review after each)
+(a) Lenis, cursor, micro interactions → (b) preloader + hero text →
+(c) WebGL hero → (d) WebGL gallery → (e) scroll storytelling →
+(f) page transitions → (g) performance + accessibility pass.
+Open question for Afnan: Phase 3 (case-study template) must exist before
+(f) and part 8; Phase 4 (Studio content) feeds the Studio strip in (e).
+
+### Painted assets needed from Afnan (placeholders until then)
+Brush-stroke scans (PNG, transparent), a bristle/brush stamp texture, a
+paper/canvas texture, a wipe stroke for transitions, a hero-fallback painting
+photo, 6–10 paintings/illustrations for the Studio strip. Specs in
+`/src/assets/paint/README.md`.
 
 ## Non-negotiable rules
 1. Mobile first, fully responsive, no horizontal scroll at 320px+.
@@ -175,10 +307,13 @@ Scripts must be safe to re-run on `astro:page-load` (ClientRouter arrives in P5)
    focus (`--focus-ring`), required alt text, WCAG AA contrast, ≥44px targets.
 4. Fast: `astro:assets` optimized images, lazy loading, minimal JS.
    Lighthouse ≥ 90 mobile, ≥ 95 desktop.
-5. WebGL: lazy-load three.js only where needed, after first paint; static
-   painted image on low-power devices, small screens and reduced motion;
-   pause when off-screen or tab hidden; DPR capped at 2; 60fps target on a
-   mid-range laptop; site fully works if WebGL fails.
+5. WebGL: lazy-load three.js only on pages that use it, after first paint;
+   static painted image + simple fades on low-power devices, small screens
+   and reduced motion; pause when off-screen or tab hidden; DPR capped at 2;
+   60fps target on a mid-range laptop; site fully works if WebGL **or
+   JavaScript** fails.
+8. All motion keyboard accessible and never blocking content (preloader is
+   skippable and never hides content from assistive tech).
 6. SEO: meta tags, per-page OG image, sitemap, favicon, canonical URLs.
 7. Clean, readable code; comment non-obvious logic.
 
@@ -200,5 +335,6 @@ Scripts must be safe to re-run on `astro:page-load` (ClientRouter arrives in P5)
 - [ ] Phase 3 — case study template + MDX components + PhoneFrame + showcase
       gallery layout for `format: showcase`.
 - [ ] Phase 4 — Play, Studio (lightbox), About.
-- [ ] Phase 5 — immersive motion layer (approval gate before fluid sim).
+- [ ] Phase 5 — immersive motion layer, expanded to the award-level brief
+      (steps a–g above). Approach proposed; awaiting approval.
 - [ ] Phase 6 — perf / a11y / SEO pass, Vercel deploy steps.
