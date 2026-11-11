@@ -308,7 +308,16 @@ lens (`#all-work`). **No three.js** — an inline, animated SVG.
    bridging-divides laptop, glitchard desktop, brand-identity tablet,
    web-saas-design desktop). Its screen shows each project's cover; switching
    = ~0.3 s flicker (white flash, 2px jitter, crossfade).
-4. Replaced earlier attempts (3D primitive characters, monitor-only). The
+4. Latest tweaks (Afnan): NO panel background (no sage panel, no lines —
+   the scene sits on the page background); plant REMOVED from the
+   illustration; on desktop she ROLLS ACROSS THE SCREEN between projects
+   (desk and all: `SIDES = [0.3, 0.7]`, alternating per chapter, during the
+   same window as the device morph, tiny wheel bob), and each project's text
+   appears on the side she isn't on (`data-side` per chapter; text fades out
+   via `--roll` while she moves). Phones: she stays centred.
+   Dark mode: the illustration's dark parts use `--ill-ink` (#1f2a24 light,
+   #8fa093 dark) so the desk frame and trousers stay visible.
+5. Replaced earlier attempts (3D primitive characters, monitor-only). The
    three.js desk files were deleted (git history: b96d860, the morph/3D
    commit after it).
 
@@ -317,7 +326,7 @@ lens (`#all-work`). **No three.js** — an inline, animated SVG.
   from the EPS via Ghostscript → pdftocairo → Python recolour/edit, now
   hand-maintained). `data-ill="…"` hooks: desk, device{stand, bezel, screen
   {screen-clip, screen-bg, img-a, img-b, scanlines, flash}, logo, keyboard,
-  mouse}, plant{pot, leaves}, chair-legs, person, head (face + hijab wrap),
+  mouse}, chair-legs, person, head (face + hijab wrap),
   chair-shell, upper-arm, drape, forearm (sleeve + hand), seat. Renders the
   first project's device + cover at build time (works without JS).
 - `src/utils/desk-devices.ts` — device shapes as parallelograms in the
@@ -331,14 +340,14 @@ lens (`#all-work`). **No three.js** — an inline, animated SVG.
   "camera" (`baseView`: desktop content left of centre, phones centred;
   push-in log-zooms to the screen box over the last 16%), idle life on the
   GSAP ticker only while visible (typing rotation of the forearm around
-  (288,226) — only when a keyboard exists; leaves/drape sway; head turns ±5°
+  (288,226) — only when a keyboard exists; drape sway; head turns ±5°
   toward the cursor), click on screen → case study (`data-cursor="view"`).
 - `src/components/home/DeskScene.astro` — markup + static/live CSS (phones:
   illustration top, chapter text bottom; desktop: text right, big mono label
   bottom-left).
 
-**Mechanics kept:** CSS sticky pin; chapters are real, focusable HTML; lines
-background with `--line-offset`; `?motion=full|lite|none`; console
+**Mechanics kept:** CSS sticky pin; chapters are real, focusable HTML;
+`?motion=full|lite|none`; console
 `[motion] tier: … — reason`.
 
 **Tokens:** `--color-scene` = `--paper-deep`, `--color-on-scene` = `--ink`,

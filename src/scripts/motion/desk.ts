@@ -8,8 +8,10 @@
  * - The device on the desk MORPHS between projects (monitor ⇄ laptop ⇄
  *   tablet ⇄ phone, from each project's `device` frontmatter) and its screen
  *   switches to the project's cover with a short flicker.
- * - She types (faster when you scroll fast), the plant and hijab sway, her
- *   head turns a little toward the cursor.
+ * - On desktop she rolls across the screen between projects (desk and all);
+ *   the project text appears on the side she left.
+ * - She types (faster when you scroll fast), the hijab sways, her head turns
+ *   a little toward the cursor.
  * - At the end the SVG "camera" (viewBox) zooms until the screen fills the
  *   view, then the All work grid scrolls in.
  * Tier "none" (reduced motion) never runs this: the static illustration stays.
@@ -21,7 +23,11 @@ import { DEVICES, deviceGeometry, mixDevice, type DeviceKind, type DeviceShape }
 const PUSH_START = 0.84; // last 16% of the scroll = push into the screen
 const MORPH_FROM = 0.62; // each morph runs over the last 38% of a chapter
 /** Bounding box of the illustration's content (in its 500×450 space). */
-const CONTENT = { x: 100, y: 62, w: 300, h: 322 };
+const CONTENT = { x: 108, y: 80, w: 290, h: 305 };
+/** Desktop: where her desk sits across the stage (fraction of the width),
+ *  alternating per chapter so she rolls across the screen between projects.
+ *  The project text appears on the opposite side. */
+const SIDES = [0.3, 0.7];
 
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
@@ -56,7 +62,6 @@ export async function initDesk() {
     logo: part('logo'),
     screen: part('screen'),
     forearm: part('forearm'),
-    leaves: part('leaves'),
     drape: part('drape'),
     head: part('head'),
   };
@@ -77,7 +82,10 @@ export async function initDesk() {
       .filter((c) => matchesLens(c.dataset.lens as ProjectLens, lens))
       .sort((a, b) => Number(a.dataset[key]) - Number(b.dataset[key]));
     all.forEach((c) => (c.hidden = !chapters.includes(c)));
-    chapters.forEach((c) => list.appendChild(c)); // DOM order = visual order
+    chapters.forEach((c, j) => {
+      list.appendChild(c); // DOM order = visual order
+      c.dataset.side = j % 2 === 0 ? 'right' : 'left'; // text opposite her
+    });
     devices = chapters.map((c) => (c.dataset.device as DeviceKind) || 'desktop');
     section.style.setProperty('--chapters', String(chapters.length));
     index = -1;
@@ -113,15 +121,27 @@ export async function initDesk() {
     return i < n - 1 ? mixDevice(a, b, t) : a;
   }
 
+  /** Where she is across the stage (0–1) and how far through a roll (0–1). */
+  function travelAt(progress: number) {
+    const n = Math.max(1, chapters.length);
+    const story = clamp(progress / PUSH_START, 0, 0.9999) * n;
+    const i = Math.floor(story);
+    const t = i < n - 1 ? easeInOut(clamp((story - i - MORPH_FROM) / (1 - MORPH_FROM), 0, 1)) : 0;
+    const from = SIDES[i % 2];
+    const to = SIDES[(i + 1) % 2];
+    return { f: lerp(from, to, t), rolling: Math.sin(t * Math.PI) };
+  }
+
   // ---------- Camera (viewBox) ----------
-  function baseView(aspect: number) {
-    // Desktop: content sits left of centre (text on the right).
+  function baseView(aspect: number, f: number, rolling: number) {
+    // Desktop: she sits at fraction `f` of the width (moves between chapters).
     // Narrow stages (phones, where the stage is the top part): centred.
     if (aspect >= 1.2) {
       // Smaller than the stage and a little low, so it clears the heading.
       const h = CONTENT.h * 1.45;
       const w = h * aspect;
-      return { x: CONTENT.x + CONTENT.w / 2 - w * 0.33, y: CONTENT.y + CONTENT.h / 2 - h * 0.64, w, h };
+      const bob = rolling * 2.5; // a tiny lift mid-roll, like chair wheels on a floor
+      return { x: CONTENT.x + CONTENT.w / 2 - w * f, y: CONTENT.y + CONTENT.h / 2 - h * 0.62 + bob, w, h };
     }
     const h = Math.max(CONTENT.h * 1.06, (CONTENT.w * 1.06) / aspect);
     const w = h * aspect;
@@ -130,7 +150,8 @@ export async function initDesk() {
   function setView(progress: number) {
     const r = stage.getBoundingClientRect();
     const aspect = Math.max(0.3, r.width / Math.max(1, r.height));
-    const base = baseView(aspect);
+    const { f, rolling } = travelAt(progress);
+    const base = baseView(aspect, lerp(f, 0.5, easeInOut(clamp((progress - PUSH_START) / (1 - PUSH_START), 0, 1))), rolling);
     const push = easeInOut(clamp((progress - PUSH_START) / (1 - PUSH_START), 0, 1));
     // Scanlines read as stripes when zoomed in: fade them out with the push.
     el.scanlines.setAttribute('opacity', (0.18 * (1 - push)).toFixed(3));
@@ -194,8 +215,10 @@ export async function initDesk() {
       activate(Math.floor(Math.min(progress / PUSH_START, 0.9999) * chapters.length));
       applyShape(shapeAt(progress));
       setView(progress);
-      pin.style.setProperty('--line-offset', `${(-self.scroll() * 0.35).toFixed(1)}px`);
       pin.style.setProperty('--push', Math.max(0, (progress - PUSH_START) / (1 - PUSH_START)).toFixed(3));
+      // Desktop only: text fades while she rolls to the other side.
+      const roll = stage.clientWidth / Math.max(1, stage.clientHeight) >= 1.2 ? travelAt(progress).rolling : 0;
+      pin.style.setProperty('--roll', roll.toFixed(3));
       typingTarget = Math.max(typingTarget, 1 + Math.min(Math.abs(self.getVelocity()) / 2600, 1) * 1.6);
     },
   });
@@ -242,7 +265,6 @@ export async function initDesk() {
     phase += dt * 10 * speed;
     const tap = Math.pow(Math.max(0, Math.sin(phase)), 3) * kb;
     el.forearm.setAttribute('transform', `rotate(${(-tap * 2.2 + Math.sin(phase * 0.37) * 0.8 * kb).toFixed(2)} 288 226)`);
-    el.leaves.setAttribute('transform', `rotate(${(Math.sin(time * 0.9) * 1.6).toFixed(2)} 147 157)`);
     el.drape.setAttribute('transform', `rotate(${(Math.sin(time * 0.7 + 1) * 0.7).toFixed(2)} 322 166)`);
     // Head turns toward the cursor (screen-space approximation, ±5°).
     let target = 0;

@@ -73,17 +73,14 @@ const first = chapters[0];
 </script>
 
 <style>
-  /* ---------- Shared: the sage studio panel ---------- */
-  .desk {
-    color: var(--color-on-scene);
-    background: var(--color-scene);
-  }
-  .desk__pin {
-    position: relative;
-    background-color: var(--color-scene);
-    /* Thin horizontal lines; --line-offset moves them up with scroll. */
-    background-image: repeating-linear-gradient(to bottom, var(--color-scene-line) 0 1px, transparent 1px 72px);
-    background-position: 0 var(--line-offset, 0px);
+  /* ---------- Shared: no panel — the scene sits on the page itself ---------- */
+  .desk__pin { position: relative; }
+  /* Illustration's dark parts (desk frame, trousers) follow the theme so they
+     never vanish on the dark background. */
+  /* :global — the SVG is rendered by a child component (outside this scope). */
+  :global(.desk__ill) { --ill-ink: #1f2a24; }
+  @media (prefers-color-scheme: dark) {
+    :global(.desk__ill) { --ill-ink: #8fa093; }
   }
 
   /* ---------- Default / static layout ---------- */
@@ -182,7 +179,8 @@ const first = chapters[0];
   }
   .desk:global(.desk--live) .desk__chapter :global(a) { pointer-events: none; }
   .desk:global(.desk--live) .desk__chapter[data-active] {
-    opacity: 1;
+    /* --roll (0–1, set by desk.ts) hides the text while she rolls across. */
+    opacity: calc(1 - var(--roll, 0) * 4);
     translate: 0 0;
     transition-delay: 0.08s;
   }
@@ -193,14 +191,22 @@ const first = chapters[0];
   @media (min-width: 64rem) {
     .desk:global(.desk--live) .desk__stage { top: 0; bottom: 0; }
     .desk:global(.desk--live) .desk__ui {
-      grid-template-columns: 1fr minmax(18rem, 26rem);
+      grid-template-columns: 1fr;
       padding-block: calc(var(--header-h) + var(--space-l)) var(--space-l);
     }
     .desk:global(.desk--live) .desk__head { grid-column: 1; grid-row: 1; }
     .desk:global(.desk--live) .desk__head .desk__intro { display: block; }
     .desk:global(.desk--live) .desk__label { display: block; grid-column: 1; grid-row: 3; justify-self: start; align-self: end; }
-    .desk:global(.desk--live) .desk__chapters { grid-column: 2; grid-row: 1 / -1; align-self: center; }
-    .desk:global(.desk--live) .desk__chapter { align-content: center; gap: var(--space-xs); translate: 0 1.5rem; }
+    .desk:global(.desk--live) .desk__chapters { grid-column: 1; grid-row: 1 / -1; align-self: center; }
+    /* Text sits on the side she isn't on (set per chapter by desk.ts). */
+    .desk:global(.desk--live) .desk__chapter {
+      align-content: center;
+      gap: var(--space-xs);
+      translate: 0 1.5rem;
+      max-width: 26rem;
+      justify-self: end;
+    }
+    .desk:global(.desk--live) .desk__chapter[data-side='left'] { justify-self: start; }
   }
 
   .desk__meta {
