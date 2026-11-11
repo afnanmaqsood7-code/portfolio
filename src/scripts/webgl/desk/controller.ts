@@ -12,6 +12,7 @@ import { getTier } from '../../motion/capabilities';
 import { matchesLens, parseLens, type Lens, type ProjectLens } from '../../../utils/lens';
 import { DESK } from './config';
 import type { DeskScene } from './scene';
+import type { DeviceKind } from './device';
 
 export async function initDesk() {
   const found = document.querySelector<HTMLElement>('[data-desk]');
@@ -44,6 +45,7 @@ export async function initDesk() {
     all.forEach((c) => (c.hidden = !chapters.includes(c)));
     chapters.forEach((c) => list.appendChild(c)); // DOM order = visual order
     section.style.setProperty('--chapters', String(chapters.length));
+    scene?.setDevices(chapters.map((c) => c.dataset.device as DeviceKind));
     index = -1;
     ScrollTrigger.refresh();
   }
@@ -106,6 +108,7 @@ export async function initDesk() {
           const href = chapters[index]?.querySelector('a')?.getAttribute('href');
           if (href) window.location.href = href;
         });
+        scene.setDevices(chapters.map((c) => c.dataset.device as DeviceKind));
         scene.setProgress(trigger.progress);
         if (chapters[index]) scene.showCover(chapters[index].dataset.cover!);
         section.classList.add('desk--ready'); // fades the painted poster out

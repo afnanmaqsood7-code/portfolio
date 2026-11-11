@@ -87,9 +87,9 @@ src/
   layouts/   BaseLayout, CaseStudyLayout (Phase 3)
   pages/     index, work/[slug], play, studio, about, 404
   scripts/   motion/ (capabilities, lifecycle, smooth-scroll, cursor, magnetic,
-             button-fill, sound), webgl/desk/ (desk scene), webgl/fluid/ (step c)
+             button-fill, sound), webgl/desk/ (device, character, scene,
+             controller, config), webgl/fluid/ (step c)
   assets/desk/desk-poster.jpg  # static render of the desk scene
-public/models/            # avatar.glb goes here (see "Blender export")
   styles/    tokens.css, reset.css, grid.css, global.css
   utils/     seo.ts, projects.ts
 ```
@@ -286,103 +286,71 @@ No three.js. CSS scroll-driven animations (`animation-timeline: view()` /
 progress bar, inside `@supports` + reduced-motion guards (zero JS cost).
 Lenis still active for consistent scroll feel.
 
-### 9. Desk scene — scroll-driven 3D character (STATUS: APPROVED, BUILT with placeholder)
-Isometric three.js scene of Afnan at a desk, typing, across "Selected work".
-Inspired by "person at a desk" studio sites — original build, no copied code/assets.
+### 9. Desk scene — morphing device + hijab character (STATUS: BUILT, placeholder character)
+Scroll-driven isometric three.js scene in "Selected work" (`#work`), followed
+by the "All work" grid + lens (`#all-work`). Original build; inspired by
+"person at a desk" studio sites, no copied code/assets.
 
-**Approved decisions (Afnan said "approved" → recommendations taken):**
-1. Desk scene = walkthrough of featured projects (`#work`), FOLLOWED by the
-   grid + role lens as the full index (`#all-work`, heading "All work").
-2. Step (d) WebGL ripple/RGB-shift on the grid is DROPPED; the grid keeps CSS
-   hovers. The desk scene is the work section's one big moment.
-3. Hero fluid (step c) settles into the blue scene colour, not into the first
-   project image.
-4. Desk scene built before steps (b)/(c).
+**Afnan's direction (latest wins):**
+1. Character = a young woman in MODEST clothing: long loose dark dress
+   (abaya), long sleeves, HIJAB wrapping the head and draping over the
+   shoulders/upper back (brand terracotta). Pose follows Afnan's reference:
+   seated in an office chair (armrests, 5-star base) at a white desk with
+   solid side panels, seen from behind at an angle. Do NOT copy the
+   reference's background — keep the `--color-scene` token.
+2. The device MORPHS while scrolling: one device per project (frontmatter
+   `device: desktop | laptop | tablet | phone`), shape blends continuously
+   between chapters. Current mapping: axivus phone, bridging-divides laptop,
+   glitchard desktop, brand-identity tablet, web-saas-design desktop.
+3. The screen switches to each project's cover with a ~250 ms flicker.
+4. Removed at Afnan's request: the earlier blocky male figure, brush jar,
+   small canvas, desk with legs. GLB/avatar loading was removed too (it can
+   return if a real model is supplied — see git history b96d860 for the
+   loader + Blender export settings).
 
-**Files**
-- `src/components/home/DeskScene.astro` — markup, fallback + live CSS.
-- `src/scripts/webgl/desk/controller.ts` — tier gate, scroll (ScrollTrigger
-  progress/velocity), chapters, label, lines, lens, focus, lazy load, pausing.
-  No three.js inside.
-- `src/scripts/webgl/desk/scene.ts` — renderer, camera, lights, blob shadows,
-  typing, head-follow, monitor flicker, push-in, click, GLB loading.
-- `src/scripts/webgl/desk/placeholder.ts` — primitive figure/desk/chair/
-  monitor + brush jar + small canvas; procedural typing.
-- `src/scripts/webgl/desk/screen-material.ts` — monitor shader.
-- `src/scripts/webgl/desk/config.ts` — **edit this for the real avatar**
-  (clip names, head bone names, screen mesh names, position/scale/rotation,
-  camera, typing speeds, push start).
-- `src/assets/desk/desk-poster.jpg` — static render (fallback + loading
-  placeholder). Re-render from the live scene after the real avatar arrives.
+**Files** (`src/scripts/webgl/desk/`)
+- `device.ts` — morphing device. Front = one plane, bezel+screen drawn with a
+  rounded-rect SDF in the fragment shader (size/radius/bezel animate every
+  frame, crisp corners, no geometry rebuild); thickness = 6 stacked SDF
+  slices; desktop stand + keyboard (InstancedMesh keys, accent Esc key)
+  scale/slide; the keyboard becomes the laptop base. `SHAPES` holds every
+  morphing value per device (heights are above the desk top).
+- `character.ts` — woman in hijab + office chair + desk (primitives).
+  Hands type while `kb` > 0 and blend to resting on the desk for
+  tablet/phone. `DESK_TOP_Y = 0.765`.
+- `scene.ts` — renderer, lights, blob shadows, morph timing
+  (`MORPH_FROM = 0.62` of each chapter, finishing as the next chapter and
+  cover begin), typing speed from scroll velocity, chair sway, head-follow
+  (±15°/±10°), screen flicker, camera drift + push-in that faces the tilted
+  screen square-on (`elevation → -tilt`), raycast hover ("View") + click.
+- `controller.ts` — tier gate, ScrollTrigger progress/velocity, chapters,
+  label, lines, lens (`setDevices` on lens change), focus → scroll, lazy
+  import, pause off-screen / hidden tab. No three.js inside.
+- `config.ts` — camera, typing speeds, push start.
+- `src/components/home/DeskScene.astro` — markup + fallback/live CSS.
+- `src/assets/desk/desk-poster.jpg` — still render (fallback + loading
+  placeholder). Regenerate from the live scene whenever the scene changes
+  (Playwright, `?motion=full`, UI hidden, crop x60 y150 900×700 @1440×900;
+  the `.desk__poster` live CSS position matches that crop).
 
-**How it works**
-- Pin = CSS `position: sticky` on `.desk__pin` inside a tall section
-  (`100svh + chapters × 101svh`); ScrollTrigger (no `pin:`) supplies progress
-  + velocity. Chosen over `pin: true` because it needs no pin-spacer reflow,
-  stays correct when the lens changes the chapter count, and degrades to a
-  normal block without JS.
-- Progress 0 → `pushStart` (0.84) = chapters; then push-in: camera turns to
-  face the screen, centres, zooms (log-lerp) until the screen fills the view,
-  and moves in front of the head (ortho clip) — then the grid scrolls in.
-- Monitor: cover URL per chapter from `getImage()` (1200w webp); ~250 ms
-  flicker timeline (tear, noise, brightness pop, crossfade).
-- Typing speed: ScrollTrigger velocity → `minSpeed`…`maxSpeed`, eased; relaxes
-  back to min when scrolling stops. GLB: `action.timeScale`; placeholder:
-  procedural phase.
-- Head-follow: pointer within the stage (+160px) → yaw ±15°, pitch ±10°,
-  lerped. Bone heads: animated pose saved/restored each frame, offset on top.
-- Cursor: scene dispatches `cursor:state` ('view' / null) over the monitor;
-  click (moved < 6px + raycast hit) → active chapter's case study.
-- Chapters: real `<li>` per featured project; inactive ones opacity 0 but
-  focusable; focusing one scrolls to it. Follow the lens via `lens:change`
-  (dispatched by ProjectGrid).
-- Lazy: IntersectionObserver `rootMargin: 100%` → `import('./scene')`
-  (three ≈ 150 KB gz). Poster shows until the first frame (`.desk--ready`).
-  Render loop only while the section intersects and the tab is visible.
-  DPR ≤ 2; drops to 1 if average frame time > 25 ms over 120 frames.
-- Fallback (default markup): blue panel + poster; chapters hidden because
-  the grid below lists every project. Used for no-JS, tier lite/none and
-  WebGL errors (`desk--live` removed). TODO: optional looping video
-  (`/public/models/desk-loop.mp4` + `.webm`) for tier lite once a render of
-  the real avatar exists; reduced motion keeps the still.
-- GLB is used only if `public/models/avatar.glb` exists at BUILD time
-  (`import.meta.env.HAS_AVATAR`, defined in astro.config.mjs) → no 404s.
-  **Restart `npm run dev` after adding the file.** Console logs
-  `[desk] clips: …`, `[desk] head bone: …`, `[desk] playing clip: …`.
-- Draco decoder: bundled by three.js r187's DRACOLoader via
-  `new URL(..., import.meta.url)` (hashed, self-hosted, fetched only for
-  Draco files). Meshopt decoder ships in three too. No `/public/draco`.
-- Testing aid: `?motion=full|lite|none` forces a tier (capabilities.ts).
+**Unchanged mechanics:** CSS sticky pin + ScrollTrigger progress; chapters
+are real focusable HTML; three.js lazy-loaded ~1 viewport early; DPR ≤ 2 +
+frame-time guard; fallback = blue panel + poster for no-JS, tier lite/none,
+WebGL errors. `?motion=full|lite|none` forces a tier; the console logs
+`[motion] tier: … — reason`.
 
-**Tokens added:** `--color-scene` (#2f4bff), `--color-on-scene` (#fff, 5.9:1),
-`--color-on-scene-muted` (white 85%, 4.68:1), `--color-scene-line`,
-`--font-mono` (JetBrains Mono placeholder, astro.config.mjs). Optional
-frontmatter `year` → big label (else 01, 02…).
+**Tier detection (relaxed):** low power = Save-Data, ≤ 2 cores or
+deviceMemory ≤ 2 (4-core laptops get the full scene). Reduced motion
+(Windows "Animation effects" off) → still image by design.
 
-**Blender export (for `avatar.glb`)** — Blender 4.x, File → Export → glTF 2.0:
-- Before export: metric units, unit scale 1; apply all transforms
-  (Ctrl+A → All Transforms) on armature + meshes; seated pose with the
-  object origin on the floor under the seat centre; character faces -Y in
-  Blender (exports as +Z; config `rotationY: π` turns it to the monitor).
-  Seat height ≈ 0.48 m, hands at keyboard height ≈ 0.78 m, ≈ 0.65 m in front
-  of the hips — or set `includesProps: true` and export your own desk/chair/
-  monitor with a screen mesh named `Screen` (UVs filling 0–1).
-- Actions named `Typing` and `Idle`, seamless loops (first = last frame),
-  2–4 s, 24 or 30 fps. Head bone named `Head` (or Mixamo `mixamorig:Head`).
-- Format: glTF Binary (.glb). Include: Selected Objects only; no cameras,
-  lights or custom properties. Transform: +Y Up ON.
-- Mesh: Apply Modifiers ON, UVs ON, Normals ON, Tangents OFF, Vertex Colors
-  OFF (unless used). Materials: Export; Images: WebP (or JPEG), ≤ 1024 px.
-- Armature: Use Rest Position ON, Export Deformation Bones Only ON, Include
-  All Bone Influences OFF (max 4 per vertex).
-- Animation: ON, Mode = Actions, Always Sample Animations ON, Sampling Rate 1,
-  Optimize Animation Size ON, Reset pose bones between actions ON, Limit to
-  Playback Range ON.
-- Compression: Draco ON, level 6, quantization position 14 / normal 10 /
-  texcoord 12 / colour 10 / generic 12. (Or skip Draco and run
-  `npx @gltf-transform/cli optimize in.glb avatar.glb --compress meshopt`
-  on your own machine — a CLI, not a site dependency.)
-- Budgets: ≤ 20k triangles, ≤ 60 bones, 1–2 materials, file ≤ 2–3 MB.
+**Honest limit:** a primitive-built figure can't match a sculpted, rigged
+character like Afnan's reference. For that quality: a custom/licensed
+rigged GLB (hijab, modest clothing) + Mixamo-style "Typing" clip; re-add the
+GLTFLoader path from b96d860.
+
+**Tokens:** `--color-scene` (#2f4bff), `--color-on-scene`,
+`--color-on-scene-muted`, `--color-scene-line`, `--font-mono` (JetBrains Mono
+placeholder). Frontmatter: optional `year` (big label), `device` (default desktop).
 
 ### Performance budget
 Initial JS on home before idle: Lenis + GSAP core/ScrollTrigger/SplitText
@@ -391,7 +359,7 @@ Initial JS on home before idle: Lenis + GSAP core/ScrollTrigger/SplitText
 mobile runs as tier lite (no three.js), target ≥ 90.
 
 ### Build order (APPROVED — stop for review after each)
-(a) Lenis, cursor, micro interactions ✅ → **desk scene ✅ (placeholder)** →
+(a) Lenis, cursor, micro interactions ✅ → **desk scene ✅ (morphing device + hijab character)** →
 (b) preloader + hero text → (c) WebGL hero (settles into the scene blue) →
 ~~(d) WebGL gallery~~ (dropped; desk scene replaces it) → **Phase 3** case-study template (+ part 8)
 → (e) scroll storytelling → (f) page transitions → **Phase 4** Play, Studio,
@@ -463,5 +431,6 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
       gallery layout for `format: showcase`.
 - [ ] Phase 4 — Play, Studio (lightbox), About.
 - [ ] Phase 5 — immersive motion layer, expanded to the award-level brief
-      (steps a–g above). Approved. Step (a) done. Desk scene done (placeholder).
+      (steps a–g above). Approved. Step (a) done. Desk scene done (morphing device,
+   hijab character placeholder).
 - [ ] Phase 6 — perf / a11y / SEO pass, Vercel deploy steps.

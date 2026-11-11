@@ -1,22 +1,29 @@
 /**
- * Desk scene (three.js). Loaded lazily by controller.ts, desktop "full" tier
- * only. The controller owns scroll + HTML; this module owns pixels and is
- * driven through the small DeskScene API below.
+ * Desk scene (three.js).
+ * A woman in a hijab works at her desk. On the desk, ONE device MORPHS as you
+ * scroll — monitor, laptop, tablet, phone — chosen per project; its screen
+ * switches to each project's cover with a short flicker. She types while
+ * there's a keyboard (faster when you scroll fast) and rests her hands when
+ * there isn't. Head turns toward the cursor, the chair sways, the camera
+ * drifts, and at the end pushes into the screen.
+ * Loaded lazily by controller.ts, desktop "full" tier only.
  */
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { DESK } from './config';
-import { buildPlaceholder, type Palette } from './placeholder';
-import { createScreenMaterial } from './screen-material';
+import { buildDevice, mixShape, SHAPES, type DeviceKind, type Palette } from './device';
+import { buildCharacter, DESK_TOP_Y } from './character';
 
 export interface DeskScene {
   /** 0–1 scroll progress through the whole section (incl. the push-in). */
   setProgress(p: number): void;
   /** Scroll speed in px/s (sign ignored) — drives typing speed. */
   setVelocity(v: number): void;
-  /** Show this cover on the monitor (with flicker). */
+  /** Device per visible chapter, in order (follows the role lens). */
+  setDevices(kinds: DeviceKind[]): void;
+  /** Show this cover on the screen (with flicker). */
   showCover(url: string): void;
-  /** Called when the monitor is clicked. */
+  /** Called when the screen is clicked. */
   onScreenClick(cb: () => void): void;
   setActive(active: boolean): void;
   destroy(): void;
@@ -36,41 +43,36 @@ function readPalette(el: HTMLElement): Palette {
     paperDeep: c('--paper-deep', '#ece4d8'),
     ink: c('--ink', '#1d1915'),
     accent: c('--accent', '#a8401f'),
-    skin: new THREE.Color('#c99272'),
   };
 }
 
-/** Soft blurred ellipse texture used for cheap contact shadows. */
-function blobTexture() {
+/** Soft blurred ellipse texture: a cheap contact shadow. */
+function shadowPlane(w: number, d: number, x: number, y: number, z: number, opacity: number) {
   const size = 128;
   const cv = document.createElement('canvas');
   cv.width = cv.height = size;
   const g = cv.getContext('2d')!;
   const grad = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-  grad.addColorStop(0, 'rgba(0,0,0,0.55)');
-  grad.addColorStop(0.55, 'rgba(0,0,0,0.25)');
+  grad.addColorStop(0, 'rgba(0,0,0,0.5)');
+  grad.addColorStop(0.6, 'rgba(0,0,0,0.18)');
   grad.addColorStop(1, 'rgba(0,0,0,0)');
   g.fillStyle = grad;
   g.fillRect(0, 0, size, size);
-  return new THREE.CanvasTexture(cv);
-}
-
-function blob(tex: THREE.Texture, w: number, d: number, x: number, z: number, opacity: number) {
-  const m = new THREE.Mesh(
+  const mesh = new THREE.Mesh(
     new THREE.PlaneGeometry(w, d),
-    new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, opacity }),
+    new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, depthWrite: false, opacity }),
   );
-  m.rotation.x = -Math.PI / 2;
-  m.position.set(x, 0.002, z);
-  m.renderOrder = -1;
-  return m;
+  mesh.rotation.x = -Math.PI / 2;
+  mesh.position.set(x, y, z);
+  mesh.renderOrder = -1;
+  return mesh;
 }
 
 export async function createDeskScene(stage: HTMLElement): Promise<DeskScene> {
   // ---------- Renderer ----------
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // DPR cap
-  renderer.setClearColor(0x000000, 0); // transparent: CSS draws the blue + lines
+  renderer.setClearColor(0x000000, 0); // transparent: CSS draws the background
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const canvas = renderer.domElement;
   canvas.className = 'desk__canvas';
@@ -80,7 +82,7 @@ export async function createDeskScene(stage: HTMLElement): Promise<DeskScene> {
   const scene = new THREE.Scene();
   const palette = readPalette(document.documentElement);
 
-  // ---------- Lights: soft, studio-like ----------
+  // ---------- Lights: soft studio ----------
   scene.add(new THREE.HemisphereLight(0xffffff, 0x8090ff, 1.6));
   const key = new THREE.DirectionalLight(0xffffff, 1.9);
   key.position.set(-3, 6, 4);
@@ -89,55 +91,42 @@ export async function createDeskScene(stage: HTMLElement): Promise<DeskScene> {
   rim.position.set(4, 3, -4);
   scene.add(rim);
 
-  // ---------- Content ----------
-  const ph = buildPlaceholder(palette);
-  scene.add(ph.props, ph.figure);
-  const shadowTex = blobTexture();
-  scene.add(blob(shadowTex, 2.0, 1.2, 0, 0, 0.9)); // under desk
-  scene.add(blob(shadowTex, 0.95, 0.95, 0, 0.8, 0.85)); // under chair
+  // ---------- Character, desk, chair ----------
+  const person = buildCharacter(palette);
+  scene.add(person.props, person.figure);
+  scene.add(shadowPlane(1.9, 1.1, 0.05, 0.002, 0, 0.85)); // floor under desk
+  scene.add(shadowPlane(0.95, 0.95, 0, 0.002, 0.8, 0.8)); // floor under chair
 
-  let screenMesh = ph.screen;
-  const screenSize = { w: 0.62, h: 0.38 };
-  const screenMat = createScreenMaterial(screenSize.w / screenSize.h);
-  screenMesh.material = screenMat;
+  // ---------- Morphing device on the desk ----------
+  const device = buildDevice(palette);
+  device.root.position.set(0.08, DESK_TOP_Y, -0.18);
+  scene.add(device.root);
+  const screen = device.front;
+  const screenMat = device.frontMat;
+  const screenCenter = device.screenCenter;
+  const deviceShadow = shadowPlane(1, 0.4, 0.08, DESK_TOP_Y + 0.001, -0.18, 0.55);
+  scene.add(deviceShadow);
 
-  let head: THREE.Object3D = ph.head;
-  let headIsBone = false;
-  let mixer: THREE.AnimationMixer | null = null;
-  let typingAction: THREE.AnimationAction | null = null;
-
-  // ---------- Optional real avatar ----------
-  if (stage.dataset.model) {
-    try {
-      const avatar = await loadAvatar();
-      if (avatar) {
-        scene.remove(ph.figure);
-        if (DESK.model.includesProps) scene.remove(ph.props);
-        avatar.root.scale.setScalar(DESK.model.scale);
-        avatar.root.position.set(...DESK.model.position);
-        avatar.root.rotation.y = DESK.model.rotationY;
-        scene.add(avatar.root);
-        if (avatar.head) {
-          head = avatar.head;
-          headIsBone = true;
-        }
-        if (avatar.screen) {
-          screenMesh = avatar.screen;
-          screenMesh.material = screenMat;
-        }
-        mixer = avatar.mixer;
-        typingAction = avatar.typing;
-      }
-    } catch (err) {
-      console.warn('[desk] avatar.glb failed to load, keeping the placeholder.', err);
-    }
+  let devices: DeviceKind[] = ['desktop'];
+  let shape = SHAPES.desktop;
+  /** Each morph runs over the last part of a chapter and completes exactly
+   *  where the next chapter (and its cover) begins. */
+  const MORPH_FROM = 0.62;
+  function updateShape() {
+    const n = devices.length;
+    const story = clamp(progress / DESK.pushStart, 0, 0.9999) * n;
+    const i = Math.floor(story);
+    const t = easeInOut(clamp((story - i - MORPH_FROM) / (1 - MORPH_FROM), 0, 1));
+    const a = SHAPES[devices[i]];
+    shape = i < n - 1 ? mixShape(a, SHAPES[devices[i + 1]], t) : a;
+    device.apply(shape);
+    deviceShadow.scale.set((shape.w + 2 * shape.bezel) * 1.3, 1, 1);
+    deviceShadow.position.z = -0.18 + shape.z;
   }
 
   // ---------- Camera ----------
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.01, 60);
-  const baseTarget = new THREE.Vector3(0.05, 0.9, 0.3); // higher target = scene sits lower in frame
-  const screenCenter = new THREE.Vector3();
-  screenMesh.getWorldPosition(screenCenter);
+  const baseTarget = new THREE.Vector3(0.05, 0.9, 0.3);
   let width = 1;
   let height = 1;
 
@@ -146,37 +135,60 @@ export async function createDeskScene(stage: HTMLElement): Promise<DeskScene> {
     width = Math.max(1, r.width);
     height = Math.max(1, r.height);
     renderer.setSize(width, height, false);
-    const aspect = width / height;
     const h = DESK.camera.frustum / 2;
-    camera.left = -h * aspect;
-    camera.right = h * aspect;
+    camera.left = -h * (width / height);
+    camera.right = h * (width / height);
     camera.top = h;
     camera.bottom = -h;
   }
 
   // ---------- State ----------
   let progress = 0;
+  let active = false;
+  let last = performance.now();
+  let elapsed = 0;
   let targetSpeed: number = DESK.typing.minSpeed;
   let speed: number = DESK.typing.minSpeed;
   let phase = 0;
   const pointer = { x: 0, y: 0, inside: false };
-  const headAim = { yaw: 0, pitch: 0 };
-  // Bone heads: the mixer overwrites the pose each frame, so we remember the
-  // animated pose and re-apply our cursor offset on top (see frame()).
-  const savedHeadQuat = new THREE.Quaternion().copy(head.quaternion);
-  let active = false;
-  // Minimal frame timer (THREE.Clock is deprecated in recent three.js).
-  let last = performance.now();
-  let elapsed = 0;
-  const tick = () => {
-    const now = performance.now();
-    const dt = (now - last) / 1000;
-    last = now;
-    elapsed += Math.min(dt, 0.05);
-    return dt;
-  };
+  const aim = { yaw: 0, pitch: 0 };
+  const target = new THREE.Vector3();
+  const headWorld = new THREE.Vector3();
 
-  // ---------- Covers on the monitor ----------
+  function updateCamera() {
+    const ps = DESK.pushStart;
+    const story = clamp(progress / ps, 0, 1);
+    const push = easeInOut(clamp((progress - ps) / (1 - ps), 0, 1));
+
+    let azimuth = deg(DESK.camera.azimuthDeg + (story - 0.5) * DESK.camera.orbitDeg + Math.sin(elapsed * 0.4) * 0.6);
+    let elevation = deg(DESK.camera.elevationDeg);
+    let zoom = lerp(DESK.camera.zoomStart, DESK.camera.zoomEnd, story);
+    target.copy(baseTarget);
+
+    // Push: face the (possibly tilted) screen square-on, centre, zoom to fill.
+    if (push > 0) {
+      const aspect = width / height;
+      const fill = Math.max(DESK.camera.frustum / shape.h, (DESK.camera.frustum * aspect) / shape.w) * 1.04;
+      azimuth = lerp(azimuth, 0, push);
+      elevation = lerp(elevation, -shape.tilt, push);
+      zoom = Math.exp(lerp(Math.log(zoom), Math.log(fill), push));
+      target.lerpVectors(baseTarget, screenCenter, push);
+    }
+    // Late in the push, move in front of her head (ortho: only clipping changes).
+    const dist = lerp(12, 0.3, smooth(0.55, 0.92, push));
+    camera.position.set(
+      target.x + dist * Math.cos(elevation) * Math.sin(azimuth),
+      target.y + dist * Math.sin(elevation),
+      target.z + dist * Math.cos(elevation) * Math.cos(azimuth),
+    );
+    camera.lookAt(target);
+    camera.zoom = zoom;
+    const shift = DESK.camera.shift * (1 - push);
+    camera.setViewOffset(width * (1 + 2 * shift), height, width * 2 * shift, 0, width, height);
+    camera.updateProjectionMatrix();
+  }
+
+  // ---------- Covers on the screen ----------
   const loader = new THREE.TextureLoader();
   const cache = new Map<string, Promise<THREE.Texture>>();
   const loadTex = (url: string) => {
@@ -197,29 +209,27 @@ export async function createDeskScene(stage: HTMLElement): Promise<DeskScene> {
     return img.width / img.height;
   };
   let currentUrl = '';
-  let flickerTween: gsap.core.Timeline | null = null;
+  let flicker: gsap.core.Timeline | null = null;
 
   async function showCover(url: string) {
     if (url === currentUrl) return;
     currentUrl = url;
     const tex = await loadTex(url);
-    if (url !== currentUrl) return; // scrolled on before it loaded
+    if (url !== currentUrl) return;
     const u = screenMat.uniforms;
     if (!u.uTexA.value) {
-      u.uTexA.value = tex;
-      u.uAspectA.value = aspectOf(tex);
-      u.uTexB.value = tex;
-      u.uAspectB.value = aspectOf(tex);
-      if (!active) frame(); // paint the first cover even before scrolling
+      u.uTexA.value = u.uTexB.value = tex;
+      u.uAspectA.value = u.uAspectB.value = aspectOf(tex);
+      if (!active) frame();
       return;
     }
-    flickerTween?.kill();
+    flicker?.kill();
     u.uTexB.value = tex;
     u.uAspectB.value = aspectOf(tex);
     u.uMix.value = 0;
-    // ~250 ms: flicker up, crossfade mid-flicker, settle.
-    flickerTween = gsap
+    flicker = gsap
       .timeline({
+        onUpdate: () => !active && frame(),
         onComplete: () => {
           u.uTexA.value = tex;
           u.uAspectA.value = aspectOf(tex);
@@ -231,37 +241,31 @@ export async function createDeskScene(stage: HTMLElement): Promise<DeskScene> {
       .to(u.uFlicker, { value: 0, duration: 0.17, ease: 'power2.out' }, 0.08);
   }
 
-  // ---------- Pointer: head follow, hover + click on the monitor ----------
+  // ---------- Pointer: head follow, hover + click on the screen ----------
   const raycaster = new THREE.Raycaster();
   const ndc = new THREE.Vector2();
-  let hoveringScreen = false;
+  let hovering = false;
   let clickCb: (() => void) | null = null;
   let downAt: { x: number; y: number } | null = null;
 
-  const hitsScreen = (clientX: number, clientY: number) => {
+  const hitsScreen = (x: number, y: number) => {
     const r = canvas.getBoundingClientRect();
-    ndc.set(((clientX - r.left) / r.width) * 2 - 1, -((clientY - r.top) / r.height) * 2 + 1);
+    ndc.set(((x - r.left) / r.width) * 2 - 1, -((y - r.top) / r.height) * 2 + 1);
     raycaster.setFromCamera(ndc, camera);
-    return raycaster.intersectObject(screenMesh, false).length > 0;
+    return raycaster.intersectObject(screen, false).length > 0;
   };
-
+  const setHover = (on: boolean) => {
+    if (on === hovering) return;
+    hovering = on;
+    document.dispatchEvent(new CustomEvent('cursor:state', { detail: on ? 'view' : null }));
+  };
   const onMove = (e: PointerEvent) => {
     const r = stage.getBoundingClientRect();
-    const margin = 160;
-    pointer.inside =
-      e.clientX > r.left - margin && e.clientX < r.right + margin && e.clientY > r.top - margin && e.clientY < r.bottom + margin;
+    const m = 160;
+    pointer.inside = e.clientX > r.left - m && e.clientX < r.right + m && e.clientY > r.top - m && e.clientY < r.bottom + m;
     pointer.x = e.clientX;
     pointer.y = e.clientY;
-    if (e.target === canvas) {
-      const over = hitsScreen(e.clientX, e.clientY);
-      if (over !== hoveringScreen) {
-        hoveringScreen = over;
-        document.dispatchEvent(new CustomEvent('cursor:state', { detail: over ? 'view' : null }));
-      }
-    } else if (hoveringScreen) {
-      hoveringScreen = false;
-      document.dispatchEvent(new CustomEvent('cursor:state', { detail: null }));
-    }
+    setHover(e.target === canvas && hitsScreen(e.clientX, e.clientY));
   };
   const onDown = (e: PointerEvent) => (downAt = { x: e.clientX, y: e.clientY });
   const onUp = (e: PointerEvent) => {
@@ -275,120 +279,77 @@ export async function createDeskScene(stage: HTMLElement): Promise<DeskScene> {
   canvas.addEventListener('pointerup', onUp);
 
   // ---------- Frame ----------
-  const headWorld = new THREE.Vector3();
-  const tmpTarget = new THREE.Vector3();
   let frameTimes: number[] = [];
-
-  function updateCamera() {
-    const ps = DESK.pushStart;
-    const story = clamp(progress / ps, 0, 1); // chapters part
-    const push = easeInOut(clamp((progress - ps) / (1 - ps), 0, 1)); // push-in part
-
-    // Story: slow orbit + gentle zoom.
-    let azimuth = deg(DESK.camera.azimuthDeg + (story - 0.5) * DESK.camera.orbitDeg);
-    let elevation = deg(DESK.camera.elevationDeg);
-    let zoom = lerp(DESK.camera.zoomStart, DESK.camera.zoomEnd, story);
-    tmpTarget.copy(baseTarget);
-
-    // Push: turn to face the screen, centre on it, zoom until it fills the view.
-    if (push > 0) {
-      const aspect = width / height;
-      const fill = Math.max(DESK.camera.frustum / screenSize.h, (DESK.camera.frustum * aspect) / screenSize.w) * 1.04;
-      azimuth = lerp(azimuth, 0, push);
-      elevation = lerp(elevation, 0, push);
-      zoom = Math.exp(lerp(Math.log(zoom), Math.log(fill), push)); // even feel across the zoom
-      tmpTarget.lerpVectors(baseTarget, screenCenter, push);
-    }
-    // Move the ortho camera in front of the figure's head late in the push
-    // (ortho scale doesn't depend on distance; this only clips what's behind).
-    const dist = lerp(12, 0.35, smooth(0.55, 0.92, push));
-    camera.position.set(
-      tmpTarget.x + dist * Math.cos(elevation) * Math.sin(azimuth),
-      tmpTarget.y + dist * Math.sin(elevation),
-      tmpTarget.z + dist * Math.cos(elevation) * Math.cos(azimuth),
-    );
-    camera.lookAt(tmpTarget);
-    camera.zoom = zoom;
-
-    // Frame the scene left of centre (text lives on the right); recentre on push.
-    const shift = DESK.camera.shift * (1 - push);
-    camera.setViewOffset(width * (1 + 2 * shift), height, width * 2 * shift, 0, width, height);
-    camera.updateProjectionMatrix();
-  }
-
   function frame() {
-    const dt = Math.min(tick(), 0.05);
-    const t = elapsed;
+    const now = performance.now();
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+    elapsed += dt;
 
-    // Typing speed eases toward the scroll-driven target.
+    updateShape();
+
+    // Typing: speed eases toward the scroll-driven target, relaxes when idle.
     speed = lerp(speed, targetSpeed, 1 - Math.exp(-dt * 4));
-    targetSpeed = lerp(targetSpeed, DESK.typing.minSpeed, 1 - Math.exp(-dt * 1.5)); // relax when scrolling stops
+    targetSpeed = lerp(targetSpeed, DESK.typing.minSpeed, 1 - Math.exp(-dt * 1.5));
     phase += dt * 9 * speed;
-
-    if (mixer) {
-      if (typingAction) typingAction.timeScale = speed;
-      if (headIsBone) head.quaternion.copy(savedHeadQuat); // undo last frame's offset
-      mixer.update(dt);
-      if (headIsBone) savedHeadQuat.copy(head.quaternion);
-    } else {
-      ph.animate(phase, t);
-    }
+    const keysZ = device.root.position.z + shape.kbZ - 0.04 * shape.kbD;
+    person.animate(phase, elapsed, shape.kb, keysZ);
 
     // Chair sways a little.
-    ph.chairTop.rotation.y = Math.sin(t * 0.5) * deg(4);
+    person.chairTop.rotation.y = Math.sin(elapsed * 0.5) * deg(4);
 
-    // Head turns toward the cursor when it's near the scene (clamped ±15°).
+    // Head turns toward the cursor when it's near the scene (±15°).
     let yawT = 0;
     let pitchT = 0;
     if (pointer.inside) {
-      head.getWorldPosition(headWorld);
-      headWorld.project(camera);
+      person.head.getWorldPosition(headWorld).project(camera);
       const r = canvas.getBoundingClientRect();
       const hx = r.left + ((headWorld.x + 1) / 2) * r.width;
       const hy = r.top + ((1 - headWorld.y) / 2) * r.height;
       yawT = clamp(-(pointer.x - hx) / (r.width * 0.35), -1, 1) * deg(15);
       pitchT = clamp((pointer.y - hy) / (r.height * 0.5), -1, 1) * deg(10);
     }
-    headAim.yaw = lerp(headAim.yaw, yawT, 1 - Math.exp(-dt * 5));
-    headAim.pitch = lerp(headAim.pitch, pitchT, 1 - Math.exp(-dt * 5));
-    if (headIsBone) {
-      head.rotateY(headAim.yaw);
-      head.rotateX(headAim.pitch);
-    } else {
-      head.rotation.set(headAim.pitch, headAim.yaw, 0);
-    }
+    aim.yaw = lerp(aim.yaw, yawT, 1 - Math.exp(-dt * 5));
+    aim.pitch = lerp(aim.pitch, pitchT, 1 - Math.exp(-dt * 5));
+    person.head.rotation.set(aim.pitch, aim.yaw, 0);
 
-    screenMat.uniforms.uTime.value = t;
+    screenMat.uniforms.uTime.value = elapsed;
     updateCamera();
     renderer.render(scene, camera);
 
     // Frame-rate guard: if we can't hold ~40fps, drop to DPR 1.
-    frameTimes.push(dt);
-    if (frameTimes.length > 120) {
-      const avg = frameTimes.reduce((a, b) => a + b, 0) / frameTimes.length;
-      if (avg > 1 / 40 && renderer.getPixelRatio() > 1) {
-        renderer.setPixelRatio(1);
-        resize();
+    if (active) {
+      frameTimes.push(dt);
+      if (frameTimes.length > 120) {
+        const avg = frameTimes.reduce((a, b) => a + b, 0) / frameTimes.length;
+        if (avg > 1 / 40 && renderer.getPixelRatio() > 1) {
+          renderer.setPixelRatio(1);
+          resize();
+        }
+        frameTimes = [];
       }
-      frameTimes = [];
     }
   }
 
-  const ro = new ResizeObserver(resize);
+  const ro = new ResizeObserver(() => {
+    resize();
+    if (!active) frame();
+  });
   ro.observe(stage);
   resize();
-
-  // Render one frame immediately so the poster can be swapped out.
-  updateCamera();
   frame();
 
   return {
     setProgress(p) {
       progress = clamp(p, 0, 1);
     },
-    setVelocity(v) {
-      const k = clamp(Math.abs(v) / DESK.typing.velocityForMax, 0, 1);
+    setVelocity(vel) {
+      const k = clamp(Math.abs(vel) / DESK.typing.velocityForMax, 0, 1);
       targetSpeed = Math.max(targetSpeed, lerp(DESK.typing.minSpeed, DESK.typing.maxSpeed, k));
+    },
+    setDevices(kinds) {
+      devices = kinds.length ? kinds : ['desktop'];
+      if (!active) frame();
     },
     showCover: (url) => void showCover(url),
     onScreenClick(cb) {
@@ -397,64 +358,23 @@ export async function createDeskScene(stage: HTMLElement): Promise<DeskScene> {
     setActive(on) {
       if (on === active) return;
       active = on;
-      last = performance.now(); // don't jump after a pause
+      last = performance.now();
       renderer.setAnimationLoop(on ? frame : null);
     },
     destroy() {
       renderer.setAnimationLoop(null);
       ro.disconnect();
       document.removeEventListener('pointermove', onMove);
-      flickerTween?.kill();
+      flicker?.kill();
       scene.traverse((o) => {
         const m = o as THREE.Mesh;
         m.geometry?.dispose();
         const mats = Array.isArray(m.material) ? m.material : m.material ? [m.material] : [];
         mats.forEach((mt) => mt.dispose());
       });
-      cache.forEach((p) => p.then((t) => t.dispose()));
+      cache.forEach((pr) => pr.then((t) => t.dispose()));
       renderer.dispose();
       canvas.remove();
     },
   };
-}
-
-/** Loads /models/avatar.glb (Draco + Meshopt aware) and maps its clips. */
-async function loadAvatar() {
-  const [{ GLTFLoader }, { DRACOLoader }, { MeshoptDecoder }] = await Promise.all([
-    import('three/examples/jsm/loaders/GLTFLoader.js'),
-    import('three/examples/jsm/loaders/DRACOLoader.js'),
-    import('three/examples/jsm/libs/meshopt_decoder.module.js'),
-  ]);
-  const draco = new DRACOLoader(); // default = decoder bundled with three.js
-  const loader = new GLTFLoader().setDRACOLoader(draco).setMeshoptDecoder(MeshoptDecoder);
-  const gltf = await loader.loadAsync(DESK.modelUrl);
-  draco.dispose();
-
-  const root = gltf.scene;
-  const names = gltf.animations.map((c) => c.name);
-  console.info('[desk] clips:', names.length ? names.join(', ') : '(none)');
-
-  const lower = (s: string) => s.toLowerCase();
-  const findClip = (wanted: readonly string[]) =>
-    gltf.animations.find((c) => wanted.some((w) => lower(c.name).includes(lower(w))));
-
-  let head: THREE.Object3D | null = null;
-  let screen: THREE.Mesh | null = null;
-  root.traverse((o) => {
-    const n = lower(o.name);
-    if (!head && DESK.headBones.some((h) => n === lower(h))) head = o;
-    if (!screen && (o as THREE.Mesh).isMesh && DESK.screenMeshes.some((s) => n === lower(s))) screen = o as THREE.Mesh;
-  });
-  console.info('[desk] head bone:', head ? (head as THREE.Object3D).name : 'not found (check DESK.headBones)');
-
-  let mixer: THREE.AnimationMixer | null = null;
-  let typing: THREE.AnimationAction | null = null;
-  const clip = findClip(DESK.clips.typing) ?? findClip(DESK.clips.idle) ?? gltf.animations[0];
-  if (clip) {
-    mixer = new THREE.AnimationMixer(root);
-    typing = mixer.clipAction(clip);
-    typing.play();
-    console.info('[desk] playing clip:', clip.name);
-  }
-  return { root, head: head as THREE.Object3D | null, screen: screen as THREE.Mesh | null, mixer, typing };
 }

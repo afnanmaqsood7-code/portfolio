@@ -1,20 +1,12 @@
+// @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import mdx from '@astrojs/mdx';
-import { existsSync } from 'node:fs';
 import { site } from './src/site.config.ts';
 
 // https://docs.astro.build/en/reference/configuration-reference/
 export default defineConfig({
   site: site.url,
   integrations: [mdx()],
-
-  // Desk scene: use the real avatar only if public/models/avatar.glb exists
-  // at build time (otherwise the placeholder figure, with no 404 request).
-  vite: {
-    define: {
-      'import.meta.env.HAS_AVATAR': JSON.stringify(existsSync('./public/models/avatar.glb')),
-    },
-  },
 
   // FONTS — PLACEHOLDER. To swap a typeface, change only `name` below.
   // Astro downloads and self-hosts the files at build time (no runtime

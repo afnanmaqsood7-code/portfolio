@@ -20,6 +20,8 @@ const projects = defineCollection({
       summary: z.string().max(220, 'Keep the summary to one or two sentences'),
       role: z.string(),
       timeline: z.string(),
+      // Device the home desk scene morphs into for this project.
+      device: z.enum(['desktop', 'laptop', 'tablet', 'phone']).default('desktop'),
       // Optional big label in the home desk scene, e.g. '2025'. Falls back to '01', '02'…
       year: z.string().optional(),
       team: z.string(),

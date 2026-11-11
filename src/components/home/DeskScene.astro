@@ -23,18 +23,15 @@ const chapters = await Promise.all(
   })),
 );
 
-// The real avatar is used only if public/models/avatar.glb existed at build
-// time (flag defined in astro.config.mjs), so there's never a 404 request.
-const hasModel = import.meta.env.HAS_AVATAR;
 ---
 
 <section id="work" class="desk" data-desk aria-labelledby="desk-title">
   <div class="desk__pin" data-desk-pin>
-    <div class="desk__stage" data-desk-stage data-model={hasModel ? 'true' : undefined}>
+    <div class="desk__stage" data-desk-stage>
       <Image
         class="desk__poster"
         src={poster}
-        alt="Illustration of Afnan at a desk, typing at a computer, with a jar of paint brushes and a small painting beside the monitor."
+        alt="Illustration of Afnan, wearing a hijab, working at her desk with one of her projects on the screen."
         widths={[640, 960, 1400]}
         sizes="(min-width: 64rem) 66vw, 100vw"
         loading="lazy"
@@ -63,6 +60,7 @@ const hasModel = import.meta.env.HAS_AVATAR;
             data-order-brand={lensPosition(p, 'brand')}
             data-cover={cover}
             data-label={label}
+            data-device={p.data.device}
           >
             <p class="desk__meta">{p.data.role}</p>
             <h3 class="desk__title">{p.data.title}</h3>
@@ -171,9 +169,9 @@ const hasModel = import.meta.env.HAS_AVATAR;
      crop of that frame), so the crossfade is near seamless. */
   .desk:global(.desk--live) .desk__poster {
     position: absolute;
-    top: 25.5%;
-    left: 9%;
-    width: 52.8%;
+    top: 16.7%;
+    left: 4.2%;
+    width: 62.5%;
     max-width: none;
     border-radius: 0;
     transition: opacity 0.6s var(--ease-out);
