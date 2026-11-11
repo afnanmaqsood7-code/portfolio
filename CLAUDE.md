@@ -224,19 +224,20 @@ data. Built in Astro + plain CSS/TS (stack rule), `src/components/home/Hero.astr
   — Afnan asked to remove her photo; the hero video, its fade-loop script,
   `site.heroVideo` and `/public/hero/afnan.mp4` were deleted. Do not add a
   photo/video of her unless she asks.
-- Glass navbar pill (max 64rem): globe icon + "Afnan Maqsood", links (Work,
-  Play, Studio, About) on ≥ 48rem; right: Sound toggle, "Resume" text link,
-  "Contact" glass pill. Phones: links in a JS-free `<details>` "Menu".
+- Home navigation (`Header` variant `glass`, kept name for the prop): **simple
+  white TEXT links, no pills/circles** (Afnan's reference): name left; Home ·
+  Work · Play · Studio · About · Resume on the right (gap clamp 1.5–3.5rem,
+  1.05rem, hover opacity 0.65, current page underlined); sound toggle as
+  text. < 56rem: plain-text "Menu" `<details>` (JS-free) with the same links.
 - INTRO in the style of Afnan's reference ("Hi there, I'm Gloria! 👋" + a
   one-line mission): H1 `site.heroTitle` ("Hi there, I'm Afnan!") in
-  **Unbounded 800** (`--font-hero`, hero only) + a waving 👋 (CSS keyframes,
+  **Unbounded 800** (`--font-hero`, hero only), size clamp(2rem…3.75rem)
+  (reduced at Afnan's request), + a waving 👋 (CSS keyframes,
   aria-hidden; stops under reduced motion), then `site.heroSubtitle`
-  (lowercase "a product, brand and web designer with a painter's hand, …").
-  LEFT-aligned, max 40rem.
+  (lowercase "a product, brand and web designer with a painter's hand, …",
+  clamp(1rem…1.2rem)). LEFT-aligned, max 34rem.
 - Then the glass email pill (opens the visitor's mail app pre-filled to
   Afnan — static site, no backend) and the glass CTA `site.heroCta` → `#work`.
-- Glass navbar on the hero is a little darker than the base liquid glass
-  (rgb 0 0 0 / 0.32, blur 10px) for readable white links.
 - Social row: three glass round buttons — LinkedIn, email, resume download.
 - Replaced: the earlier typewriter + mouse-scrub hero and the third-party
   "Mainframe" clip.

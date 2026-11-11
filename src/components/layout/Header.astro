@@ -23,41 +23,32 @@ const isCurrent = (href: string) => {
 
 {variant === 'glass' ? (
   <header class="glass-header">
-    <div class="glass-bar liquid-glass">
-      <div class="glass-left">
-        <a href="/" class="glass-brand" aria-label={`${site.name}, home`}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" />
-            <path d="M2 12h20M12 2c2.8 2.7 4.2 6 4.2 10S14.8 19.3 12 22M12 2C9.2 4.7 7.8 8 7.8 12s1.4 7.3 4.2 10" stroke="currentColor" stroke-width="1.5" />
-          </svg>
-          <span>{site.name}</span>
-        </a>
-        <nav aria-label="Primary" class="glass-nav">
-          <ul role="list">
-            {nav.map((item) => (
-              <li><a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a></li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-      <div class="glass-right">
-        <button type="button" class="sound-toggle sound-toggle--glass" data-sound-toggle aria-pressed="false" hidden>
-          <span class="sound-toggle__bars" aria-hidden="true"><i></i><i></i><i></i></span>
-          Sound<span class="sound-toggle__state" aria-hidden="true" data-sound-state>off</span>
-        </button>
-        <a href={site.resume} class="glass-text-btn" download>Resume</a>
-        <a href="#contact" class="glass-btn liquid-glass">Contact</a>
-        <!-- Phones: links live in this JS-free disclosure menu. -->
-        <details class="glass-menu">
-          <summary class="glass-btn liquid-glass">Menu</summary>
-          <ul role="list" class="glass-menu__panel">
-            {nav.map((item) => (
-              <li><a href={item.href}>{item.label}</a></li>
-            ))}
-            <li><a href={site.resume} download>Resume</a></li>
-          </ul>
-        </details>
-      </div>
+    <div class="glass-bar">
+      <a href="/" class="glass-brand" aria-label={`${site.name}, home`}>{site.name}</a>
+      <nav aria-label="Primary" class="glass-nav">
+        <ul role="list">
+          <li><a href="/" aria-current={path === '/' ? 'page' : undefined}>Home</a></li>
+          {nav.map((item) => (
+            <li><a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a></li>
+          ))}
+          <li><a href={site.resume} download>Resume</a></li>
+        </ul>
+      </nav>
+      <button type="button" class="sound-toggle sound-toggle--glass" data-sound-toggle aria-pressed="false" hidden>
+        <span class="sound-toggle__bars" aria-hidden="true"><i></i><i></i><i></i></span>
+        Sound<span class="sound-toggle__state" aria-hidden="true" data-sound-state>off</span>
+      </button>
+      <!-- Phones: the same links in a JS-free disclosure menu (plain text). -->
+      <details class="glass-menu">
+        <summary>Menu</summary>
+        <ul role="list" class="glass-menu__panel">
+          <li><a href="/">Home</a></li>
+          {nav.map((item) => (
+            <li><a href={item.href}>{item.label}</a></li>
+          ))}
+          <li><a href={site.resume} download>Resume</a></li>
+        </ul>
+      </details>
     </div>
   </header>
 ) : (
@@ -134,113 +125,77 @@ const isCurrent = (href: string) => {
     font-weight: 500;
   }
 
-  /* ================= Glass (home, over the hero video) ================= */
+  /* ================= Home (over the black hero): simple text nav ================= */
+  /* Afnan's reference: plain white text links, generously spaced, no pills
+     or circles. */
   .glass-header {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     z-index: 20;
-    padding: 1.5rem;
     color: #fff;
   }
   .glass-bar {
-    /* A touch darker than the base liquid glass so white nav text stays
-       readable over bright parts of the hero video (e.g. a white hijab). */
-    background: rgb(0 0 0 / 0.32);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    max-width: 64rem;
+    max-width: var(--container-max);
     margin-inline: auto;
-    padding: 0.75rem 1.5rem;
-    border-radius: 999px;
+    padding: 1.25rem var(--container-pad);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    overflow: visible; /* let the phone menu panel drop below the pill */
+    gap: 1.5rem;
   }
-  .glass-left,
-  .glass-right {
-    display: flex;
-    align-items: center;
-  }
-  .glass-left { gap: 2rem; }
-  .glass-right { gap: 1rem; }
   .glass-brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
+    margin-right: auto;
     color: #fff;
-    font-size: 1.125rem;
+    font-size: 1.05rem;
     font-weight: 600;
     text-decoration: none;
     white-space: nowrap;
   }
   .glass-nav ul {
     display: flex;
-    gap: 2rem;
+    gap: clamp(1.5rem, 1rem + 2vw, 3.5rem);
   }
   .glass-nav a,
-  .glass-text-btn {
-    color: rgb(255 255 255 / 0.8);
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .glass-text-btn { color: #fff; }
-  .glass-nav a:hover,
-  .glass-nav a[aria-current='page'],
-  .glass-text-btn:hover { color: #fff; }
-  .glass-btn {
+  .glass-menu summary {
     display: inline-flex;
     align-items: center;
-    min-height: 40px;
-    padding: 0.5rem 1.5rem;
-    border-radius: 999px;
+    min-height: 44px; /* touch target */
     color: #fff;
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-size: 1.05rem;
     text-decoration: none;
-    cursor: pointer;
-    list-style: none;
+    transition: opacity 0.2s;
   }
-  .glass-btn:hover { color: #fff; background: rgb(255 255 255 / 0.05); }
-  summary.glass-btn::-webkit-details-marker { display: none; }
+  .glass-nav a:hover { opacity: 0.65; color: #fff; }
+  .glass-nav a[aria-current='page'] { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
 
-  /* Phones: hide desktop links/buttons, show the Menu disclosure. */
+  /* Phones: plain-text "Menu" opens the list. */
   .glass-nav,
-  .glass-text-btn,
-  .glass-right > .glass-btn,
-  .glass-right .sound-toggle { display: none; }
+  .glass-bar .sound-toggle { display: none; }
   .glass-menu { position: relative; }
+  .glass-menu summary { cursor: pointer; list-style: none; }
+  .glass-menu summary::-webkit-details-marker { display: none; }
   .glass-menu__panel {
     position: absolute;
     right: 0;
-    top: calc(100% + 0.75rem);
-    min-width: 12rem;
-    padding: 0.5rem;
-    border-radius: 1.25rem;
-    background: rgb(0 0 0 / 0.82);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    box-shadow: inset 0 1px 1px rgb(255 255 255 / 0.12);
+    top: calc(100% + 0.5rem);
+    min-width: 11rem;
+    padding: 0.5rem 0;
+    background: #000;
+    border-top: 1px solid rgb(255 255 255 / 0.2);
   }
   .glass-menu__panel a {
     display: block;
-    padding: 0.75rem 1rem;
+    padding: 0.7rem 0.25rem;
     color: #fff;
     text-decoration: none;
-    border-radius: 0.75rem;
+    text-align: right;
   }
-  .glass-menu__panel a:hover { background: rgb(255 255 255 / 0.08); }
+  .glass-menu__panel a:hover { opacity: 0.65; }
 
-  @media (min-width: 48rem) {
-    .glass-nav,
-    .glass-text-btn { display: block; }
-    .glass-right > .glass-btn { display: inline-flex; }
-    .glass-right .sound-toggle:not([hidden]) { display: inline-flex; }
+  @media (min-width: 56rem) {
+    .glass-nav { display: block; }
+    .glass-bar .sound-toggle:not([hidden]) { display: inline-flex; }
     .glass-menu { display: none; }
   }
 
