@@ -23,13 +23,20 @@ const isCurrent = (href: string) => {
       <ul role="list" class="nav-list">
         {nav.map((item) => (
           <li>
-            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+            <a href={item.href} class="brush-link" aria-current={isCurrent(item.href) ? 'page' : undefined}>
               {item.label}
             </a>
           </li>
         ))}
         <li>
-          <a href="#contact" class="nav-contact">Contact</a>
+          <a href="#contact" class="nav-contact brush-link">Contact</a>
+        </li>
+        <li>
+          <!-- Revealed by scripts/motion/sound.ts. Off by default. -->
+          <button type="button" class="sound-toggle" data-sound-toggle aria-pressed="false" hidden>
+            <span class="sound-toggle__bars" aria-hidden="true"><i></i><i></i><i></i></span>
+            Sound<span class="sound-toggle__state" aria-hidden="true" data-sound-state>off</span>
+          </button>
         </li>
       </ul>
     </nav>
@@ -71,12 +78,43 @@ const isCurrent = (href: string) => {
     padding-block: var(--space-2xs); /* ≥ 44px tap height with line-height */
     text-decoration: none;
   }
-  .nav-list a[aria-current='page'] {
-    text-decoration: underline;
-    text-decoration-color: var(--color-accent);
-    text-decoration-thickness: 2px;
+  .nav-list {
+    align-items: center;
   }
-  .nav-contact {
+  .sound-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3xs);
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-text-muted);
+    font-size: var(--step--1);
+    cursor: pointer;
+  }
+  .sound-toggle[hidden] { display: none; }
+  .sound-toggle:hover { color: var(--color-text); }
+  .sound-toggle__bars {
+    display: inline-flex;
+    align-items: end;
+    gap: 2px;
+    height: 12px;
+  }
+  .sound-toggle__bars i {
+    width: 2px;
+    height: 4px;
+    background: currentColor;
+    border-radius: 1px;
+    transition: height var(--dur-base) var(--ease-out);
+  }
+  /* "On" = bars stand tall at different heights (static, no looping motion). */
+  .sound-toggle[aria-pressed='true'] { color: var(--color-text); }
+  .sound-toggle[aria-pressed='true'] .sound-toggle__bars i:nth-child(1) { height: 7px; }
+  .sound-toggle[aria-pressed='true'] .sound-toggle__bars i:nth-child(2) { height: 12px; }
+  .sound-toggle[aria-pressed='true'] .sound-toggle__bars i:nth-child(3) { height: 9px; }
+  .nav-contact,
+  .nav-contact:hover {
     color: var(--color-accent);
     font-weight: 500;
   }

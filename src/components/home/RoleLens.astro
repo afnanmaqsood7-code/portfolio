@@ -9,7 +9,8 @@ import { LENS_OPTIONS, DEFAULT_LENS } from '../../utils/lens';
 
 <div class="role-lens" role="group" aria-label="Show work for a role" data-role-lens hidden>
   <span class="role-lens__label muted" aria-hidden="true">Show</span>
-  <div class="role-lens__options">
+  <div class="role-lens__options" data-lens-options>
+    <span class="role-lens__indicator" aria-hidden="true"></span>
     {LENS_OPTIONS.map((opt) => (
       <button
         type="button"
@@ -53,8 +54,34 @@ import { LENS_OPTIONS, DEFAULT_LENS } from '../../utils/lens';
     cursor: pointer;
   }
   .role-lens__btn:hover { color: var(--color-text); }
+  .role-lens__options { position: relative; }
+  .role-lens__btn {
+    position: relative;
+    z-index: 1;
+    transition: color 0.35s var(--ease-out);
+  }
   .role-lens__btn[aria-pressed='true'] {
     background: var(--color-text);
     color: var(--color-bg);
+  }
+
+  /* Sliding pill: once the script has positioned it, it replaces the
+     pressed button's own background and glides between options. */
+  .role-lens__indicator {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 0;
+    width: 0;
+    border-radius: 999px;
+    background: var(--color-text);
+    opacity: 0;
+  }
+  .role-lens__options:global(.has-indicator) .role-lens__indicator { opacity: 1; }
+  .role-lens__options:global(.has-indicator) .role-lens__btn[aria-pressed='true'] { background: transparent; }
+  .role-lens__options:global(.is-animated) .role-lens__indicator {
+    transition:
+      translate 0.5s var(--ease-out),
+      width 0.5s var(--ease-out);
   }
 </style>

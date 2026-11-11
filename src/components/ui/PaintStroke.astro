@@ -1,8 +1,8 @@
 ---
 /**
  * Decorative painted stroke from /src/assets/paint.
- * Coloured by the accent token via currentColor. Always aria-hidden:
- * it carries no meaning, so screen readers skip it.
+ * Coloured by the accent token via currentColor. Always aria-hidden.
+ * data-cursor="brush" turns the custom cursor into a brush dab over it.
  */
 import Stroke from '../../assets/paint/stroke-01.svg';
 
@@ -12,7 +12,7 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<span class:list={['paint-stroke', className]} aria-hidden="true">
+<span class:list={['paint-stroke', className]} aria-hidden="true" data-cursor="brush">
   <Stroke />
 </span>
 

@@ -1,5 +1,10 @@
 ---
-/** Link styled as a button. `variant="ghost"` for secondary actions. */
+/**
+ * Link styled as a button. `variant="ghost"` for secondary actions.
+ * Hover: a circular fill grows from where the pointer entered (CSS var
+ * --fx/--fy set by scripts/motion/button-fill.ts). Without JS, a plain
+ * colour change. Magnetic pull via [data-magnetic].
+ */
 interface Props {
   href: string;
   variant?: 'solid' | 'ghost';
@@ -15,13 +20,17 @@ const { href, variant = 'solid', download = false, external = false } = Astro.pr
   download={download || undefined}
   target={external ? '_blank' : undefined}
   rel={external ? 'noopener noreferrer' : undefined}
+  data-magnetic="0.25"
 >
-  <slot />
-  {external && <span class="visually-hidden"> (opens in a new tab)</span>}
+  <span class="btn__fill" aria-hidden="true"></span>
+  <span class="btn__label"><slot />{external && <span class="visually-hidden"> (opens in a new tab)</span>}</span>
 </a>
 
 <style>
   .btn {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     gap: var(--space-2xs);
@@ -32,19 +41,41 @@ const { href, variant = 'solid', download = false, external = false } = Astro.pr
     font-size: var(--step--1);
     font-weight: 500;
     text-decoration: none;
-    transition: background-color var(--dur-fast), color var(--dur-fast);
+    transition:
+      background-color var(--dur-fast),
+      color 0.35s var(--ease-out),
+      border-color 0.35s var(--ease-out);
   }
-  .btn--solid {
-    background: var(--color-text);
-    color: var(--color-bg);
+  .btn__label { position: relative; z-index: 1; }
+  .btn__fill {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    clip-path: circle(0% at var(--fx, 50%) var(--fy, 50%));
+    transition: clip-path 0.55s var(--ease-out);
   }
-  .btn--solid:hover {
+
+  /* Base colours (also override the global a:hover accent colour). */
+  .btn--solid,
+  .btn--solid:hover { background: var(--color-text); color: var(--color-bg); }
+  .btn--ghost,
+  .btn--ghost:hover { color: var(--color-text); }
+  .btn--solid .btn__fill { background: var(--color-accent); }
+  .btn--ghost .btn__fill { background: var(--color-text); }
+
+  /* No-JS / touch fallback: simple colour change on hover. */
+  :global(html:not(.has-button-fill)) .btn--solid:hover {
     background: var(--color-accent);
     border-color: var(--color-accent);
     color: var(--color-on-accent);
   }
-  .btn--ghost:hover {
+  :global(html:not(.has-button-fill)) .btn--ghost:hover {
     color: var(--color-accent);
     border-color: var(--color-accent);
   }
+
+  /* With JS: fill grows from the entry point (must come after :hover rules). */
+  .btn:global(.is-filled) .btn__fill { clip-path: circle(150% at var(--fx, 50%) var(--fy, 50%)); }
+  .btn--solid:global(.is-filled) { color: var(--color-on-accent); border-color: var(--color-accent); }
+  .btn--ghost:global(.is-filled) { color: var(--color-bg); }
 </style>

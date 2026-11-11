@@ -83,3 +83,48 @@ a:hover { color: var(--color-accent); }
     scroll-behavior: auto !important;
   }
 }
+
+/* ---------- Brush underline ----------
+   A painted stroke (from /src/assets/paint) draws left → right under links
+   on hover/focus, and stays drawn on the current page. CSS only: works
+   without JS; reduced motion makes it appear instantly.
+   Use .brush-link on any link; long-form .prose links get it automatically
+   (they keep a thin underline at rest so links aren't colour-only). */
+.brush-link,
+.prose a {
+  position: relative;
+  isolation: isolate; /* keeps the z-index:-1 stroke above section backgrounds */
+  text-decoration: none;
+}
+.prose a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  transition: text-decoration-color var(--dur-fast);
+}
+.brush-link::after,
+.prose a::after {
+  content: '';
+  position: absolute;
+  left: -3%;
+  right: -3%;
+  bottom: -0.32em;
+  height: 0.45em;
+  background: var(--color-accent);
+  -webkit-mask: url('../assets/paint/stroke-01.svg') center / 100% 100% no-repeat;
+  mask: url('../assets/paint/stroke-01.svg') center / 100% 100% no-repeat;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.55s var(--ease-out);
+  pointer-events: none;
+  z-index: -1;
+}
+.brush-link:hover::after,
+.brush-link:focus-visible::after,
+.brush-link[aria-current='page']::after,
+.prose a:hover::after,
+.prose a:focus-visible::after {
+  clip-path: inset(0 0 0 0);
+}
+.prose a:hover { text-decoration-color: transparent; }
+.brush-link:hover,
+.prose a:hover { color: inherit; } /* the stroke is the hover signal */

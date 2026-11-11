@@ -1,0 +1,91 @@
+---
+/**
+ * Custom cursor markup. Rendered `hidden`; scripts/motion/cursor.ts reveals
+ * and drives it for mouse users who allow motion. Decorative only.
+ */
+import Dab from '../../assets/paint/dab-01.svg';
+---
+
+<div class="cursor" data-cursor-root data-state="default" data-visible="false" aria-hidden="true" hidden>
+  <span class="cursor__blob"></span>
+  <span class="cursor__dab"><Dab /></span>
+  <span class="cursor__label" data-cursor-label></span>
+</div>
+
+<style>
+  /* The root sits at the pointer (GSAP sets x/y); children are centred on it. */
+  .cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+  }
+  .cursor[hidden] { display: none; }
+  .cursor__blob,
+  .cursor__dab,
+  .cursor__label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    translate: -50% -50%;
+  }
+
+  /* One 96px circle, scaled per state (transform-only = cheap). */
+  .cursor__blob {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: var(--color-text);
+    border: 2px solid transparent;
+    scale: 0.11;
+    transition:
+      scale 0.45s var(--ease-out),
+      background-color 0.3s,
+      border-color 0.3s,
+      opacity 0.3s;
+  }
+  .cursor[data-state='hover'] .cursor__blob {
+    scale: 0.46;
+    background: transparent;
+    border-color: var(--color-text);
+  }
+  .cursor[data-state='view'] .cursor__blob,
+  .cursor[data-state='play'] .cursor__blob {
+    scale: 1;
+    background: var(--color-accent);
+  }
+  .cursor[data-state='brush'] .cursor__blob { scale: 0; }
+  .cursor.is-pressed .cursor__blob { scale: 0.08; }
+  .cursor[data-state='view'].is-pressed .cursor__blob,
+  .cursor[data-state='play'].is-pressed .cursor__blob { scale: 0.85; }
+
+  .cursor__label {
+    color: var(--color-on-accent);
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .cursor[data-state='view'] .cursor__label,
+  .cursor[data-state='play'] .cursor__label {
+    opacity: 1;
+    transition-delay: 0.12s;
+  }
+
+  .cursor__dab {
+    width: 44px;
+    color: var(--color-accent);
+    rotate: -18deg;
+    scale: 0;
+    transition: scale 0.35s var(--ease-out);
+  }
+  .cursor__dab :global(svg) { width: 100%; height: auto; }
+  .cursor[data-state='brush'] .cursor__dab { scale: 1; }
+
+  .cursor[data-visible='false'] { opacity: 0; }
+</style>

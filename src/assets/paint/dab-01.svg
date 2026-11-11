@@ -1,0 +1,6 @@
+<!-- PLACEHOLDER brush dab (cursor over painted elements). Replace with a
+     scanned single dab; keep fill="currentColor" so tokens colour it. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="currentColor" aria-hidden="true">
+  <path d="M14 34c-3-9 4-19 15-21 9-2 19 1 22 9 3 7-1 15-9 19-6 3-11 6-17 5-6-1-9-6-11-12z" opacity=".9"/>
+  <path d="M20 30c6-4 15-6 23-3M18 37c7-2 16-2 24 1" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".35"/>
+</svg>

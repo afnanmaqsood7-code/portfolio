@@ -44,7 +44,8 @@ role lens.
 | Types | TypeScript, strict, kept simple |
 | Deploy | Vercel (static) |
 
-Installed so far: `astro`, `@astrojs/mdx`; dev: `@astrojs/check`, `typescript`.
+Installed so far: `astro`, `@astrojs/mdx`, `gsap` 3.15, `lenis` 1.3; dev: `@astrojs/check`,
+`typescript`. (`three` arrives in step c.)
 
 ## Commands
 ```
@@ -157,7 +158,7 @@ with `history.replaceState`. Rules shared by build and browser in
 visible.** Lens affects the project grid only (default; revisit if asked).
 Buttons are real toggles (`aria-pressed`), announced via a live region.
 
-## Motion system — "award-level" brief (STATUS: approach proposed, AWAITING APPROVAL)
+## Motion system — "award-level" brief (STATUS: APPROVED, building step by step)
 Inspiration for feel and quality only: lusion.co, dversostudio.io, funtech.inc.
 **Never copy their code, assets or exact designs.** Everything is original and
 built around "product designer who is also a painter". Shaders are written
@@ -287,12 +288,30 @@ Initial JS on home before idle: Lenis + GSAP core/ScrollTrigger/SplitText
 `load` event + `requestIdleCallback`, home only, tier full only. Lighthouse
 mobile runs as tier lite (no three.js), target ≥ 90.
 
-### Build order (stop for review after each)
-(a) Lenis, cursor, micro interactions → (b) preloader + hero text →
-(c) WebGL hero → (d) WebGL gallery → (e) scroll storytelling →
-(f) page transitions → (g) performance + accessibility pass.
-Open question for Afnan: Phase 3 (case-study template) must exist before
-(f) and part 8; Phase 4 (Studio content) feeds the Studio strip in (e).
+### Build order (APPROVED — stop for review after each)
+(a) Lenis, cursor, micro interactions ✅ → (b) preloader + hero text →
+(c) WebGL hero → (d) WebGL gallery → **Phase 3** case-study template (+ part 8)
+→ (e) scroll storytelling → (f) page transitions → **Phase 4** Play, Studio,
+About → (g) performance + accessibility pass.
+
+### Decisions log
+- Native cursor is HIDDEN for mouse users in motion tiers (custom cursor
+  only); native cursor kept over text inputs/selects/contenteditable.
+- Every motion module uses event delegation on `document`, so it survives
+  ClientRouter page swaps without re-binding.
+- JS budget measured after step (a): everyone 2 KB gz (entry: sound, button
+  fill, tier); mouse + motion users +50 KB gz (GSAP+ScrollTrigger 27 KB,
+  Lenis 23 KB incl. shared bits). Phones / reduced motion load neither.
+- Lenis honours `html { scroll-padding-top }` — never add a manual header
+  offset to `lenis.scrollTo` (it double-counts).
+- Brush underline (`.brush-link`, `.prose a`) is CSS only and uses
+  `isolation: isolate` so the z-index:-1 stroke stays above section backgrounds.
+- Button fill: `.btn` contains `.btn__fill` + `.btn__label`; JS sets --fx/--fy
+  and toggles `.is-filled`; `html.has-button-fill` disables the no-JS hover.
+- Sound: header toggle `[data-sound-toggle]`, `aria-pressed`, localStorage
+  `am-sound`, AudioContext only after a gesture. Visible on all devices.
+- Cursor states via `data-cursor="view|play|brush"`; magnetic via
+  `data-magnetic="<strength>"` (buttons 0.25, project cards 0.04).
 
 ### Painted assets needed from Afnan (placeholders until then)
 Brush-stroke scans (PNG, transparent), a bristle/brush stamp texture, a
@@ -336,5 +355,5 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
       gallery layout for `format: showcase`.
 - [ ] Phase 4 — Play, Studio (lightbox), About.
 - [ ] Phase 5 — immersive motion layer, expanded to the award-level brief
-      (steps a–g above). Approach proposed; awaiting approval.
+      (steps a–g above). Approved. Step (a) done.
 - [ ] Phase 6 — perf / a11y / SEO pass, Vercel deploy steps.

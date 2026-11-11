@@ -49,6 +49,17 @@ const sizes = cardSizes(projects.length);
     const cards = Array.from(grid.querySelectorAll<HTMLLIElement>('.project-card'));
     const buttons = Array.from(toggle.querySelectorAll<HTMLButtonElement>('[data-lens-option]'));
 
+    // Sliding pill behind the pressed option (purely visual).
+    const options = toggle.querySelector<HTMLElement>('[data-lens-options]');
+    const indicator = options?.querySelector<HTMLElement>('.role-lens__indicator');
+    function moveIndicator() {
+      const pressed = buttons.find((b) => b.getAttribute('aria-pressed') === 'true');
+      if (!options || !indicator || !pressed) return;
+      indicator.style.width = `${pressed.offsetWidth}px`;
+      indicator.style.translate = `${pressed.offsetLeft}px 0`;
+      options.classList.add('has-indicator');
+    }
+
     function apply(lens: Lens, { announce }: { announce: boolean }) {
       // 1. Filter + sort. We move DOM nodes (not CSS `order`) so keyboard
       //    and screen-reader order always match what you see.
@@ -63,8 +74,9 @@ const sizes = cardSizes(projects.length);
         grid!.appendChild(c); // appendChild moves an existing node to the end
       });
 
-      // 2. Button state.
+      // 2. Button state + sliding indicator.
       buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lensOption === lens)));
+      moveIndicator();
 
       // 3. URL: ?lens=product|brand, no param for Everything. replaceState so
       //    toggling doesn't fill the back button with history entries.
@@ -85,6 +97,10 @@ const sizes = cardSizes(projects.length);
 
     toggle.hidden = false;
     apply(parseLens(new URLSearchParams(window.location.search).get('lens')), { announce: false });
+    // Enable the slide only after the first placement (no slide-in on load),
+    // and re-place it when fonts load or the layout changes size.
+    requestAnimationFrame(() => options?.classList.add('is-animated'));
+    if (options) new ResizeObserver(moveIndicator).observe(options);
   }
 
   // dataset keys are camelCase: data-order-product → dataset.orderProduct
