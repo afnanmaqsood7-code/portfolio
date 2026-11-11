@@ -36,12 +36,6 @@
   --color-focus: var(--accent);
   --color-selection: color-mix(in srgb, var(--accent) 22%, transparent);
 
-  /* Desk scene (home "Selected work"): calm sage panel; same pairs as the
-     page, so contrast is already verified. */
-  --color-scene: var(--paper-deep);
-  --color-on-scene: var(--ink);
-  --color-on-scene-muted: var(--ink-soft);
-  --color-scene-line: color-mix(in srgb, var(--ink) 9%, transparent);
 
   /* ---------- TYPOGRAPHY ---------- */
   --font-display: var(--font-display-src, Georgia, serif);

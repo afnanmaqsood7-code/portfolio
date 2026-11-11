@@ -80,15 +80,14 @@ src/
   components/
     layout/  Header, Footer
     ui/      Button, PageIntro, PaintStroke
-    home/    DeskScene, DeskIllustration, RoleLens, ProjectGrid, ProjectCard
+    home/    RoleLens, ProjectGrid, ProjectCard
     case-study/  SummaryCard, NextProject (Phase 3)
     mdx/     FullImage, ImagePair, Caption, PullQuote, MetricRow, VideoEmbed, PhoneFrame (Phase 3)
     studio/  StudioGrid, Lightbox (Phase 4)
   layouts/   BaseLayout, CaseStudyLayout (Phase 3)
   pages/     index, work/[slug], play, studio, about, 404
   scripts/   motion/ (capabilities, lifecycle, smooth-scroll, cursor, magnetic,
-             button-fill, sound, desk), webgl/fluid/ (step c, three.js)
-  utils/desk-devices.ts      # morphing device shapes for the illustration
+             button-fill, sound), webgl/fluid/ (step c, three.js)
   styles/    tokens.css, reset.css, grid.css, global.css
   utils/     seo.ts, projects.ts
 ```
@@ -101,7 +100,8 @@ src/
   (`--color-bg`, `--color-surface`, `--color-text`, `--color-text-muted`,
   `--color-border`, `--color-accent`, `--color-on-accent`, `--color-focus`).
 - Fonts: display **Fraunces** (`--font-display`), text **Inter**
-  (`--font-text`), mono **JetBrains Mono** (`--font-mono`) — placeholders.
+  (`--font-text`), mono **JetBrains Mono** (`--font-mono`, project list) —
+  placeholders.
 - Light: paper `#e9ece4`, paper-deep `#dde2d6`, ink `#1f2a24`, ink-soft
   `#4c5a51`, line `#c5ccbe`, accent (text-safe clay) `#a24826`, accent-ink
   `#fbf8f2`, clay-bright `#b4532f` (decorative only, never text).
@@ -290,70 +290,15 @@ No three.js. CSS scroll-driven animations (`animation-timeline: view()` /
 progress bar, inside `@supports` + reduced-motion guards (zero JS cost).
 Lenis still active for consistent scroll feel.
 
-### 9. Desk scene — animated illustration + morphing device (STATUS: BUILT)
-Scroll story in "Selected work" (`#work`), followed by the "All work" grid +
-lens (`#all-work`). **No three.js** — an inline, animated SVG.
-
-**Afnan's direction (latest wins):**
-1. Uses Afnan's chosen illustration (stock, FREE licence → credit required;
-   `site.illustrationCredit` in `src/site.config.ts`, shown in the footer.
-   TODO: exact credit text + link from the licence before launch). The source
-   EPS is NOT committed (licence: no redistribution of source files).
-2. Edited to Afnan's brief: woman wearing a HIJAB (clay wrap + drape over the
-   shoulders; hair/ponytail/ear removed, face profile kept), LONG SLEEVES
-   (forearm/upper arm recoloured), long trousers (ankles covered). Whole
-   illustration recoloured to the sage & clay palette.
-3. The device on the desk MORPHS while scrolling, one per project
-   (frontmatter `device: desktop | laptop | tablet | phone`; axivus phone,
-   bridging-divides laptop, glitchard desktop, brand-identity tablet,
-   web-saas-design desktop). Its screen shows each project's cover; switching
-   = ~0.3 s flicker (white flash, 2px jitter, crossfade).
-4. Latest tweaks (Afnan): NO panel background (no sage panel, no lines —
-   the scene sits on the page background); plant REMOVED from the
-   illustration; on desktop she ROLLS ACROSS THE SCREEN between projects
-   (desk and all: `SIDES = [0.3, 0.7]`, alternating per chapter, during the
-   same window as the device morph, tiny wheel bob), and each project's text
-   appears on the side she isn't on (`data-side` per chapter; text fades out
-   via `--roll` while she moves). Phones: she stays centred.
-   Dark mode: the illustration's dark parts use `--ill-ink` (#1f2a24 light,
-   #8fa093 dark) so the desk frame and trousers stay visible.
-5. Replaced earlier attempts (3D primitive characters, monitor-only). The
-   three.js desk files were deleted (git history: b96d860, the morph/3D
-   commit after it).
-
-**Files**
-- `src/components/home/DeskIllustration.astro` — the SVG (generated once
-  from the EPS via Ghostscript → pdftocairo → Python recolour/edit, now
-  hand-maintained). `data-ill="…"` hooks: desk, device{stand, bezel, screen
-  {screen-clip, screen-bg, img-a, img-b, scanlines, flash}, logo, keyboard,
-  mouse}, chair-legs, person, head (face + hijab wrap),
-  chair-shell, upper-arm, drape, forearm (sleeve + hand), seat. Renders the
-  first project's device + cover at build time (works without JS).
-- `src/utils/desk-devices.ts` — device shapes as parallelograms in the
-  illustration's perspective (`o`, `R`, `U`, radius, screen insets, keyboard
-  quad, stand/mouse/logo/keyboard opacity); `mixDevice` + `deviceGeometry`
-  (rounded-quad paths, screen image matrix, screen box). Shared by build and
-  browser.
-- `src/scripts/motion/desk.ts` — tier gate (runs for full AND lite; only
-  reduced motion stays static), ScrollTrigger progress/velocity, chapters +
-  lens + focus→scroll, morph (`MORPH_FROM = 0.62`), cover flicker, viewBox
-  "camera" (`baseView`: desktop content left of centre, phones centred;
-  push-in log-zooms to the screen box over the last 16%), idle life on the
-  GSAP ticker only while visible (typing rotation of the forearm around
-  (288,226) — only when a keyboard exists; drape sway; head turns ±5°
-  toward the cursor), click on screen → case study (`data-cursor="view"`).
-- `src/components/home/DeskScene.astro` — markup + static/live CSS (phones:
-  illustration top, chapter text bottom; desktop: text right, big mono label
-  bottom-left).
-
-**Mechanics kept:** CSS sticky pin; chapters are real, focusable HTML;
-`?motion=full|lite|none`; console
-`[motion] tier: … — reason`.
-
-**Tokens:** `--color-scene` = `--paper-deep`, `--color-on-scene` = `--ink`,
-`--color-on-scene-muted` = `--ink-soft`, `--color-scene-line` = ink 9%,
-`--font-mono` (JetBrains Mono placeholder). Frontmatter: optional `year`,
-`device` (default desktop).
+### 9. Desk scene — REMOVED (Afnan's decision)
+The "At the desk" scroll section was removed entirely at Afnan's request
+(after several iterations: 3D figure → morphing device → animated stock
+illustration with hijab). Do not re-add it unless she asks. Removed with it:
+DeskScene/DeskIllustration components, `scripts/motion/desk.ts`,
+`utils/desk-devices.ts`, the `device` frontmatter field, scene colour tokens
+and the illustration credit line (the stock illustration is no longer used).
+Kept: `--font-mono` (JetBrains Mono, for the project list effect) and the
+optional `year` frontmatter field. Full history is in git if ever needed.
 
 ### 10. Next effects (CHOSEN by Afnan from the dversostudio.io recording —
 build ORIGINAL versions in the painter style, never copies)
@@ -369,16 +314,16 @@ build ORIGINAL versions in the painter style, never copies)
 
 ### Performance budget
 Initial JS on home before idle: Lenis + GSAP core/ScrollTrigger/SplitText
-(~50 KB gz). The desk scene is SVG + GSAP (no three.js). three.js (~130 KB
+(~50 KB gz). three.js (~130 KB
 gz) is reserved for the hero fluid (step c): dynamic `import()` after the
 `load` event + `requestIdleCallback`, home only, tier full only. Lighthouse
 mobile runs as tier lite (no three.js), target ≥ 90.
 
 ### Build order (APPROVED — stop for review after each)
-(a) Lenis, cursor, micro interactions ✅ → **desk scene ✅ (animated illustration, morphing device)** →
+(a) Lenis, cursor, micro interactions ✅ → ~~desk scene~~ (built, then removed by Afnan) →
 **section 10 effects** (scramble, project list hover, sketchbook cards, painted grid) →
-(b) preloader + hero text → (c) WebGL hero (settles into the scene blue) →
-~~(d) WebGL gallery~~ (dropped; desk scene replaces it) → **Phase 3** case-study template (+ part 8)
+(b) preloader + hero text → (c) WebGL hero →
+(d) gallery effects → replaced by section 10 #2 (project list + hover image) → **Phase 3** case-study template (+ part 8)
 → (e) scroll storytelling → (f) page transitions → **Phase 4** Play, Studio,
 About → (g) performance + accessibility pass.
 
@@ -403,8 +348,8 @@ About → (g) performance + accessibility pass.
   scenes override with `document.dispatchEvent(new CustomEvent('cursor:state',
   { detail: 'view' | null }))`.
 - Lenis instance exposed as `window.__lenis` for lazily loaded modules.
-- Home order: hero → desk scene `#work` → All work grid `#all-work` → Play →
-  Studio → About → footer `#contact`.
+- Home order: hero → Selected work grid + role lens `#work` → Play → Studio →
+  About → footer `#contact`.
 
 ### Painted assets needed from Afnan (placeholders until then)
 Brush-stroke scans (PNG, transparent), a bristle/brush stamp texture, a
@@ -448,6 +393,6 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
       gallery layout for `format: showcase`.
 - [ ] Phase 4 — Play, Studio (lightbox), About.
 - [ ] Phase 5 — immersive motion layer, expanded to the award-level brief
-      (steps a–g above). Approved. Step (a) done. Desk scene done (animated
-   illustration, hijab, morphing device). Sage & clay palette applied.
+      (steps a–g above). Approved. Step (a) done. Desk scene built then removed.
+   Sage & clay palette applied.
 - [ ] Phase 6 — perf / a11y / SEO pass, Vercel deploy steps.

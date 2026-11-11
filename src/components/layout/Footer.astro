@@ -23,14 +23,7 @@ const year = new Date().getFullYear();
         <Button href={site.resume} variant="ghost" download>Resume (PDF)</Button>
       </div>
     </div>
-    <p class="footer-meta muted">
-      &copy; {year} {site.name}. Designed and painted by hand.
-      <span class="footer-credit">
-        {site.illustrationCredit.href
-          ? <a href={site.illustrationCredit.href} rel="noopener noreferrer">{site.illustrationCredit.text}</a>
-          : site.illustrationCredit.text}
-      </span>
-    </p>
+    <p class="footer-meta muted">&copy; {year} {site.name}. Designed and painted by hand.</p>
   </div>
 </footer>
 

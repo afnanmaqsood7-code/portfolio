@@ -14,12 +14,12 @@ const projects = await getFeaturedProjects();
 const sizes = cardSizes(projects.length);
 ---
 
-<section id="all-work" class="section work" aria-labelledby="work-title">
+<section id="work" class="section work" aria-labelledby="work-title">
   <div class="container stack">
     <div class="work__head">
       <div class="work__titles">
-        <p class="eyebrow">Index</p>
-        <h2 id="work-title">All work</h2>
+        <p class="eyebrow">Selected work</p>
+        <h2 id="work-title">Case studies</h2>
       </div>
       <RoleLens />
     </div>
@@ -85,7 +85,7 @@ const sizes = cardSizes(projects.length);
       else url.searchParams.set('lens', lens);
       history.replaceState(history.state, '', url);
 
-      // Let other parts of the page (the desk scene) follow the lens.
+      // Let other parts of the page follow the lens.
       document.dispatchEvent(new CustomEvent('lens:change', { detail: { lens } }));
 
       if (announce && status) {
