@@ -242,6 +242,29 @@ data. Built in Astro + plain CSS/TS (stack rule), `src/components/home/Hero.astr
 - Replaced: the earlier typewriter + mouse-scrub hero and the third-party
   "Mainframe" clip.
 
+### 2b. Scroll-driven infinite laptop loop (Afnan's request)
+`src/components/home/LaptopLoop.astro` (home, right after the hero). Source:
+Afnan's "Laptop Computer" clip (illustrated circular badge, typing hands,
+black bg, 10 s with grow-in/shrink-out). Prepared as
+`/public/loop/laptop-loop.mp4`: frames 90–241 (full-size typing section),
+cropped to the 490 px badge square → 480 px, tail cross-faded into head
+(K = 24 frames) so last → first is seamless (seam diff 1.29 < normal 1.44),
+H.264 CRF 30, keyframe every 2 frames, 4.27 s, ~560 KB. Still frame:
+`src/assets/loop/laptop-still.jpg`.
+- Scroll position → `turns = smoothY / 1400` (PX_PER_TURN). Phase = fractional
+  part: video time = phase × duration (queued seeks, rests when settled) and
+  badge rotation = phase × 360°. Down = forward/clockwise, up = backward;
+  infinite, no visible reset (clip seamless + 360° wrap).
+- Smoothing: rAF, frame-rate-independent lerp (EASE 0.1) toward scrollY;
+  idle when settled (no writes/seeks).
+- One fixed layer (z 15, pointer-events none, aria-hidden), badge clipped to
+  a circle (`border-radius: 50%`). Desktop: large on the right of the black
+  hero (min(36vw, 62vh, 560px), centred at 74% width), smoothstep-shrinks to
+  a docked 84 px badge bottom-right over the first 70% of the hero; stays
+  docked and turning for the rest of the page. Phones: docked from the start
+  (64 px).
+- Reduced motion / no JS: static still badge on the right of the hero only.
+
 ### 3. Custom cursor
 DOM element (not WebGL), transform-only, lerped via `gsap.quickTo`. States by
 `data-cursor`: `view` (projects, grows + "View"), `play` (videos, "Play"),

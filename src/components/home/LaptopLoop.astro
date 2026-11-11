@@ -1,0 +1,171 @@
+---
+/**
+ * Scroll-driven, infinite circular animation (Afnan's laptop badge).
+ *
+ * - Scrolling DOWN moves the clip forward and rotates the badge clockwise;
+ *   scrolling UP plays it backward and rotates it back. One full 360° turn =
+ *   one full loop of the clip, every PX_PER_TURN pixels of scroll.
+ * - Infinite and seamless: the clip (/public/loop/laptop-loop.mp4) was cut
+ *   from the typing section and its tail cross-faded into its head, so the
+ *   last frame flows into the first; rotation wraps at 360°, so neither the
+ *   picture nor the angle ever visibly resets.
+ * - Smooth: a rAF loop eases toward the scroll position (critically damped
+ *   lerp), and video seeks are queued so the decoder is never flooded.
+ * - Placement: large on the right of the black hero (desktop), then it
+ *   shrinks into a small badge docked bottom-right and keeps turning for the
+ *   rest of the page. Phones: docked from the start.
+ * - Decorative only (aria-hidden, pointer-events none).
+ * - Reduced motion / no JS: a still badge in the hero, no rotation.
+ */
+import { Image } from 'astro:assets';
+import still from '../../assets/loop/laptop-still.jpg';
+---
+
+<div class="loop" data-loop aria-hidden="true">
+  <div class="loop__badge" data-loop-badge>
+    <Image class="loop__still" src={still} alt="" width={480} height={480} loading="eager" />
+    <video class="loop__video" data-loop-video src="/loop/laptop-loop.mp4" muted playsinline preload="auto"></video>
+  </div>
+</div>
+
+<script>
+  import { getTier } from '../../scripts/motion/capabilities';
+
+  const PX_PER_TURN = 1400; // scroll distance for one 360° turn / one loop
+  const EASE = 0.1; // lerp per 60fps frame (lower = smoother, floatier)
+
+  const root = document.querySelector<HTMLElement>('[data-loop]');
+  if (root && getTier() !== 'none') init(root);
+
+  function init(el: HTMLElement) {
+    const badge = el.querySelector<HTMLElement>('[data-loop-badge]')!;
+    const video = el.querySelector<HTMLVideoElement>('[data-loop-video]')!;
+    const hero = document.querySelector<HTMLElement>('[data-hero]');
+    el.classList.add('loop--live');
+
+    // ---- Video seeking (queued: next seek only after the last one landed) ----
+    let target = 0;
+    let seeking = false;
+    const seek = (t: number) => {
+      target = t;
+      if (seeking || !video.duration) return;
+      if (Math.abs(video.currentTime - t) < 1 / 120) return; // already there: rest
+      seeking = true;
+      video.currentTime = target;
+    };
+    video.addEventListener('seeked', () => {
+      if (Math.abs(video.currentTime - target) > 1 / 60) video.currentTime = target;
+      else seeking = false;
+    });
+    video.addEventListener('loadeddata', () => el.classList.add('loop--ready'), { once: true });
+
+    // ---- Layout: where the badge sits in the hero vs. docked ----
+    const DOCK = { size: 84, margin: 20 }; // phones: 64px, see measure()
+    let vw = 0, vh = 0, heroH = 0, desktop = false;
+    const measure = () => {
+      vw = window.innerWidth;
+      vh = window.innerHeight;
+      heroH = hero?.offsetHeight ?? vh;
+      desktop = vw >= 768;
+      DOCK.size = desktop ? 84 : 64; // smaller on phones so it covers less text
+      DOCK.margin = desktop ? 20 : 14;
+    };
+    let dirty = true; // re-render needed (scroll moved or viewport resized)
+    measure();
+    window.addEventListener('resize', () => {
+      measure();
+      dirty = true;
+    });
+
+    // ---- Smoothed scroll → angle, clip time, position ----
+    let smooth = window.scrollY;
+    let last = performance.now();
+    const frame = (now: number) => {
+      const dt = Math.min((now - last) / 16.67, 4); // in 60fps frames
+      last = now;
+      const y = window.scrollY;
+      // Frame-rate independent ease toward the real scroll position.
+      smooth += (y - smooth) * (1 - Math.pow(1 - EASE, dt));
+      if (Math.abs(y - smooth) < 0.05) {
+        // Settled: nothing to do until the next scroll/resize.
+        if (smooth === y && !dirty) return void requestAnimationFrame(frame);
+        smooth = y;
+      }
+      dirty = false;
+
+      const turns = smooth / PX_PER_TURN; // can be any real number
+      const phase = turns - Math.floor(turns); // 0..1, wraps seamlessly
+      if (video.duration) seek(phase * video.duration);
+
+      // Hero → dock interpolation (desktop); phones are always docked.
+      const p = desktop ? Math.min(1, Math.max(0, smooth / (heroH * 0.7))) : 1;
+      const e = p * p * (3 - 2 * p); // smoothstep
+      const big = Math.min(vw * 0.36, vh * 0.62, 560);
+      const size = big + (DOCK.size - big) * e;
+      const x0 = vw * 0.74 - big / 2; // hero: right side, vertically centred
+      const y0 = heroH * 0.5 - big / 2;
+      const x1 = vw - DOCK.size - DOCK.margin;
+      const y1 = vh - DOCK.size - DOCK.margin;
+      const x = x0 + (x1 - x0) * e;
+      const yPos = y0 + (y1 - y0) * e;
+      badge.style.transform = `translate3d(${x.toFixed(1)}px, ${yPos.toFixed(1)}px, 0) rotate(${(phase * 360).toFixed(2)}deg)`;
+      badge.style.width = badge.style.height = `${size.toFixed(1)}px`;
+
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  }
+</script>
+
+<style>
+  /* Static (reduced motion / no JS): a still badge on the right of the hero. */
+  .loop {
+    position: absolute;
+    top: 50vh; /* the hero is the first, full-height section */
+    right: 6vw;
+    width: min(36vw, 62vh, 560px);
+    translate: 0 -50%;
+    z-index: 5;
+    pointer-events: none;
+    display: none;
+  }
+  @media (min-width: 48rem) {
+    .loop { display: block; }
+  }
+  .loop__badge {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden; /* clips the clip's black square to the badge circle */
+    background: #000;
+  }
+  .loop__still,
+  .loop__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .loop__video { opacity: 0; }
+
+  /* Live: one fixed layer; JS positions, sizes and rotates the badge. */
+  .loop:global(.loop--live) {
+    display: block;
+    position: fixed;
+    inset: 0;
+    width: auto;
+    translate: none;
+    z-index: 15; /* above page content, below the header */
+  }
+  .loop:global(.loop--live) .loop__badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 84px;
+    will-change: transform;
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.25);
+  }
+  .loop:global(.loop--ready) .loop__video { opacity: 1; }
+</style>
