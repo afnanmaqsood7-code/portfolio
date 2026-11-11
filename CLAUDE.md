@@ -24,7 +24,9 @@ role lens.
 - **Ask before adding any dependency not in the stack list below.**
 - Phase 5: explain the fluid-simulation approach and **wait for approval**
   before coding it.
-- Commit locally at the end of each phase (no remote configured yet).
+- Commit at the end of each phase and push to GitHub:
+  https://github.com/afnanmaqsood7-code/portfolio (branch `main`).
+- Afnan is on Windows (PowerShell). Give Windows-friendly run instructions.
 - No model identifiers in commits or code.
 
 ## Stack (approved)
@@ -41,7 +43,7 @@ role lens.
 | Types | TypeScript, strict, kept simple |
 | Deploy | Vercel (static) |
 
-Installed so far: `astro`, dev: `@astrojs/check`, `typescript`.
+Installed so far: `astro`, `@astrojs/mdx`; dev: `@astrojs/check`, `typescript`.
 
 ## Commands
 ```
@@ -115,11 +117,21 @@ Helpers `.stack`, `.cluster`, `.section`, `.eyebrow`, `.prose`,
 `timeline`, `team`, `tools` (string[]), `outcomes` (string[], short metric
 statements; 2–3 shown in summary card), `lens` (`product` | `brand` |
 `both`), `cover` (image, + `coverAlt` required), `featured` (bool), `order`
-(number), `prototype` (optional path under `/prototypes`).
+(number, position in Everything), `lensOrder` (optional `{product, brand}`
+position overrides), `format` (`case-study` default | `showcase`),
+`prototype` (optional path under `/prototypes`). Schema lives in
+`src/content.config.ts`; the `slug` field is the entry id and the URL.
 
-Placeholder projects: `axivus` (product), `bridging-divides` (product),
-`glitchard` (product), `brand-identity` (brand), `neighbourhood-coffee`
-(both). All featured.
+Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover.jpg`:
+1. `axivus` (product) — zero-to-one B2B automotive SaaS, mechanic mobile app, 24 flows
+2. `bridging-divides` (product) — TMU research platform, ORCID, researcher workflows
+3. `glitchard` (product) — AI MetaHuman comedian; Unreal, Convai, ElevenLabs; human in the loop
+4. `brand-identity` (brand, brand lens #1) — brand book, identity, packaging
+5. `web-saas-design` (both, **showcase format**, product #4 / brand #2) — curated
+   Figma web + product UI: SaaS landing pages, SaaS dashboards, e-commerce,
+   mobile app screens. Large images grouped by type + short process note
+   (research → wireframes → hi-fi). Replaced `neighbourhood-coffee` (removed at
+   Afnan's request).
 
 Case study page order: hero (title, cover, 30-second summary card: role,
 timeline, team, tools, 2–3 outcomes) → MDX body (context, problem, process,
@@ -136,7 +148,11 @@ Buttons: Product / Brand / Everything (default). URL `?lens=product|brand`
 - Brand (graphic + marketing designer roles) → `brand` + `both`
 - Everything → all, by `order`.
 Implementation: static HTML holds all cards; a small script filters/reorders
-and syncs the URL with `history.replaceState`. **Without JS every project is
+(moves DOM nodes, never CSS `order`, so tab order matches) and syncs the URL
+with `history.replaceState`. Rules shared by build and browser in
+`src/utils/lens.ts`, incl. `cardSizes(n)` so rows fill the 12-col grid
+(5 → half half third third third; 4 → halves; 3 → wide half half; 2 → halves;
+1 → wide). Unknown `?lens=` values fall back to Everything. **Without JS every project is
 visible.** Lens affects the project grid only (default; revisit if asked).
 Buttons are real toggles (`aria-pressed`), announced via a live region.
 
@@ -179,8 +195,10 @@ Scripts must be safe to re-run on `astro:page-load` (ClientRouter arrives in P5)
 
 ## Phase log
 - [x] Phase 1 — scaffold, tokens, base layout, header, footer, grid, light/dark.
-- [ ] Phase 2 — content collections, 5 placeholder projects, home + role lens.
-- [ ] Phase 3 — case study template + MDX components + PhoneFrame.
+- [x] Phase 2 — content collections, 5 placeholder projects, home + role lens.
+      `/work/[slug]` is a basic stub until Phase 3.
+- [ ] Phase 3 — case study template + MDX components + PhoneFrame + showcase
+      gallery layout for `format: showcase`.
 - [ ] Phase 4 — Play, Studio (lightbox), About.
 - [ ] Phase 5 — immersive motion layer (approval gate before fluid sim).
 - [ ] Phase 6 — perf / a11y / SEO pass, Vercel deploy steps.

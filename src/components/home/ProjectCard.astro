@@ -1,0 +1,96 @@
+---
+/**
+ * One project in the featured grid.
+ * The title is the only link; a stretched ::after makes the whole card
+ * clickable without wrapping block content in <a> (cleaner for screen
+ * readers: they hear the title once, not the whole card).
+ * The cover is decorative here (alt="") because the title already names
+ * the project; the case-study page uses `coverAlt`.
+ */
+import { Image } from 'astro:assets';
+import type { Project } from '../../utils/projects';
+import { lensPosition } from '../../utils/projects';
+import type { CardSize } from '../../utils/lens';
+
+interface Props {
+  project: Project;
+  size: CardSize;
+  eager?: boolean;
+}
+const { project, size, eager = false } = Astro.props;
+const { title, summary, role, lens, cover } = project.data; // lens → data attribute for the filter
+---
+
+<li
+  class="project-card"
+  data-lens={lens}
+  data-size={size}
+  data-order-everything={lensPosition(project, 'everything')}
+  data-order-product={lensPosition(project, 'product')}
+  data-order-brand={lensPosition(project, 'brand')}
+>
+  <div class="project-card__media">
+    <Image
+      src={cover}
+      alt=""
+      widths={[480, 800, 1200, 1600]}
+      sizes="(min-width: 64rem) 60vw, (min-width: 48rem) 50vw, 100vw"
+      loading={eager ? 'eager' : 'lazy'}
+      fetchpriority={eager ? 'high' : undefined}
+    />
+  </div>
+  <div class="project-card__body">
+    <p class="project-card__meta eyebrow">{role}</p>
+    <h3 class="project-card__title">
+      <a href={`/work/${project.id}/`}>{title}<span aria-hidden="true"> →</span></a>
+    </h3>
+    <p class="project-card__summary muted">{summary}</p>
+  </div>
+</li>
+
+<style>
+  .project-card {
+    position: relative;
+    display: grid;
+    gap: var(--space-xs);
+    align-content: start;
+  }
+  .project-card__media {
+    overflow: hidden;
+    border-radius: var(--radius-m);
+    background: var(--color-surface);
+    aspect-ratio: 4 / 3;
+  }
+  .project-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .project-card__body { display: grid; gap: var(--space-3xs); }
+  .project-card__title { font-size: var(--step-2); }
+  .project-card__title a { text-decoration: none; }
+  /* Stretch the link over the whole card. */
+  .project-card__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-m);
+  }
+  .project-card__title a:focus-visible { outline: none; }
+  .project-card__title a:focus-visible::after {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-offset);
+  }
+  .project-card:hover .project-card__title a { color: var(--color-accent); }
+  .project-card__summary { max-width: 52ch; }
+
+  /* Wide cards (a lone project on a row): image left, text right on desktop,
+     so a 12-column 4:3 image doesn't take over the whole screen. */
+  @media (min-width: 64rem) {
+    .project-card[data-size='wide'] {
+      grid-template-columns: 2fr 1fr;
+      gap: var(--grid-gap);
+      align-items: end;
+    }
+  }
+</style>

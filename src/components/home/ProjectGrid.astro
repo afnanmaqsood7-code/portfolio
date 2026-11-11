@@ -1,0 +1,119 @@
+---
+/**
+ * Featured work grid + role lens.
+ * Server output = the Everything lens (all featured projects, by `order`).
+ * The script then applies ?lens= from the URL. Same rules on both sides
+ * (src/utils/lens.ts), so layouts match.
+ */
+import ProjectCard from './ProjectCard.astro';
+import RoleLens from './RoleLens.astro';
+import { getFeaturedProjects } from '../../utils/projects';
+import { cardSizes } from '../../utils/lens';
+
+const projects = await getFeaturedProjects();
+const sizes = cardSizes(projects.length);
+---
+
+<section id="work" class="section work" aria-labelledby="work-title">
+  <div class="container stack">
+    <div class="work__head">
+      <div class="work__titles">
+        <p class="eyebrow">Selected work</p>
+        <h2 id="work-title">Case studies</h2>
+      </div>
+      <RoleLens />
+    </div>
+
+    <!-- Announces lens changes to screen readers. -->
+    <p class="visually-hidden" aria-live="polite" data-lens-status></p>
+
+    <ul role="list" class="grid work__grid" data-project-grid>
+      {projects.map((project, i) => (
+        <ProjectCard project={project} size={sizes[i]} eager={i === 0} />
+      ))}
+    </ul>
+  </div>
+</section>
+
+<script>
+  import { parseLens, matchesLens, cardSizes, LENS_OPTIONS, type Lens, type ProjectLens } from '../../utils/lens';
+
+  // Runs once per page load. (Phase 5 adds view transitions; this will then
+  // also be called on `astro:page-load`, so it must stay idempotent.)
+  function initLens() {
+    const grid = document.querySelector<HTMLUListElement>('[data-project-grid]');
+    const toggle = document.querySelector<HTMLElement>('[data-role-lens]');
+    const status = document.querySelector<HTMLElement>('[data-lens-status]');
+    if (!grid || !toggle) return;
+
+    const cards = Array.from(grid.querySelectorAll<HTMLLIElement>('.project-card'));
+    const buttons = Array.from(toggle.querySelectorAll<HTMLButtonElement>('[data-lens-option]'));
+
+    function apply(lens: Lens, { announce }: { announce: boolean }) {
+      // 1. Filter + sort. We move DOM nodes (not CSS `order`) so keyboard
+      //    and screen-reader order always match what you see.
+      const visible = cards
+        .filter((c) => matchesLens(c.dataset.lens as ProjectLens, lens))
+        .sort((a, b) => Number(a.dataset[`order${cap(lens)}`]) - Number(b.dataset[`order${cap(lens)}`]));
+      const sizes = cardSizes(visible.length);
+
+      cards.forEach((c) => (c.hidden = !visible.includes(c)));
+      visible.forEach((c, i) => {
+        c.dataset.size = sizes[i];
+        grid!.appendChild(c); // appendChild moves an existing node to the end
+      });
+
+      // 2. Button state.
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lensOption === lens)));
+
+      // 3. URL: ?lens=product|brand, no param for Everything. replaceState so
+      //    toggling doesn't fill the back button with history entries.
+      const url = new URL(window.location.href);
+      if (lens === 'everything') url.searchParams.delete('lens');
+      else url.searchParams.set('lens', lens);
+      history.replaceState(history.state, '', url);
+
+      if (announce && status) {
+        const label = LENS_OPTIONS.find((o) => o.id === lens)?.description ?? '';
+        status.textContent = `Showing ${visible.length} projects: ${label}.`;
+      }
+    }
+
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => apply(parseLens(b.dataset.lensOption), { announce: true })),
+    );
+
+    toggle.hidden = false;
+    apply(parseLens(new URLSearchParams(window.location.search).get('lens')), { announce: false });
+  }
+
+  // dataset keys are camelCase: data-order-product → dataset.orderProduct
+  const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+  initLens();
+</script>
+
+<style>
+  .work__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--space-s) var(--space-m);
+  }
+  .work__titles { display: grid; gap: var(--space-3xs); }
+  .work__grid { row-gap: var(--space-xl); }
+
+  /* Card spans by size (mobile: always full width via .grid > *). */
+  @media (min-width: 48rem) {
+    .work__grid > :global([data-size='wide']) { grid-column: span 8; }
+    .work__grid > :global([data-size='half']),
+    .work__grid > :global([data-size='third']) { grid-column: span 4; }
+  }
+  @media (min-width: 64rem) {
+    .work__grid > :global([data-size='wide']) { grid-column: span 12; }
+    .work__grid > :global([data-size='half']) { grid-column: span 6; }
+    .work__grid > :global([data-size='third']) { grid-column: span 4; }
+  }
+  .work__grid > :global([hidden]) { display: none; }
+</style>

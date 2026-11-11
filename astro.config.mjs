@@ -1,10 +1,12 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
+import mdx from '@astrojs/mdx';
 import { site } from './src/site.config.ts';
 
 // https://docs.astro.build/en/reference/configuration-reference/
 export default defineConfig({
   site: site.url,
+  integrations: [mdx()],
 
   // FONTS — PLACEHOLDER. To swap a typeface, change only `name` below.
   // Astro downloads and self-hosts the files at build time (no runtime

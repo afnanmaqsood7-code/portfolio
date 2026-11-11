@@ -1,16 +1,15 @@
 ---
 /**
- * Home. Phase 1 = static layout skeleton only.
- * Phase 2 replaces the placeholder tiles with the real project grid + role lens.
+ * Home. Hero → featured work (with role lens) → Play → Studio → About.
+ * Play/Studio previews are placeholders until Phase 4.
  * Phase 5 places the living-paint WebGL scene behind the hero.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PaintStroke from '../components/ui/PaintStroke.astro';
 import Button from '../components/ui/Button.astro';
+import ProjectGrid from '../components/home/ProjectGrid.astro';
 import { site } from '../site.config';
 
-// Placeholder tiles to preview the responsive grid. Real data in Phase 2.
-const workTiles = ['Axivus', 'Bridging Divides', 'Glitchard', 'Brand Identity', 'Neighbourhood Coffee'];
 ---
 
 <BaseLayout>
@@ -31,24 +30,8 @@ const workTiles = ['Axivus', 'Bridging Divides', 'Glitchard', 'Brand Identity', 
     </div>
   </section>
 
-  <!-- FEATURED WORK (placeholder grid) -->
-  <section id="work" class="section" aria-labelledby="work-title">
-    <div class="container stack">
-      <div class="section-head">
-        <p class="eyebrow">Selected work</p>
-        <h2 id="work-title">Case studies</h2>
-      </div>
-      <ul role="list" class="grid">
-        {workTiles.map((name, i) => (
-          <li class:list={['tile', i < 2 ? 'md:span-4 lg:span-6' : 'md:span-4 lg:span-4']}>
-            <div class="tile__media" />
-            <h3>{name}</h3>
-            <p class="muted">Placeholder — real card in Phase 2</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
+  <!-- FEATURED WORK + ROLE LENS -->
+  <ProjectGrid />
 
   <!-- PLAY + STUDIO PREVIEWS (placeholders) -->
   <section class="section" aria-labelledby="play-title">
@@ -113,9 +96,7 @@ const workTiles = ['Axivus', 'Bridging Divides', 'Glitchard', 'Brand Identity', 
   .hero__stroke { margin-top: calc(var(--space-s) * -1); }
   .hero__location { font-size: var(--step-0); }
 
-  .section-head { display: grid; gap: var(--space-3xs); }
 
-  .tile { display: grid; gap: var(--space-2xs); }
   .tile__media {
     aspect-ratio: 4 / 3;
     background: var(--color-surface);

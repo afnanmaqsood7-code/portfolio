@@ -1,0 +1,60 @@
+---
+/**
+ * Role lens toggle: Product / Brand / Everything.
+ * Rendered `hidden` and revealed by the lens script, so visitors without
+ * JavaScript never see buttons that don't work (they just see all work).
+ */
+import { LENS_OPTIONS, DEFAULT_LENS } from '../../utils/lens';
+---
+
+<div class="role-lens" role="group" aria-label="Show work for a role" data-role-lens hidden>
+  <span class="role-lens__label muted" aria-hidden="true">Show</span>
+  <div class="role-lens__options">
+    {LENS_OPTIONS.map((opt) => (
+      <button
+        type="button"
+        class="role-lens__btn"
+        data-lens-option={opt.id}
+        aria-pressed={opt.id === DEFAULT_LENS ? 'true' : 'false'}
+        title={opt.description}
+      >
+        {opt.label}
+      </button>
+    ))}
+  </div>
+</div>
+
+<style>
+  .role-lens {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs) var(--space-s);
+  }
+  .role-lens[hidden] { display: none; }
+  .role-lens__label { font-size: var(--step--1); }
+  .role-lens__options {
+    display: inline-flex;
+    padding: 4px;
+    gap: 4px;
+    border: var(--border-w) solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+  }
+  .role-lens__btn {
+    min-height: 44px;
+    padding: 0 var(--space-s);
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: var(--step--1);
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .role-lens__btn:hover { color: var(--color-text); }
+  .role-lens__btn[aria-pressed='true'] {
+    background: var(--color-text);
+    color: var(--color-bg);
+  }
+</style>

@@ -1,0 +1,37 @@
+---
+/**
+ * Case study route. PHASE 2 STUB: renders the basics so the home cards link
+ * somewhere real. Phase 3 replaces this with the full template (hero, 30-second
+ * summary card, MDX components, PhoneFrame, showcase format, next project).
+ */
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageIntro from '../../components/ui/PageIntro.astro';
+import { getProjects } from '../../utils/projects';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { title, summary, cover, coverAlt } = project.data;
+---
+
+<BaseLayout title={title} description={summary}>
+  <PageIntro eyebrow="Case study · full template in Phase 3" title={title} lede={summary} />
+  <div class="container">
+    <Image src={cover} alt={coverAlt} widths={[800, 1200, 1600]} sizes="100vw" loading="eager" class="cover" />
+    <article class="prose body">
+      <Content />
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .cover { width: 100%; border-radius: var(--radius-m); }
+  .body { padding-block: var(--space-2xl); }
+  .body :global(h2) { margin-top: var(--space-xl); }
+</style>
