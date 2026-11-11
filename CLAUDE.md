@@ -217,15 +217,23 @@ Built in Astro + plain CSS/TS (no React/Tailwind — stack rule), in
 `src/components/home/Hero.astro`:
 - Background `<video>` (muted, playsinline, preload auto, NEVER autoplays),
   absolute inside the hero (not fixed behind the whole site), object-fit
-  cover, object-position 70% center. Source = `site.heroVideo`: currently
-  the spec's third-party CloudFront clip (Afnan insisted on the exact
-  animation; risk noted: someone else's server/brand, may break). TODO:
-  replace with her own clip (H.264 MP4, ~1024–1280px wide, keyframe every
-  ~8 frames for smooth seeking: `-g 8 -keyint_min 8 -sc_threshold 0
-  -movflags +faststart -an`, aim < 1.5 MB).
+  cover. Source = `site.heroVideo` = **`/public/hero/afnan.mp4` — Afnan's
+  own clip** (Adobe Firefly: her in a white hijab and blouse with a long
+  skirt, full-length → close-up, 4 s, PURE BLACK background). Encoded:
+  H.264 1280×720, CRF 24, keyframe every 4 frames (`-g 4 -keyint_min 4
+  -sc_threshold 0 -movflags +faststart -an`), ~500 KB. The third-party
+  "Mainframe" clip is no longer used.
+- Because the video is black: hero background #000 and WHITE text/caret;
+  white pills (border white 25%, hover black with white text), white
+  outline pill. Desktop: video `translateX(22%)` so she stands right of the
+  text (black edges blend) + left-to-right black fade behind the text.
+  Phones: video centred (`object-position: 50%`) + bottom black fade.
 - Mouse scrub: `mousemove` on window, `delta = x - prevX`, target +=
   delta / innerWidth × 0.8 × duration, clamped; seeks queued via `seeked`
   (never flood). Starts at 0. Touch devices: scroll position scrubs instead.
+  Console logs `[hero] video loaded (…)` or `[hero] video failed to load`.
+  Testing note: python's http.server has no byte-range support, so video
+  seeking fails there — test with `astro dev`/`preview` or a range server.
 - Blurred intro (aria-hidden, blur 4px): `site.heroIntro` (2 lines).
 - Typewriter H1: `site.heroLine`, 38 ms/char after 600 ms, blinking caret
   (hidden when done). Screen readers get the full sentence (visually-hidden
@@ -234,8 +242,7 @@ Built in Astro + plain CSS/TS (no React/Tailwind — stack rule), in
   See product work (`/?lens=product#work`), See brand work, Download resume,
   About me; outline pill "Reach me: <email>" + copy icon → clipboard copy,
   "Copied" flash + live-region announcement (fallback: mailto).
-- Spec styling kept: black text over the video in both themes, white pills
-  (black on hover), white outline pill. Site fonts kept (the spec's Helvetica
+- Site fonts kept (the spec's Helvetica
   Now links are unofficial copies of a commercial font). Pills keep a 44px
   min height (accessibility rule).
 - Reduced motion: first video frame, full sentence, no caret, no scrub.

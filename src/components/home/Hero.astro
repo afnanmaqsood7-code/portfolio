@@ -3,14 +3,17 @@
  * Home hero, built to the "Mainframe" hero spec Afnan supplied, with her
  * content: a full-bleed background video that SCRUBS with horizontal mouse
  * movement (never autoplays), a blurred intro line, a typewriter H1 and pill
- * buttons (incl. copy-email). Text is black over the video, as in the spec.
+ * buttons (incl. copy-email). Afnan's video has a pure black background, so
+ * the hero is black with WHITE text; on desktop the video is shifted right so
+ * she stands beside the text (the black edges blend into the black hero).
  *
  * Accessibility / fallbacks:
  * - The H1 holds the full sentence for screen readers (typing is visual only).
  * - No JS: full sentence, first video frame, pills visible.
  * - Reduced motion: video stays on its first frame, no typing, no caret.
  * - Phones (no mouse): the video scrubs with scroll instead.
- * Video URL: site.heroVideo (third-party for now — see site.config.ts).
+ * Video: site.heroVideo → /public/hero/afnan.mp4 (keyframe every 4 frames
+ * so scrubbing is instant).
  */
 import { site } from '../../site.config';
 ---
@@ -187,12 +190,26 @@ import { site } from '../../site.config';
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 70% center;
+    object-position: 50% center; /* phones: keep her centred */
+  }
+  @media (min-width: 48rem) {
+    /* Desktop: slide her right of the text; black video edges = black hero. */
+    .hero__video { transform: translateX(22%); }
+  }
+  /* Phones: text sits at the bottom over her, so fade to black behind it. */
+  .hero__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, #000 0%, rgb(0 0 0 / 0.75) 38%, transparent 62%);
+  }
+  @media (min-width: 48rem) {
+    .hero__media::after { background: linear-gradient(to right, #000 0%, rgb(0 0 0 / 0.6) 30%, transparent 48%); }
   }
 
   /* ---------- Copy ---------- */
-  /* Spec: black text over the video in both light and dark mode. */
-  .hero__content { position: relative; max-width: 36rem; --hero-ink: #000; color: var(--hero-ink); }
+  /* White text on the black video, in both light and dark mode. */
+  .hero__content { position: relative; max-width: 36rem; --hero-ink: #fff; color: var(--hero-ink); }
   .hero__blur,
   .hero__type {
     font-family: var(--font-text);
@@ -248,7 +265,7 @@ import { site } from '../../site.config';
     min-height: 44px; /* touch target */
     margin: 0 0.2em 0.4em;
     padding: 0.3em 1.1rem;
-    border: 1px solid rgb(0 0 0 / 0.1);
+    border: 1px solid rgb(255 255 255 / 0.25);
     border-radius: 999px;
     background: #fff;
     color: #000;
@@ -267,8 +284,9 @@ import { site } from '../../site.config';
   .pill:focus-visible {
     background: #000;
     color: #fff;
+    border-color: rgb(255 255 255 / 0.6);
   }
-  /* Spec: white outline pill (sits over the darker part of the video). */
+  /* White outline pill (reads well on the black video). */
   .pill--outline {
     background: transparent;
     border-color: #fff;
@@ -285,9 +303,9 @@ import { site } from '../../site.config';
   .hero__location {
     margin-top: var(--space-s);
     font-size: var(--step--1);
-    color: var(--hero-ink);
+    color: rgb(255 255 255 / 0.8);
   }
-  /* Behind the video until it loads (and if it fails): a light neutral so
-     the black text stays readable in both themes. */
-  .hero { background: #f2f2f0; }
+  /* Same black as the video background, so it blends and the white text
+     stays readable before the video loads (or if it fails). */
+  .hero { background: #000; }
 </style>
