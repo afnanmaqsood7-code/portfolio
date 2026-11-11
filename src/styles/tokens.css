@@ -34,9 +34,18 @@
   --color-focus: var(--accent);
   --color-selection: color-mix(in srgb, var(--accent) 22%, transparent);
 
+  /* Desk scene (home "Selected work"): a deliberate bright studio moment.
+     PLACEHOLDER — swap here. White on #2f4bff = 5.9:1 (AA).
+     Muted text is white at 85% over the blue (verified ≥ 4.5:1). */
+  --color-scene: #2f4bff;
+  --color-on-scene: #ffffff;
+  --color-on-scene-muted: rgb(255 255 255 / 0.85);
+  --color-scene-line: rgb(255 255 255 / 0.16);
+
   /* ---------- TYPOGRAPHY ---------- */
   --font-display: var(--font-display-src, Georgia, serif);
   --font-text: var(--font-text-src, system-ui, sans-serif);
+  --font-mono: var(--font-mono-src, ui-monospace, monospace);
 
   /* Fluid type scale: clamp(min @ 360px, preferred, max @ 1440px) */
   --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.94rem);

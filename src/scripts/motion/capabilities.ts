@@ -40,7 +40,11 @@ function hasWebGL2(): boolean {
 let cached: Tier | null = null;
 export function getTier(): Tier {
   if (cached) return cached;
-  if (prefersReducedMotion()) cached = 'none';
+  // Testing aid: ?motion=full|lite|none forces a tier (e.g. to preview the
+  // phone fallback on a laptop). Harmless in production.
+  const forced = new URLSearchParams(location.search).get('motion');
+  if (forced === 'full' || forced === 'lite' || forced === 'none') cached = forced;
+  else if (prefersReducedMotion()) cached = 'none';
   else if (!mq('(min-width: 64rem)') || !hasFinePointer() || isLowPower() || !hasWebGL2()) cached = 'lite';
   else cached = 'full';
   document.documentElement.dataset.motion = cached; // for CSS hooks / debugging

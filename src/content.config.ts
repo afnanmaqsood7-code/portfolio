@@ -20,6 +20,8 @@ const projects = defineCollection({
       summary: z.string().max(220, 'Keep the summary to one or two sentences'),
       role: z.string(),
       timeline: z.string(),
+      // Optional big label in the home desk scene, e.g. '2025'. Falls back to '01', '02'…
+      year: z.string().optional(),
       team: z.string(),
       tools: z.array(z.string()).min(1),
       // Short metric statements. The summary card shows the first 3.

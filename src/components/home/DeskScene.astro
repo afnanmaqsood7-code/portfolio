@@ -1,0 +1,257 @@
+---
+/**
+ * "Selected work" desk scene (home). See CLAUDE.md → 9. Desk scene.
+ *
+ * DEFAULT (no JS, phones, low power, reduced motion, WebGL failure):
+ *   a blue panel with a static render of the scene. The project list itself
+ *   is the grid that follows this section.
+ * LIVE (desktop "full" tier, added by controller.ts as .desk--live):
+ *   sticky full-screen stage + one HTML chapter per featured project,
+ *   three.js lazy-loaded near the viewport.
+ */
+import { Image, getImage } from 'astro:assets';
+import { getFeaturedProjects, lensPosition } from '../../utils/projects';
+import poster from '../../assets/desk/desk-poster.jpg';
+
+const projects = await getFeaturedProjects();
+const chapters = await Promise.all(
+  projects.map(async (p, i) => ({
+    p,
+    // Same optimised image pipeline as the rest of the site, sized for the monitor.
+    cover: (await getImage({ src: p.data.cover, width: 1200, format: 'webp' })).src,
+    label: p.data.year ?? String(i + 1).padStart(2, '0'),
+  })),
+);
+
+// The real avatar is used only if public/models/avatar.glb existed at build
+// time (flag defined in astro.config.mjs), so there's never a 404 request.
+const hasModel = import.meta.env.HAS_AVATAR;
+---
+
+<section id="work" class="desk" data-desk aria-labelledby="desk-title">
+  <div class="desk__pin" data-desk-pin>
+    <div class="desk__stage" data-desk-stage data-model={hasModel ? 'true' : undefined}>
+      <Image
+        class="desk__poster"
+        src={poster}
+        alt="Illustration of Afnan at a desk, typing at a computer, with a jar of paint brushes and a small painting beside the monitor."
+        widths={[640, 960, 1400]}
+        sizes="(min-width: 64rem) 66vw, 100vw"
+        loading="lazy"
+      />
+    </div>
+
+    <div class="desk__ui container">
+      <header class="desk__head">
+        <p class="eyebrow">Selected work</p>
+        <h2 id="desk-title">At the desk</h2>
+        <p class="desk__intro">Products, brands and the odd painting. Here&rsquo;s what I&rsquo;ve been building.</p>
+      </header>
+
+      <p class="desk__label" data-desk-label aria-hidden="true">01</p>
+
+      <!-- One chapter per featured project. Real HTML: screen readers and
+           keyboard users get every project even while only one is shown. -->
+      <ol class="desk__chapters" role="list" data-desk-chapters>
+        {chapters.map(({ p, cover, label }) => (
+          <li
+            class="desk__chapter"
+            data-chapter
+            data-lens={p.data.lens}
+            data-order-everything={lensPosition(p, 'everything')}
+            data-order-product={lensPosition(p, 'product')}
+            data-order-brand={lensPosition(p, 'brand')}
+            data-cover={cover}
+            data-label={label}
+          >
+            <p class="desk__meta">{p.data.role}</p>
+            <h3 class="desk__title">{p.data.title}</h3>
+            <p class="desk__summary">{p.data.summary}</p>
+            <a class="brush-link desk__link" href={`/work/${p.id}/`}>
+              View case study<span class="visually-hidden">: {p.data.title}</span> <span aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initDesk } from '../../scripts/webgl/desk/controller';
+  void initDesk();
+</script>
+
+<style>
+  /* ---------- Shared: the blue studio panel ---------- */
+  .desk {
+    --color-text: var(--color-on-scene);
+    --color-text-muted: var(--color-on-scene-muted);
+    --color-accent: var(--paper); /* brush underline = cream paint on blue */
+    --color-focus: var(--color-on-scene);
+    color: var(--color-on-scene);
+    background: var(--color-scene);
+  }
+  .desk__pin {
+    position: relative;
+    background-color: var(--color-scene);
+    /* Thin horizontal lines; --line-offset moves them up with scroll. */
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--color-scene-line) 0 1px,
+      transparent 1px 72px
+    );
+    background-position: 0 var(--line-offset, 0px);
+  }
+
+  /* ---------- Default / fallback layout ---------- */
+  .desk__pin {
+    display: grid;
+    padding-block: var(--space-2xl);
+  }
+  .desk__ui { display: contents; }
+  .desk__head {
+    grid-row: 1;
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--container-pad);
+    display: grid;
+    gap: var(--space-2xs);
+  }
+  .desk__head h2 { font-size: var(--step-4); }
+  .desk__intro { color: var(--color-text-muted); max-width: 38ch; }
+  .desk__stage {
+    grid-row: 2;
+    width: 100%;
+    max-width: var(--container-max);
+    margin: var(--space-l) auto 0;
+    padding-inline: var(--container-pad);
+  }
+  .desk__poster {
+    width: 100%;
+    max-width: 56rem;
+    margin-inline: auto;
+    border-radius: var(--radius-l);
+  }
+  .desk__label,
+  .desk__chapters { display: none; }
+
+  /* ---------- Live layout (desktop, WebGL) ---------- */
+  .desk:global(.desk--live) {
+    /* ~1 viewport of scroll per chapter, plus the push into the monitor. */
+    height: calc(100svh + var(--chapters, 5) * 101svh);
+  }
+  .desk:global(.desk--live) .desk__pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+    padding: 0;
+    display: block;
+  }
+  .desk:global(.desk--live) .desk__stage {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    max-width: none;
+  }
+  .desk:global(.desk--live) .desk__stage :global(.desk__canvas) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.6s var(--ease-out);
+  }
+  .desk:global(.desk--live.desk--ready) .desk__stage :global(.desk__canvas) { opacity: 1; }
+  /* While three.js loads, the painted poster holds the scene's place. */
+  /* Matches where the live scene draws its first frame (the poster is a
+     crop of that frame), so the crossfade is near seamless. */
+  .desk:global(.desk--live) .desk__poster {
+    position: absolute;
+    top: 25.5%;
+    left: 9%;
+    width: 52.8%;
+    max-width: none;
+    border-radius: 0;
+    transition: opacity 0.6s var(--ease-out);
+  }
+  .desk:global(.desk--live.desk--ready) .desk__poster { opacity: 0; }
+
+  .desk:global(.desk--live) .desk__ui {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 1fr minmax(18rem, 26rem);
+    grid-template-rows: auto 1fr auto;
+    padding-block: calc(var(--header-h) + var(--space-l)) var(--space-l);
+    pointer-events: none; /* the canvas underneath gets the pointer… */
+    opacity: calc(1 - var(--push, 0) * 2.5); /* fade out during the push-in */
+  }
+  .desk:global(.desk--live) .desk__ui a { pointer-events: auto; } /* …except links */
+  .desk:global(.desk--live) .desk__head {
+    grid-column: 1;
+    grid-row: 1;
+    padding: 0;
+    margin: 0;
+  }
+  .desk:global(.desk--live) .desk__label {
+    display: block;
+    grid-column: 1;
+    grid-row: 3;
+    align-self: end;
+    font-family: var(--font-mono);
+    font-size: clamp(5rem, 3rem + 9vw, 12rem);
+    font-weight: 400;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    color: var(--color-on-scene);
+    opacity: 0.9;
+  }
+  .desk:global(.desk--live) .desk__chapters {
+    display: grid;
+    grid-column: 2;
+    grid-row: 1 / -1;
+    align-self: center;
+  }
+  /* All chapters share one cell; only the active one is visible. Inactive
+     ones stay focusable (opacity, not visibility) — focusing one scrolls
+     the page to it (controller.ts). */
+  .desk:global(.desk--live) .desk__chapter {
+    grid-area: 1 / 1;
+    display: grid;
+    gap: var(--space-xs);
+    align-content: center;
+    opacity: 0;
+    translate: 0 1.5rem;
+    transition:
+      opacity 0.45s var(--ease-out),
+      translate 0.6s var(--ease-out);
+  }
+  .desk:global(.desk--live) .desk__chapter :global(a) { pointer-events: none; }
+  .desk:global(.desk--live) .desk__chapter[data-active] {
+    opacity: 1;
+    translate: 0 0;
+    transition-delay: 0.08s;
+  }
+  .desk:global(.desk--live) .desk__chapter[data-active] :global(a) { pointer-events: auto; }
+  .desk__chapter[hidden] { display: none !important; }
+
+  .desk__meta {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .desk__title { font-size: var(--step-4); line-height: var(--leading-tight); }
+  .desk__summary { color: var(--color-text-muted); }
+  .desk__link {
+    justify-self: start;
+    margin-top: var(--space-2xs);
+    font-weight: 500;
+    color: var(--color-on-scene);
+  }
+</style>

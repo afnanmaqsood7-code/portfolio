@@ -5,6 +5,9 @@
  *   [data-cursor="play"]  → grows, shows "Play"   (videos)
  *   [data-cursor="brush"] → becomes a brush dab   (painted elements)
  *   links / buttons       → hollow ring
+ * Canvas scenes can't use data attributes per object, so they dispatch
+ *   document.dispatchEvent(new CustomEvent('cursor:state', { detail: 'view' }))
+ * and `detail: null` to release the override.
  * The markup lives in components/ui/Cursor.astro (hidden until this runs).
  * Purely decorative: aria-hidden, pointer-events: none.
  */
@@ -25,6 +28,8 @@ export function initCursor() {
   const toY = gsap.quickTo(el, 'y', { duration: 0.45, ease: 'power3.out' });
 
   let state: State = 'default';
+  let override: State | null = null; // set by canvas scenes via 'cursor:state'
+  let underPointer: State = 'default';
   const setState = (next: State) => {
     if (next === state) return;
     state = next;
@@ -50,8 +55,13 @@ export function initCursor() {
   document.addEventListener('pointerover', (e) => {
     const t = e.target as Element;
     const tagged = t.closest<HTMLElement>('[data-cursor]');
-    if (tagged) return setState(tagged.dataset.cursor as State);
-    setState(t.closest(INTERACTIVE) ? 'hover' : 'default');
+    underPointer = tagged ? (tagged.dataset.cursor as State) : t.closest(INTERACTIVE) ? 'hover' : 'default';
+    setState(override ?? underPointer);
+  });
+
+  document.addEventListener('cursor:state', (e) => {
+    override = ((e as CustomEvent<State | null>).detail ?? null) as State | null;
+    setState(override ?? underPointer);
   });
 
   // Hide when the pointer leaves the window; shrink on press for feedback.

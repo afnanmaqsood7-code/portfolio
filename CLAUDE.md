@@ -44,8 +44,9 @@ role lens.
 | Types | TypeScript, strict, kept simple |
 | Deploy | Vercel (static) |
 
-Installed so far: `astro`, `@astrojs/mdx`, `gsap` 3.15, `lenis` 1.3; dev: `@astrojs/check`,
-`typescript`. (`three` arrives in step c.)
+Installed so far: `astro`, `@astrojs/mdx`, `gsap` 3.15, `lenis` 1.3, `three` 0.187;
+dev: `@astrojs/check`, `typescript`, `@types/three` (types only, never shipped).
+`astro.config.mjs` has no `// @ts-check` (it imports `node:fs`; no @types/node).
 
 ## Commands
 ```
@@ -79,13 +80,16 @@ src/
   components/
     layout/  Header, Footer
     ui/      Button, PageIntro, PaintStroke
-    home/    Hero, RoleLens, ProjectGrid, ProjectCard, previews (Phase 2)
+    home/    DeskScene, RoleLens, ProjectGrid, ProjectCard (+ previews later)
     case-study/  SummaryCard, NextProject (Phase 3)
     mdx/     FullImage, ImagePair, Caption, PullQuote, MetricRow, VideoEmbed, PhoneFrame (Phase 3)
     studio/  StudioGrid, Lightbox (Phase 4)
   layouts/   BaseLayout, CaseStudyLayout (Phase 3)
   pages/     index, work/[slug], play, studio, about, 404
-  scripts/   lens.ts (P2), motion/ (P5), webgl/{capabilities.ts, fluid/, hover/} (P5)
+  scripts/   motion/ (capabilities, lifecycle, smooth-scroll, cursor, magnetic,
+             button-fill, sound), webgl/desk/ (desk scene), webgl/fluid/ (step c)
+  assets/desk/desk-poster.jpg  # static render of the desk scene
+public/models/            # avatar.glb goes here (see "Blender export")
   styles/    tokens.css, reset.css, grid.css, global.css
   utils/     seo.ts, projects.ts
 ```
@@ -282,62 +286,103 @@ No three.js. CSS scroll-driven animations (`animation-timeline: view()` /
 progress bar, inside `@supports` + reduced-motion guards (zero JS cost).
 Lenis still active for consistent scroll feel.
 
-### 9. Desk scene — scroll-driven 3D character (STATUS: PROPOSED, AWAITING APPROVAL)
-Brief: isometric three.js scene of Afnan at a desk, typing, pinned across the
-featured-work section. Inspired by "person at a desk" studio sites — original
-build, no copied code/assets.
-- **Model:** `/public/models/avatar.glb` via GLTFLoader + DRACOLoader +
-  MeshoptDecoder (all ship inside `three`, no new npm deps). Draco decoder
-  files self-hosted in `/public/draco/` (loaded only if the GLB is Draco
-  compressed). Until the GLB exists: stylised placeholder (figure, desk,
-  chair, monitor) from primitives, with procedurally animated typing.
-- **Clips:** AnimationMixer; all clip names logged to the console as
-  `[desk] clips: …`. Mapping in `src/scripts/webgl/desk/config.ts`
-  (`typing: ['Typing', …]`, `idle: ['Idle', …]`, case-insensitive match).
-- **Camera:** OrthographicCamera at an isometric angle; scroll slowly
-  orbits (~±15° around Y) and zooms (~1 → 1.25).
-- **Background:** CSS, not WebGL: token `--color-scene` (default bright blue
-  `#2f4bff`; white text 5.9:1 AA) + thin horizontal lines
-  (repeating-linear-gradient) whose offset moves up with scroll. Canvas is
-  transparent on top. Big per-chapter label in a monospace token font
-  (`--font-mono`, placeholder JetBrains Mono via Astro Fonts API): project
-  `year` (new optional frontmatter field) or "01", "02"…
-- **Pin + chapters:** ScrollTrigger pins the stage; section height =
-  chapters × ~100vh. Each featured project is a real HTML `<article>`
-  (title, summary, link) beside the stage; the active one is revealed as the
-  scroll enters its chapter. Inactive chapters stay in the DOM (screen
-  readers read all); focusing a chapter link scrolls to that chapter.
-  Chapters follow the active role lens.
-- **Typing speed:** mixer `timeScale` (or procedural frequency) eased
-  between ~0.8 (idle) and ~2.2 (fast scroll) from Lenis velocity.
-- **Monitor:** ShaderMaterial screen (unlit) holding the current project's
-  optimized cover (same URL as the HTML `<img>`); switch = ~250 ms flicker
-  (scanlines, noise, brightness pop, then crossfade).
-- **Ending:** camera pushes into the monitor (target → screen centre, zoom
-  ×~8) until the screen fills the viewport, then hands off to the project
-  grid below (grid + role lens stay as the one-click index).
-- **Lighting:** hemisphere + one soft directional light; soft contact
-  shadows as blurred blob textures under desk and chair (cheap), not
-  real-time shadow maps.
-- **Idle touches:** chair sways ±4°; head turns toward the cursor (clamped
-  ±15°, lerped) when the pointer is within the scene. GLB: applied to a bone
-  matched by name (`Head`, `mixamorigHead`, …) after `mixer.update`.
-- **Click monitor** → current project's case study (raycast; cursor shows
-  "View"). Keyboard/SR equivalent = the chapter's HTML link.
-- **Rendering:** shares the ONE renderer/canvas with the hero fluid; only
-  the visible scene renders. three.js + model lazy-loaded by
-  IntersectionObserver ~1 viewport before the section; painted placeholder
-  image in the stage until the first frame. Pauses off screen / hidden tab;
-  DPR ≤ 2.
-- **Fallbacks:** tier lite (mobile, low power, no WebGL) → no pin; a short
-  looping muted `playsinline` video of the scene (static poster if
-  Save-Data) above a normal list of project cards. Tier none (reduced
-  motion) → static render only, never autoplay. WebGL error → same as lite.
-- **Open questions for Afnan:** (1) scene then grid, or scene replaces the
-  grid on desktop; (2) drop step (d)'s WebGL ripple on the grid so the desk
-  scene is the work section's single big moment; (3) hero fluid now settles
-  into the blue scene colour instead of the first project image; (4) build
-  the desk scene next, before steps (b)/(c).
+### 9. Desk scene — scroll-driven 3D character (STATUS: APPROVED, BUILT with placeholder)
+Isometric three.js scene of Afnan at a desk, typing, across "Selected work".
+Inspired by "person at a desk" studio sites — original build, no copied code/assets.
+
+**Approved decisions (Afnan said "approved" → recommendations taken):**
+1. Desk scene = walkthrough of featured projects (`#work`), FOLLOWED by the
+   grid + role lens as the full index (`#all-work`, heading "All work").
+2. Step (d) WebGL ripple/RGB-shift on the grid is DROPPED; the grid keeps CSS
+   hovers. The desk scene is the work section's one big moment.
+3. Hero fluid (step c) settles into the blue scene colour, not into the first
+   project image.
+4. Desk scene built before steps (b)/(c).
+
+**Files**
+- `src/components/home/DeskScene.astro` — markup, fallback + live CSS.
+- `src/scripts/webgl/desk/controller.ts` — tier gate, scroll (ScrollTrigger
+  progress/velocity), chapters, label, lines, lens, focus, lazy load, pausing.
+  No three.js inside.
+- `src/scripts/webgl/desk/scene.ts` — renderer, camera, lights, blob shadows,
+  typing, head-follow, monitor flicker, push-in, click, GLB loading.
+- `src/scripts/webgl/desk/placeholder.ts` — primitive figure/desk/chair/
+  monitor + brush jar + small canvas; procedural typing.
+- `src/scripts/webgl/desk/screen-material.ts` — monitor shader.
+- `src/scripts/webgl/desk/config.ts` — **edit this for the real avatar**
+  (clip names, head bone names, screen mesh names, position/scale/rotation,
+  camera, typing speeds, push start).
+- `src/assets/desk/desk-poster.jpg` — static render (fallback + loading
+  placeholder). Re-render from the live scene after the real avatar arrives.
+
+**How it works**
+- Pin = CSS `position: sticky` on `.desk__pin` inside a tall section
+  (`100svh + chapters × 101svh`); ScrollTrigger (no `pin:`) supplies progress
+  + velocity. Chosen over `pin: true` because it needs no pin-spacer reflow,
+  stays correct when the lens changes the chapter count, and degrades to a
+  normal block without JS.
+- Progress 0 → `pushStart` (0.84) = chapters; then push-in: camera turns to
+  face the screen, centres, zooms (log-lerp) until the screen fills the view,
+  and moves in front of the head (ortho clip) — then the grid scrolls in.
+- Monitor: cover URL per chapter from `getImage()` (1200w webp); ~250 ms
+  flicker timeline (tear, noise, brightness pop, crossfade).
+- Typing speed: ScrollTrigger velocity → `minSpeed`…`maxSpeed`, eased; relaxes
+  back to min when scrolling stops. GLB: `action.timeScale`; placeholder:
+  procedural phase.
+- Head-follow: pointer within the stage (+160px) → yaw ±15°, pitch ±10°,
+  lerped. Bone heads: animated pose saved/restored each frame, offset on top.
+- Cursor: scene dispatches `cursor:state` ('view' / null) over the monitor;
+  click (moved < 6px + raycast hit) → active chapter's case study.
+- Chapters: real `<li>` per featured project; inactive ones opacity 0 but
+  focusable; focusing one scrolls to it. Follow the lens via `lens:change`
+  (dispatched by ProjectGrid).
+- Lazy: IntersectionObserver `rootMargin: 100%` → `import('./scene')`
+  (three ≈ 150 KB gz). Poster shows until the first frame (`.desk--ready`).
+  Render loop only while the section intersects and the tab is visible.
+  DPR ≤ 2; drops to 1 if average frame time > 25 ms over 120 frames.
+- Fallback (default markup): blue panel + poster; chapters hidden because
+  the grid below lists every project. Used for no-JS, tier lite/none and
+  WebGL errors (`desk--live` removed). TODO: optional looping video
+  (`/public/models/desk-loop.mp4` + `.webm`) for tier lite once a render of
+  the real avatar exists; reduced motion keeps the still.
+- GLB is used only if `public/models/avatar.glb` exists at BUILD time
+  (`import.meta.env.HAS_AVATAR`, defined in astro.config.mjs) → no 404s.
+  **Restart `npm run dev` after adding the file.** Console logs
+  `[desk] clips: …`, `[desk] head bone: …`, `[desk] playing clip: …`.
+- Draco decoder: bundled by three.js r187's DRACOLoader via
+  `new URL(..., import.meta.url)` (hashed, self-hosted, fetched only for
+  Draco files). Meshopt decoder ships in three too. No `/public/draco`.
+- Testing aid: `?motion=full|lite|none` forces a tier (capabilities.ts).
+
+**Tokens added:** `--color-scene` (#2f4bff), `--color-on-scene` (#fff, 5.9:1),
+`--color-on-scene-muted` (white 85%, 4.68:1), `--color-scene-line`,
+`--font-mono` (JetBrains Mono placeholder, astro.config.mjs). Optional
+frontmatter `year` → big label (else 01, 02…).
+
+**Blender export (for `avatar.glb`)** — Blender 4.x, File → Export → glTF 2.0:
+- Before export: metric units, unit scale 1; apply all transforms
+  (Ctrl+A → All Transforms) on armature + meshes; seated pose with the
+  object origin on the floor under the seat centre; character faces -Y in
+  Blender (exports as +Z; config `rotationY: π` turns it to the monitor).
+  Seat height ≈ 0.48 m, hands at keyboard height ≈ 0.78 m, ≈ 0.65 m in front
+  of the hips — or set `includesProps: true` and export your own desk/chair/
+  monitor with a screen mesh named `Screen` (UVs filling 0–1).
+- Actions named `Typing` and `Idle`, seamless loops (first = last frame),
+  2–4 s, 24 or 30 fps. Head bone named `Head` (or Mixamo `mixamorig:Head`).
+- Format: glTF Binary (.glb). Include: Selected Objects only; no cameras,
+  lights or custom properties. Transform: +Y Up ON.
+- Mesh: Apply Modifiers ON, UVs ON, Normals ON, Tangents OFF, Vertex Colors
+  OFF (unless used). Materials: Export; Images: WebP (or JPEG), ≤ 1024 px.
+- Armature: Use Rest Position ON, Export Deformation Bones Only ON, Include
+  All Bone Influences OFF (max 4 per vertex).
+- Animation: ON, Mode = Actions, Always Sample Animations ON, Sampling Rate 1,
+  Optimize Animation Size ON, Reset pose bones between actions ON, Limit to
+  Playback Range ON.
+- Compression: Draco ON, level 6, quantization position 14 / normal 10 /
+  texcoord 12 / colour 10 / generic 12. (Or skip Draco and run
+  `npx @gltf-transform/cli optimize in.glb avatar.glb --compress meshopt`
+  on your own machine — a CLI, not a site dependency.)
+- Budgets: ≤ 20k triangles, ≤ 60 bones, 1–2 materials, file ≤ 2–3 MB.
 
 ### Performance budget
 Initial JS on home before idle: Lenis + GSAP core/ScrollTrigger/SplitText
@@ -346,8 +391,9 @@ Initial JS on home before idle: Lenis + GSAP core/ScrollTrigger/SplitText
 mobile runs as tier lite (no three.js), target ≥ 90.
 
 ### Build order (APPROVED — stop for review after each)
-(a) Lenis, cursor, micro interactions ✅ → (b) preloader + hero text →
-(c) WebGL hero → (d) WebGL gallery → **Phase 3** case-study template (+ part 8)
+(a) Lenis, cursor, micro interactions ✅ → **desk scene ✅ (placeholder)** →
+(b) preloader + hero text → (c) WebGL hero (settles into the scene blue) →
+~~(d) WebGL gallery~~ (dropped; desk scene replaces it) → **Phase 3** case-study template (+ part 8)
 → (e) scroll storytelling → (f) page transitions → **Phase 4** Play, Studio,
 About → (g) performance + accessibility pass.
 
@@ -368,7 +414,12 @@ About → (g) performance + accessibility pass.
 - Sound: header toggle `[data-sound-toggle]`, `aria-pressed`, localStorage
   `am-sound`, AudioContext only after a gesture. Visible on all devices.
 - Cursor states via `data-cursor="view|play|brush"`; magnetic via
-  `data-magnetic="<strength>"` (buttons 0.25, project cards 0.04).
+  `data-magnetic="<strength>"` (buttons 0.25, project cards 0.04). Canvas
+  scenes override with `document.dispatchEvent(new CustomEvent('cursor:state',
+  { detail: 'view' | null }))`.
+- Lenis instance exposed as `window.__lenis` for lazily loaded modules.
+- Home order: hero → desk scene `#work` → All work grid `#all-work` → Play →
+  Studio → About → footer `#contact`.
 
 ### Painted assets needed from Afnan (placeholders until then)
 Brush-stroke scans (PNG, transparent), a bristle/brush stamp texture, a
@@ -412,5 +463,5 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
       gallery layout for `format: showcase`.
 - [ ] Phase 4 — Play, Studio (lightbox), About.
 - [ ] Phase 5 — immersive motion layer, expanded to the award-level brief
-      (steps a–g above). Approved. Step (a) done.
+      (steps a–g above). Approved. Step (a) done. Desk scene done (placeholder).
 - [ ] Phase 6 — perf / a11y / SEO pass, Vercel deploy steps.

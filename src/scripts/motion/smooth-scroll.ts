@@ -22,6 +22,9 @@ export function initSmoothScroll() {
     smoothWheel: true,
     syncTouch: false,
   });
+  // Exposed so lazily-loaded modules (e.g. the desk scene) can scroll
+  // without importing Lenis themselves.
+  (window as unknown as { __lenis?: Lenis }).__lenis = lenis;
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((time) => lenis!.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
