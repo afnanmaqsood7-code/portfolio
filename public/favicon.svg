@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <!-- PLACEHOLDER favicon: "A" monogram on a painted dot. Swap for your mark. -->
   <style>
-    .bg { fill: #a8401f; } .fg { fill: #fffaf4; }
-    @media (prefers-color-scheme: dark) { .bg { fill: #e48a64; } .fg { fill: #1a0f0a; } }
+    .bg { fill: #a24826; } .fg { fill: #fbf8f2; }
+    @media (prefers-color-scheme: dark) { .bg { fill: #e08a63; } .fg { fill: #1a0f0a; } }
   </style>
   <path class="bg" d="M32 3c15 0 29 11 29 28 0 17-12 30-29 30C15 61 3 49 3 32 3 15 17 3 32 3z"/>
   <path class="fg" d="M28.6 16h6.8l10 32h-6.3l-2.2-7.4H26.8L24.6 48h-6zm-.3 19.4h7.6L32 22.6z"/>

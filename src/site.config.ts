@@ -12,6 +12,9 @@ export const site = {
   email: 'hello@example.com', // TODO: public email
   linkedin: 'https://www.linkedin.com/in/your-handle', // TODO: real LinkedIn URL
   resume: '/resume/afnan-maqsood-resume.pdf', // TODO: drop the real PDF in /public/resume
+  /** Required by the desk illustration's free licence. TODO: exact wording +
+   *  link from the licence (e.g. "Illustration by <author> on <site>"). */
+  illustrationCredit: { text: 'Desk illustration: TODO credit from licence', href: '' },
 } as const;
 
 export const nav = [

@@ -2,40 +2,32 @@
 /**
  * "Selected work" desk scene (home). See CLAUDE.md → 9. Desk scene.
  *
- * DEFAULT (no JS, phones, low power, reduced motion, WebGL failure):
- *   a blue panel with a static render of the scene. The project list itself
- *   is the grid that follows this section.
- * LIVE (desktop "full" tier, added by controller.ts as .desk--live):
- *   sticky full-screen stage + one HTML chapter per featured project,
- *   three.js lazy-loaded near the viewport.
+ * DEFAULT (no JS, reduced motion): a sage panel with the illustration (first
+ * project on screen). The project list itself is the grid that follows.
+ * LIVE (any device that allows motion; scripts/motion/desk.ts adds
+ * .desk--live): sticky full-screen stage + one HTML chapter per featured
+ * project; the device morphs and the screen switches as you scroll.
  */
-import { Image, getImage } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import { getFeaturedProjects, lensPosition } from '../../utils/projects';
-import poster from '../../assets/desk/desk-poster.jpg';
+import DeskIllustration from './DeskIllustration.astro';
 
 const projects = await getFeaturedProjects();
 const chapters = await Promise.all(
   projects.map(async (p, i) => ({
     p,
-    // Same optimised image pipeline as the rest of the site, sized for the monitor.
-    cover: (await getImage({ src: p.data.cover, width: 1200, format: 'webp' })).src,
+    // Same optimised image pipeline as the rest of the site, sized for the screen.
+    cover: (await getImage({ src: p.data.cover, width: 1000, format: 'webp' })).src,
     label: p.data.year ?? String(i + 1).padStart(2, '0'),
   })),
 );
-
+const first = chapters[0];
 ---
 
 <section id="work" class="desk" data-desk aria-labelledby="desk-title">
   <div class="desk__pin" data-desk-pin>
     <div class="desk__stage" data-desk-stage>
-      <Image
-        class="desk__poster"
-        src={poster}
-        alt="Illustration of Afnan, wearing a hijab, working at her desk with one of her projects on the screen."
-        widths={[640, 960, 1400]}
-        sizes="(min-width: 64rem) 66vw, 100vw"
-        loading="lazy"
-      />
+      <DeskIllustration class="desk__ill" device={first?.p.data.device} cover={first?.cover} />
     </div>
 
     <div class="desk__ui container">
@@ -76,17 +68,13 @@ const chapters = await Promise.all(
 </section>
 
 <script>
-  import { initDesk } from '../../scripts/webgl/desk/controller';
+  import { initDesk } from '../../scripts/motion/desk';
   void initDesk();
 </script>
 
 <style>
-  /* ---------- Shared: the blue studio panel ---------- */
+  /* ---------- Shared: the sage studio panel ---------- */
   .desk {
-    --color-text: var(--color-on-scene);
-    --color-text-muted: var(--color-on-scene-muted);
-    --color-accent: var(--paper); /* brush underline = cream paint on blue */
-    --color-focus: var(--color-on-scene);
     color: var(--color-on-scene);
     background: var(--color-scene);
   }
@@ -94,15 +82,11 @@ const chapters = await Promise.all(
     position: relative;
     background-color: var(--color-scene);
     /* Thin horizontal lines; --line-offset moves them up with scroll. */
-    background-image: repeating-linear-gradient(
-      to bottom,
-      var(--color-scene-line) 0 1px,
-      transparent 1px 72px
-    );
+    background-image: repeating-linear-gradient(to bottom, var(--color-scene-line) 0 1px, transparent 1px 72px);
     background-position: 0 var(--line-offset, 0px);
   }
 
-  /* ---------- Default / fallback layout ---------- */
+  /* ---------- Default / static layout ---------- */
   .desk__pin {
     display: grid;
     padding-block: var(--space-2xl);
@@ -122,22 +106,17 @@ const chapters = await Promise.all(
   .desk__stage {
     grid-row: 2;
     width: 100%;
-    max-width: var(--container-max);
+    max-width: 46rem;
     margin: var(--space-l) auto 0;
     padding-inline: var(--container-pad);
   }
-  .desk__poster {
-    width: 100%;
-    max-width: 56rem;
-    margin-inline: auto;
-    border-radius: var(--radius-l);
-  }
+  .desk__ill { width: 100%; height: auto; display: block; }
   .desk__label,
   .desk__chapters { display: none; }
 
-  /* ---------- Live layout (desktop, WebGL) ---------- */
+  /* ---------- Live layout ---------- */
   .desk:global(.desk--live) {
-    /* ~1 viewport of scroll per chapter, plus the push into the monitor. */
+    /* ~1 viewport of scroll per chapter, plus the push into the screen. */
     height: calc(100svh + var(--chapters, 5) * 101svh);
   }
   .desk:global(.desk--live) .desk__pin {
@@ -151,79 +130,52 @@ const chapters = await Promise.all(
   .desk:global(.desk--live) .desk__stage {
     position: absolute;
     inset: 0;
+    max-width: none;
     margin: 0;
     padding: 0;
-    max-width: none;
   }
-  .desk:global(.desk--live) .desk__stage :global(.desk__canvas) {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 0.6s var(--ease-out);
-  }
-  .desk:global(.desk--live.desk--ready) .desk__stage :global(.desk__canvas) { opacity: 1; }
-  /* While three.js loads, the painted poster holds the scene's place. */
-  /* Matches where the live scene draws its first frame (the poster is a
-     crop of that frame), so the crossfade is near seamless. */
-  .desk:global(.desk--live) .desk__poster {
-    position: absolute;
-    top: 16.7%;
-    left: 4.2%;
-    width: 62.5%;
-    max-width: none;
-    border-radius: 0;
-    transition: opacity 0.6s var(--ease-out);
-  }
-  .desk:global(.desk--live.desk--ready) .desk__poster { opacity: 0; }
+  .desk:global(.desk--live) .desk__ill { width: 100%; height: 100%; }
 
   .desk:global(.desk--live) .desk__ui {
     position: absolute;
     inset: 0;
     display: grid;
-    grid-template-columns: 1fr minmax(18rem, 26rem);
+    grid-template-columns: 1fr;
     grid-template-rows: auto 1fr auto;
-    padding-block: calc(var(--header-h) + var(--space-l)) var(--space-l);
-    pointer-events: none; /* the canvas underneath gets the pointer… */
+    padding-block: calc(var(--header-h) + var(--space-s)) var(--space-m);
+    pointer-events: none; /* the illustration gets the pointer… */
     opacity: calc(1 - var(--push, 0) * 2.5); /* fade out during the push-in */
   }
   .desk:global(.desk--live) .desk__ui a { pointer-events: auto; } /* …except links */
-  .desk:global(.desk--live) .desk__head {
-    grid-column: 1;
-    grid-row: 1;
-    padding: 0;
-    margin: 0;
-  }
+  .desk:global(.desk--live) .desk__head { padding: 0; margin: 0; }
+  .desk:global(.desk--live) .desk__head .desk__intro { display: none; }
   .desk:global(.desk--live) .desk__label {
-    display: block;
-    grid-column: 1;
-    grid-row: 3;
-    align-self: end;
+    display: none; /* phones: no room; shown on desktop below */
+    grid-row: 1;
+    justify-self: end;
     font-family: var(--font-mono);
-    font-size: clamp(5rem, 3rem + 9vw, 12rem);
-    font-weight: 400;
+    font-size: clamp(2.5rem, 1.5rem + 6vw, 12rem);
     line-height: 0.85;
     letter-spacing: -0.04em;
     color: var(--color-on-scene);
-    opacity: 0.9;
+    opacity: 0.85;
   }
+  /* Phones: illustration on top, chapter text at the bottom. */
+  /* Header wraps to two rows on phones, hence the larger top offset. */
+  .desk:global(.desk--live) .desk__stage { bottom: 40%; top: 9rem; }
+  .desk:global(.desk--live) .desk__ui { padding-top: 7.5rem; }
   .desk:global(.desk--live) .desk__chapters {
     display: grid;
-    grid-column: 2;
-    grid-row: 1 / -1;
-    align-self: center;
+    grid-row: 3;
+    align-self: end;
   }
-  /* All chapters share one cell; only the active one is visible. Inactive
-     ones stay focusable (opacity, not visibility) — focusing one scrolls
-     the page to it (controller.ts). */
   .desk:global(.desk--live) .desk__chapter {
     grid-area: 1 / 1;
     display: grid;
-    gap: var(--space-xs);
-    align-content: center;
+    gap: var(--space-2xs);
+    align-content: end;
     opacity: 0;
-    translate: 0 1.5rem;
+    translate: 0 1rem;
     transition:
       opacity 0.45s var(--ease-out),
       translate 0.6s var(--ease-out);
@@ -237,6 +189,20 @@ const chapters = await Promise.all(
   .desk:global(.desk--live) .desk__chapter[data-active] :global(a) { pointer-events: auto; }
   .desk__chapter[hidden] { display: none !important; }
 
+  /* Desktop: illustration fills the stage (framed left), text on the right. */
+  @media (min-width: 64rem) {
+    .desk:global(.desk--live) .desk__stage { top: 0; bottom: 0; }
+    .desk:global(.desk--live) .desk__ui {
+      grid-template-columns: 1fr minmax(18rem, 26rem);
+      padding-block: calc(var(--header-h) + var(--space-l)) var(--space-l);
+    }
+    .desk:global(.desk--live) .desk__head { grid-column: 1; grid-row: 1; }
+    .desk:global(.desk--live) .desk__head .desk__intro { display: block; }
+    .desk:global(.desk--live) .desk__label { display: block; grid-column: 1; grid-row: 3; justify-self: start; align-self: end; }
+    .desk:global(.desk--live) .desk__chapters { grid-column: 2; grid-row: 1 / -1; align-self: center; }
+    .desk:global(.desk--live) .desk__chapter { align-content: center; gap: var(--space-xs); translate: 0 1.5rem; }
+  }
+
   .desk__meta {
     font-family: var(--font-mono);
     font-size: var(--step--1);
@@ -244,12 +210,10 @@ const chapters = await Promise.all(
     text-transform: uppercase;
     color: var(--color-text-muted);
   }
-  .desk__title { font-size: var(--step-4); line-height: var(--leading-tight); }
-  .desk__summary { color: var(--color-text-muted); }
-  .desk__link {
-    justify-self: start;
-    margin-top: var(--space-2xs);
-    font-weight: 500;
-    color: var(--color-on-scene);
+  .desk__title { font-size: var(--step-3); line-height: var(--leading-tight); }
+  .desk__summary { color: var(--color-text-muted); max-width: 46ch; }
+  .desk__link { justify-self: start; margin-top: var(--space-3xs); font-weight: 500; }
+  @media (min-width: 64rem) {
+    .desk__title { font-size: var(--step-4); }
   }
 </style>
