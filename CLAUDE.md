@@ -185,7 +185,7 @@ audio files, no library).
   `fluid/` (sim passes + display shader), `gallery/` (DOM-synced planes),
   `shaders/*.glsl`.
 - Tiers: **full** = desktop-class, WebGL2, no reduced motion → everything.
-  **lite** = small screens (< 64rem), low power (≤ 4 cores, deviceMemory ≤ 4,
+  **lite** = small screens (< 64rem), low power (≤ 2 cores, deviceMemory ≤ 2,
   Save-Data), or WebGL failure → no three.js; static painted hero image, CSS
   hover, Lenis off on touch, simple GSAP fades. **none** = reduced motion →
   no preloader, no smooth scroll, no cursor, no parallax/marquee/pinning;
