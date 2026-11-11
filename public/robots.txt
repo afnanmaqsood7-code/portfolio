@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+# Sitemap line added in Phase 6 once the real domain is set.

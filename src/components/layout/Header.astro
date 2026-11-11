@@ -1,0 +1,83 @@
+---
+/**
+ * Site header. No JavaScript: on narrow screens the nav wraps onto a
+ * second row instead of hiding behind a menu button, so every page is
+ * always one tap away (goal: best work within one click).
+ */
+import { nav, site } from '../../site.config';
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+// A nav item is "current" when we're on that page (or a child of it).
+const isCurrent = (href: string) => {
+  if (href.startsWith('/#')) return path.startsWith('/work');
+  return path === href || path.startsWith(`${href}/`);
+};
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href="/" class="wordmark" aria-label={`${site.name}, home`}>
+      {site.name}
+    </a>
+    <nav aria-label="Primary">
+      <ul role="list" class="nav-list">
+        {nav.map((item) => (
+          <li>
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+        <li>
+          <a href="#contact" class="nav-contact">Contact</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: var(--border-w) solid var(--color-border);
+  }
+  .site-header__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3xs) var(--space-m);
+    min-height: var(--header-h);
+    padding-block: var(--space-2xs);
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    letter-spacing: var(--tracking-tight);
+    text-decoration: none;
+  }
+  .nav-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-s);
+    font-size: var(--step--1);
+  }
+  .nav-list a {
+    display: inline-block;
+    padding-block: var(--space-2xs); /* ≥ 44px tap height with line-height */
+    text-decoration: none;
+  }
+  .nav-list a[aria-current='page'] {
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 2px;
+  }
+  .nav-contact {
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+</style>

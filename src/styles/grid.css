@@ -1,0 +1,62 @@
+/* ==========================================================================
+   Responsive layout primitives — mobile first.
+   .container  centred page width with fluid side gutters
+   .grid       4 cols (mobile) → 8 cols (≥ 48rem) → 12 cols (≥ 64rem)
+   .span-*     column spans; responsive variants: .md:span-*, .lg:span-*
+   (colon classes are escaped in CSS as .md\:span-*)
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+.grid {
+  --cols: 4;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: var(--grid-gap);
+}
+
+/* Default: every child spans the full row on mobile. */
+.grid > * { grid-column: span var(--cols); }
+
+.span-1 { grid-column: span 1; }
+.span-2 { grid-column: span 2; }
+.span-3 { grid-column: span 3; }
+.span-4 { grid-column: span 4; }
+.span-full { grid-column: 1 / -1; }
+
+@media (min-width: 48rem) {
+  .grid { --cols: 8; }
+  .md\:span-2 { grid-column: span 2; }
+  .md\:span-3 { grid-column: span 3; }
+  .md\:span-4 { grid-column: span 4; }
+  .md\:span-5 { grid-column: span 5; }
+  .md\:span-6 { grid-column: span 6; }
+  .md\:span-8 { grid-column: span 8; }
+}
+
+@media (min-width: 64rem) {
+  .grid { --cols: 12; }
+  .lg\:span-3 { grid-column: span 3; }
+  .lg\:span-4 { grid-column: span 4; }
+  .lg\:span-5 { grid-column: span 5; }
+  .lg\:span-6 { grid-column: span 6; }
+  .lg\:span-7 { grid-column: span 7; }
+  .lg\:span-8 { grid-column: span 8; }
+  .lg\:span-12 { grid-column: span 12; }
+}
+
+/* Simple stack: consistent vertical spacing between children. */
+.stack > * + * { margin-top: var(--stack-space, var(--space-m)); }
+
+/* Cluster: wrapping horizontal group (tags, links, buttons). */
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cluster-gap, var(--space-xs));
+  align-items: center;
+}

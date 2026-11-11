@@ -1,0 +1,29 @@
+---
+/**
+ * Decorative painted stroke from /src/assets/paint.
+ * Coloured by the accent token via currentColor. Always aria-hidden:
+ * it carries no meaning, so screen readers skip it.
+ */
+import Stroke from '../../assets/paint/stroke-01.svg';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<span class:list={['paint-stroke', className]} aria-hidden="true">
+  <Stroke />
+</span>
+
+<style>
+  .paint-stroke {
+    display: block;
+    color: var(--color-accent);
+    width: min(100%, 22rem);
+  }
+  .paint-stroke :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+</style>

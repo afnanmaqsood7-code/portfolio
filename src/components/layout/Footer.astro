@@ -1,0 +1,52 @@
+---
+/**
+ * Footer doubles as the site-wide contact block (#contact), so
+ * "Contact" in the header works from every page.
+ */
+import { site } from '../../site.config';
+import Button from '../ui/Button.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer" id="contact">
+  <div class="container grid">
+    <div class="md:span-5 lg:span-7 stack">
+      <p class="eyebrow">Contact</p>
+      <h2 class="footer-title">Let&rsquo;s make something people remember.</h2>
+      <p class="muted">{site.location}.</p>
+    </div>
+    <div class="md:span-3 lg:span-5 footer-links">
+      <a class="footer-email" href={`mailto:${site.email}`}>{site.email}</a>
+      <div class="cluster">
+        <Button href={site.linkedin} variant="ghost" external>LinkedIn</Button>
+        <Button href={site.resume} variant="ghost" download>Resume (PDF)</Button>
+      </div>
+    </div>
+    <p class="footer-meta muted">&copy; {year} {site.name}. Designed and painted by hand.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-block: var(--space-2xl) var(--space-l);
+    border-top: var(--border-w) solid var(--color-border);
+    background: var(--color-surface);
+  }
+  .footer-title { font-size: var(--step-3); max-width: 18ch; }
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-s);
+    align-self: end;
+  }
+  .footer-email {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    word-break: break-word;
+  }
+  .footer-meta {
+    margin-top: var(--space-xl);
+    font-size: var(--step--1);
+  }
+</style>

@@ -1,0 +1,50 @@
+---
+/** Link styled as a button. `variant="ghost"` for secondary actions. */
+interface Props {
+  href: string;
+  variant?: 'solid' | 'ghost';
+  download?: boolean;
+  external?: boolean;
+}
+const { href, variant = 'solid', download = false, external = false } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={['btn', `btn--${variant}`]}
+  download={download || undefined}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+>
+  <slot />
+  {external && <span class="visually-hidden"> (opens in a new tab)</span>}
+</a>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    min-height: 44px; /* touch target */
+    padding: var(--space-2xs) var(--space-s);
+    border-radius: 999px;
+    border: var(--border-w) solid var(--color-text);
+    font-size: var(--step--1);
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color var(--dur-fast), color var(--dur-fast);
+  }
+  .btn--solid {
+    background: var(--color-text);
+    color: var(--color-bg);
+  }
+  .btn--solid:hover {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+  .btn--ghost:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+</style>

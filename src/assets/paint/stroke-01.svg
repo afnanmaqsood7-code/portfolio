@@ -1,0 +1,6 @@
+<!-- PLACEHOLDER brush stroke. Replace with a scanned stroke (same filename,
+     or update the import). Uses currentColor so it takes the token colour. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 60" fill="currentColor" aria-hidden="true">
+  <path d="M6 34c40-14 92-20 150-19 46 1 80 8 128 7 58-1 104-12 160-13 54-1 98 4 146 12 6 1 6 9 0 10-52 6-100 5-150 3-56-2-100 6-158 8-50 2-86-5-132-5-52 0-98 7-142 11-8 1-10-11-2-14z" opacity=".92"/>
+  <path d="M40 30c60-6 120-7 180-4M260 28c70-3 140-6 210 0" stroke="currentColor" stroke-width="1.5" fill="none" opacity=".35"/>
+</svg>

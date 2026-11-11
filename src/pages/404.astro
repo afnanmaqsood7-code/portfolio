@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/ui/PageIntro.astro';
+import Button from '../components/ui/Button.astro';
+---
+
+<BaseLayout title="Page not found">
+  <PageIntro eyebrow="404" title="This canvas is blank." lede="The page you’re looking for doesn’t exist or has moved.">
+    <div><Button href="/">Back home</Button></div>
+  </PageIntro>
+</BaseLayout>

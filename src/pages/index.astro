@@ -1,0 +1,138 @@
+---
+/**
+ * Home. Phase 1 = static layout skeleton only.
+ * Phase 2 replaces the placeholder tiles with the real project grid + role lens.
+ * Phase 5 places the living-paint WebGL scene behind the hero.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PaintStroke from '../components/ui/PaintStroke.astro';
+import Button from '../components/ui/Button.astro';
+import { site } from '../site.config';
+
+// Placeholder tiles to preview the responsive grid. Real data in Phase 2.
+const workTiles = ['Axivus', 'Bridging Divides', 'Glitchard', 'Brand Identity', 'Neighbourhood Coffee'];
+---
+
+<BaseLayout>
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero__inner">
+      <p class="eyebrow">Product · Brand · Web · Marketing design</p>
+      <h1 id="hero-title" class="hero__title">
+        {site.name}
+        <span class="hero__positioning">{site.positioning}</span>
+      </h1>
+      <PaintStroke class="hero__stroke" />
+      <p class="hero__location muted">{site.location}</p>
+      <div class="cluster">
+        <Button href="#work">See selected work</Button>
+        <Button href={site.resume} variant="ghost" download>Resume (PDF)</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED WORK (placeholder grid) -->
+  <section id="work" class="section" aria-labelledby="work-title">
+    <div class="container stack">
+      <div class="section-head">
+        <p class="eyebrow">Selected work</p>
+        <h2 id="work-title">Case studies</h2>
+      </div>
+      <ul role="list" class="grid">
+        {workTiles.map((name, i) => (
+          <li class:list={['tile', i < 2 ? 'md:span-4 lg:span-6' : 'md:span-4 lg:span-4']}>
+            <div class="tile__media" />
+            <h3>{name}</h3>
+            <p class="muted">Placeholder — real card in Phase 2</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- PLAY + STUDIO PREVIEWS (placeholders) -->
+  <section class="section" aria-labelledby="play-title">
+    <div class="container grid">
+      <div class="md:span-3 lg:span-4 stack">
+        <p class="eyebrow">Play</p>
+        <h2 id="play-title">Games &amp; experiments</h2>
+        <p class="muted">Life Goes On tribute game, an AR/VR game and Glitchard clips.</p>
+        <a href="/play">Enter Play →</a>
+      </div>
+      <div class="md:span-5 lg:span-8 tile__media tile__media--wide" />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="studio-title">
+    <div class="container grid">
+      <div class="md:span-3 lg:span-4 stack">
+        <p class="eyebrow">Studio</p>
+        <h2 id="studio-title">Paintings, illustration &amp; motion</h2>
+        <p class="muted">The hand behind the pixels.</p>
+        <a href="/studio">Visit the Studio →</a>
+      </div>
+      <ul role="list" class="md:span-5 lg:span-8 studio-strip">
+        {[1, 2, 3, 4].map(() => <li class="tile__media tile__media--square" />)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ABOUT BLURB -->
+  <section class="section" aria-labelledby="about-title">
+    <div class="container grid">
+      <p class="eyebrow md:span-2 lg:span-3">About</p>
+      <div class="md:span-6 lg:span-7 stack">
+        <h2 id="about-title" class="about-lead">
+          5+ years designing products, brands and campaigns. MDM, Toronto Metropolitan University. BFA, Graphic Design. Painter and illustrator.
+        </h2>
+        <a href="/about">More about me →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    min-height: min(88svh, 52rem);
+    display: grid;
+    align-items: end;
+    padding-block: var(--space-2xl) var(--space-xl);
+  }
+  .hero__inner { display: grid; gap: var(--space-m); justify-items: start; }
+  .hero__title {
+    font-size: var(--step-6);
+    display: grid;
+    gap: var(--space-2xs);
+  }
+  .hero__positioning {
+    font-size: var(--step-3);
+    font-style: italic;
+    color: var(--color-text-muted);
+    line-height: var(--leading-snug);
+  }
+  .hero__stroke { margin-top: calc(var(--space-s) * -1); }
+  .hero__location { font-size: var(--step-0); }
+
+  .section-head { display: grid; gap: var(--space-3xs); }
+
+  .tile { display: grid; gap: var(--space-2xs); }
+  .tile__media {
+    aspect-ratio: 4 / 3;
+    background: var(--color-surface);
+    border: var(--border-w) solid var(--color-border);
+    border-radius: var(--radius-m);
+  }
+  .tile__media--wide { aspect-ratio: 16 / 9; }
+  .tile__media--square { aspect-ratio: 1; }
+
+  .studio-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--grid-gap);
+  }
+  @media (min-width: 64rem) {
+    .studio-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  .about-lead { font-size: var(--step-2); }
+</style>

@@ -1,0 +1,13 @@
+/* Modern minimal reset (after Andy Bell / Josh Comeau). */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -moz-text-size-adjust: none; -webkit-text-size-adjust: none; text-size-adjust: none; }
+body { min-height: 100svh; -webkit-font-smoothing: antialiased; }
+img, picture, video, canvas, svg, iframe { display: block; max-width: 100%; }
+img, video { height: auto; }
+input, button, textarea, select { font: inherit; color: inherit; }
+p, h1, h2, h3, h4, h5, h6 { overflow-wrap: break-word; }
+h1, h2, h3, h4 { text-wrap: balance; }
+p { text-wrap: pretty; }
+ul[role='list'], ol[role='list'] { list-style: none; padding: 0; }
+a:not([class]) { text-decoration-skip-ink: auto; }
