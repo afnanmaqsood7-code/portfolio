@@ -5,30 +5,14 @@
  * Phase 5 places the living-paint WebGL scene behind the hero.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PaintStroke from '../components/ui/PaintStroke.astro';
-import Button from '../components/ui/Button.astro';
+import Hero from '../components/home/Hero.astro';
 import ProjectGrid from '../components/home/ProjectGrid.astro';
-import { site } from '../site.config';
 
 ---
 
 <BaseLayout>
-  <!-- HERO -->
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="container hero__inner">
-      <p class="eyebrow">Product · Brand · Web · Marketing design</p>
-      <h1 id="hero-title" class="hero__title">
-        {site.name}
-        <span class="hero__positioning">{site.positioning}</span>
-      </h1>
-      <PaintStroke class="hero__stroke" />
-      <p class="hero__location muted">{site.location}</p>
-      <div class="cluster">
-        <Button href="#work">See selected work</Button>
-        <Button href={site.resume} variant="ghost" download>Resume (PDF)</Button>
-      </div>
-    </div>
-  </section>
+  <!-- HERO: scrubbable painting video + typewriter + pills -->
+  <Hero />
 
   <!-- SELECTED WORK + ROLE LENS -->
   <ProjectGrid />
@@ -75,28 +59,6 @@ import { site } from '../site.config';
 </BaseLayout>
 
 <style>
-  .hero {
-    min-height: min(88svh, 52rem);
-    display: grid;
-    align-items: end;
-    padding-block: var(--space-2xl) var(--space-xl);
-  }
-  .hero__inner { display: grid; gap: var(--space-m); justify-items: start; }
-  .hero__title {
-    font-size: var(--step-6);
-    display: grid;
-    gap: var(--space-2xs);
-  }
-  .hero__positioning {
-    font-size: var(--step-3);
-    font-style: italic;
-    color: var(--color-text-muted);
-    line-height: var(--leading-snug);
-  }
-  .hero__stroke { margin-top: calc(var(--space-s) * -1); }
-  .hero__location { font-size: var(--step-0); }
-
-
   .tile__media {
     aspect-ratio: 4 / 3;
     background: var(--color-surface);

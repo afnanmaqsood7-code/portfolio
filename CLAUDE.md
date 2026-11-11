@@ -210,28 +210,37 @@ image) but time-capped at ~1.1s, then the stroke wipes off to reveal the page.
 `aria-hidden`, pointer-transparent; any key/click skips it. Page renders
 underneath the whole time (no LCP blocking).
 
-### 2. WebGL hero (signature moment)
-- GPU stable fluids on half-float render targets: advect → pointer splats →
-  vorticity (low, for "wet paint" curls) → divergence → ~20 Jacobi pressure
-  iterations → gradient subtract → advect dye. Velocity grid ~128px, dye
-  ~512–1024px.
-- Splats are stamped with a brush texture from `/src/assets/paint` (bristle
-  streaks, not round blobs), sized by pointer speed. Touch supported.
-- Display shader maps dye channels to token colours (accent + ink + a second
-  paint colour read from CSS vars at init and on theme change), adds a
-  paper/canvas texture from `/src/assets/paint`, and a subtle wet sheen from
-  dye-gradient normals.
-- Depth: fluid rendered to a texture on a plane in a perspective camera plus
-  a painted foreground layer; both tilt a few degrees with the mouse (lerped).
-- Scroll (ScrollTrigger scrub, hero pinned briefly): camera dollies forward,
-  dissipation rises and splat force drops (paint calms), the first featured
-  cover is revealed through the dye as a mask, then the plane shrinks onto the
-  first project card's rect and hands off to the gallery plane (seamless).
-- Hero text is real HTML. SplitText splits name + positioning into chars
-  inside line masks; chars rise and settle with stagger. Screen readers get
-  the unsplit text (aria-label on the parent, chars aria-hidden).
-- Static fallback: a painted hero image (`/src/assets/paint/hero-fallback`),
-  served through astro:assets, always in the HTML; the canvas fades in over it.
+### 2. Hero — scrubbable video + typewriter (REPLACES the WebGL fluid hero)
+Afnan supplied a hero spec (written for an agency called "Mainframe", in
+React + Vite + Tailwind) and asked for its EXACT animation with HER data.
+Built in Astro + plain CSS/TS (no React/Tailwind — stack rule), in
+`src/components/home/Hero.astro`:
+- Background `<video>` (muted, playsinline, preload auto, NEVER autoplays),
+  absolute inside the hero (not fixed behind the whole site), object-fit
+  cover, object-position 70% center. Source = `site.heroVideo`: currently
+  the spec's third-party CloudFront clip (Afnan insisted on the exact
+  animation; risk noted: someone else's server/brand, may break). TODO:
+  replace with her own clip (H.264 MP4, ~1024–1280px wide, keyframe every
+  ~8 frames for smooth seeking: `-g 8 -keyint_min 8 -sc_threshold 0
+  -movflags +faststart -an`, aim < 1.5 MB).
+- Mouse scrub: `mousemove` on window, `delta = x - prevX`, target +=
+  delta / innerWidth × 0.8 × duration, clamped; seeks queued via `seeked`
+  (never flood). Starts at 0. Touch devices: scroll position scrubs instead.
+- Blurred intro (aria-hidden, blur 4px): `site.heroIntro` (2 lines).
+- Typewriter H1: `site.heroLine`, 38 ms/char after 600 ms, blinking caret
+  (hidden when done). Screen readers get the full sentence (visually-hidden
+  copy); the typed span is aria-hidden. No JS → full sentence.
+- Pills fade up (opacity + 8px) 400 ms after load, independent of typing:
+  See product work (`/?lens=product#work`), See brand work, Download resume,
+  About me; outline pill "Reach me: <email>" + copy icon → clipboard copy,
+  "Copied" flash + live-region announcement (fallback: mailto).
+- Spec styling kept: black text over the video in both themes, white pills
+  (black on hover), white outline pill. Site fonts kept (the spec's Helvetica
+  Now links are unofficial copies of a commercial font). Pills keep a 44px
+  min height (accessibility rule).
+- Reduced motion: first video frame, full sentence, no caret, no scrub.
+- Removed: the earlier PaintStroke hero and the WebGL fluid plan; no
+  three.js is used on the site at the moment (`three` still installed).
 
 ### 3. Custom cursor
 DOM element (not WebGL), transform-only, lerped via `gsap.quickTo`. States by
@@ -322,7 +331,7 @@ mobile runs as tier lite (no three.js), target ≥ 90.
 ### Build order (APPROVED — stop for review after each)
 (a) Lenis, cursor, micro interactions ✅ → ~~desk scene~~ (built, then removed by Afnan) →
 **section 10 effects** (scramble, project list hover, sketchbook cards, painted grid) →
-(b) preloader + hero text → (c) WebGL hero →
+(b) preloader → ~~(c) WebGL hero~~ (replaced by the video hero ✅) →
 (d) gallery effects → replaced by section 10 #2 (project list + hover image) → **Phase 3** case-study template (+ part 8)
 → (e) scroll storytelling → (f) page transitions → **Phase 4** Play, Studio,
 About → (g) performance + accessibility pass.
@@ -378,6 +387,7 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
 - Domain `https://www.example.com`, email `hello@example.com`, LinkedIn
   placeholder, resume placeholder path — all in `src/site.config.ts` (TODO).
 - Positioning line: "Product designer with a painter's hand." (TODO).
+- Hero copy: `site.heroIntro` / `site.heroLine` (TODO: Afnan's final words).
 - Lens: three options mapped as above; grid only.
 - Lightbox: hand-built on native `<dialog>` (no library).
 - Play: video + external links by default; iframe embeds where a web build exists.
@@ -394,5 +404,5 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
 - [ ] Phase 4 — Play, Studio (lightbox), About.
 - [ ] Phase 5 — immersive motion layer, expanded to the award-level brief
       (steps a–g above). Approved. Step (a) done. Desk scene built then removed.
-   Sage & clay palette applied.
+   Sage & clay palette applied. Video-scrub hero (Mainframe spec) done.
 - [ ] Phase 6 — perf / a11y / SEO pass, Vercel deploy steps.

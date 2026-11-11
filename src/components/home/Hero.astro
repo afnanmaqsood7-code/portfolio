@@ -1,0 +1,283 @@
+---
+/**
+ * Home hero, built to the "Mainframe" hero spec Afnan supplied, with her
+ * content: a full-bleed background video that SCRUBS with horizontal mouse
+ * movement (never autoplays), a blurred intro line, a typewriter H1 and pill
+ * buttons (incl. copy-email). Text is black over the video, as in the spec.
+ *
+ * Accessibility / fallbacks:
+ * - The H1 holds the full sentence for screen readers (typing is visual only).
+ * - No JS: full sentence, first video frame, pills visible.
+ * - Reduced motion: video stays on its first frame, no typing, no caret.
+ * - Phones (no mouse): the video scrubs with scroll instead.
+ * Video URL: site.heroVideo (third-party for now — see site.config.ts).
+ */
+import { site } from '../../site.config';
+---
+
+<section class="hero" aria-labelledby="hero-title" data-hero>
+  <div class="hero__media" aria-hidden="true">
+    <video class="hero__video" data-hero-video src={site.heroVideo} muted playsinline preload="auto"></video>
+  </div>
+
+  <div class="hero__content">
+    <p class="hero__blur" aria-hidden="true">{site.heroIntro[0]}<br />{site.heroIntro[1]}</p>
+
+    <h1 id="hero-title" class="hero__type">
+      <span class="visually-hidden">{site.heroLine}</span>
+      <span aria-hidden="true" data-type>{site.heroLine}</span><span class="hero__caret" aria-hidden="true" data-caret hidden></span>
+    </h1>
+
+    <div class="hero__pills">
+      <a class="pill" href="/?lens=product#work">See product work</a>
+      <a class="pill" href="/?lens=brand#work">See brand work</a>
+      <a class="pill" href={site.resume} download>Download resume</a>
+      <a class="pill" href="/about">About me</a>
+      <button type="button" class="pill pill--outline" data-copy-email={site.email}>
+        <span>Reach me: <span class="pill__email">{site.email}</span></span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="7.5" height="7.5" rx="1.2" stroke="currentColor" />
+          <path d="M8.5 2.5V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v5.5a1 1 0 0 0 1 1h.5" stroke="currentColor" />
+        </svg>
+        <span class="visually-hidden">, copy email address</span>
+      </button>
+      <p class="visually-hidden" aria-live="polite" data-copy-status></p>
+    </div>
+
+    <p class="hero__location">{site.location}</p>
+  </div>
+</section>
+
+<script>
+  import { getTier, hasFinePointer } from '../../scripts/motion/capabilities';
+
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  if (hero) initHero(hero);
+
+  function initHero(root: HTMLElement) {
+    const tier = getTier();
+    initCopy(root);
+    if (tier === 'none') return; // reduced motion: first video frame + full text
+    initTypewriter(root);
+    initVideo(root);
+  }
+
+  /** Copy email with feedback for sighted and screen-reader users. */
+  function initCopy(root: HTMLElement) {
+    const btn = root.querySelector<HTMLButtonElement>('[data-copy-email]');
+    const status = root.querySelector<HTMLElement>('[data-copy-status]');
+    if (!btn || !status) return;
+    btn.addEventListener('click', async () => {
+      const email = btn.dataset.copyEmail ?? '';
+      try {
+        await navigator.clipboard.writeText(email);
+        status.textContent = 'Email address copied.';
+        btn.classList.add('is-copied');
+        setTimeout(() => btn.classList.remove('is-copied'), 1600);
+      } catch {
+        // Clipboard blocked (e.g. insecure context): fall back to the mail app.
+        window.location.href = `mailto:${email}`;
+      }
+    });
+  }
+
+  /** Types the visible copy of the H1 (38 ms/char after 600 ms). */
+  function initTypewriter(root: HTMLElement, speed = 38, startDelay = 600) {
+    const el = root.querySelector<HTMLElement>('[data-type]');
+    const caret = root.querySelector<HTMLElement>('[data-caret]');
+    if (!el || !caret) return;
+    const text = el.textContent ?? '';
+    el.textContent = '';
+    caret.hidden = false;
+    let i = 0;
+    setTimeout(() => {
+      const id = setInterval(() => {
+        i += 1;
+        el.textContent = text.slice(0, i);
+        if (i >= text.length) {
+          clearInterval(id);
+          caret.hidden = true; // done: caret disappears
+        }
+      }, speed);
+    }, startDelay);
+  }
+
+  /**
+   * Painting video scrub. Mouse: horizontal movement moves the playhead
+   * (SENSITIVITY 0.8 of the duration per full screen width). Touch: scroll
+   * position drives it. Seeks are queued so we never flood the decoder:
+   * the next seek starts only after the previous one finished (`seeked`).
+   */
+  function initVideo(root: HTMLElement) {
+    const video = root.querySelector<HTMLVideoElement>('[data-hero-video]');
+    if (!video) return;
+    const SENSITIVITY = 0.8;
+
+    let target = 0;
+    let seeking = false;
+    const seek = (t: number) => {
+      target = Math.min(Math.max(t, 0), video.duration || 0);
+      if (seeking) return; // `seeked` will pick up the latest target
+      seeking = true;
+      video.currentTime = target;
+    };
+    video.addEventListener('seeked', () => {
+      if (Math.abs(video.currentTime - target) > 0.02) video.currentTime = target;
+      else seeking = false;
+    });
+
+
+    if (hasFinePointer()) {
+      let prevX: number | null = null;
+      window.addEventListener('mousemove', (e) => {
+        if (!video.duration) return;
+        if (prevX === null) {
+          prevX = e.clientX;
+          return;
+        }
+        const delta = e.clientX - prevX;
+        prevX = e.clientX;
+        seek(target + (delta / window.innerWidth) * SENSITIVITY * video.duration);
+      });
+    } else {
+      // Touch: the first screen of scrolling scrubs through the video.
+      window.addEventListener(
+        'scroll',
+        () => {
+          if (!video.duration) return;
+          const p = Math.min(1, window.scrollY / window.innerHeight);
+          seek(video.duration * p);
+        },
+        { passive: true },
+      );
+    }
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    min-height: calc(100svh - var(--header-h));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* phones: content at the bottom */
+    padding: 0 var(--container-pad) var(--space-xl);
+    isolation: isolate;
+  }
+  @media (min-width: 48rem) {
+    .hero { justify-content: center; padding-bottom: 0; }
+  }
+
+  /* ---------- Background painting ---------- */
+  .hero__media { position: absolute; inset: 0; z-index: -2; }
+  .hero__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% center;
+  }
+
+  /* ---------- Copy ---------- */
+  /* Spec: black text over the video in both light and dark mode. */
+  .hero__content { position: relative; max-width: 36rem; --hero-ink: #000; color: var(--hero-ink); }
+  .hero__blur,
+  .hero__type {
+    font-family: var(--font-text);
+    font-size: clamp(18px, 4vw, 26px);
+    font-weight: 400;
+    letter-spacing: normal;
+    color: var(--hero-ink);
+  }
+  .hero__blur {
+    margin-bottom: var(--space-s);
+    line-height: 1.3;
+    filter: blur(4px);
+    pointer-events: none;
+    user-select: none;
+  }
+  .hero__type {
+    margin-bottom: var(--space-s);
+    line-height: 1.35;
+    min-height: 2.7em;
+    text-wrap: pretty;
+  }
+  .hero__caret {
+    display: inline-block;
+    width: 2px;
+    height: 1.1em;
+    margin-left: 2px;
+    vertical-align: middle;
+    background: currentColor;
+    animation: hero-blink 1s step-end infinite;
+  }
+  .hero__caret[hidden] { display: none; }
+  @keyframes hero-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* ---------- Pills (fade up 400 ms after load, independent of typing) ---------- */
+  .hero__pills {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+    animation: hero-pills-in 0.4s ease 0.4s both;
+  }
+  @keyframes hero-pills-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 44px; /* touch target */
+    margin: 0 0.2em 0.4em;
+    padding: 0.3em 1.1rem;
+    border: 1px solid rgb(0 0 0 / 0.1);
+    border-radius: 999px;
+    background: #fff;
+    color: #000;
+    font: inherit;
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  }
+  @media (min-width: 40rem) {
+    .pill { font-size: 15px; padding-inline: 1.25rem; }
+  }
+  .pill:hover,
+  .pill:focus-visible {
+    background: #000;
+    color: #fff;
+  }
+  /* Spec: white outline pill (sits over the darker part of the video). */
+  .pill--outline {
+    background: transparent;
+    border-color: #fff;
+    color: #fff;
+  }
+  .pill--outline:hover,
+  .pill--outline:focus-visible {
+    background: #fff;
+    color: #000;
+  }
+  .pill__email { text-decoration: underline; text-underline-offset: 2px; }
+  .pill:global(.is-copied)::after { content: 'Copied'; font-size: 12px; opacity: 0.8; }
+
+  .hero__location {
+    margin-top: var(--space-s);
+    font-size: var(--step--1);
+    color: var(--hero-ink);
+  }
+  /* Behind the video until it loads (and if it fails): a light neutral so
+     the black text stays readable in both themes. */
+  .hero { background: #f2f2f0; }
+</style>
