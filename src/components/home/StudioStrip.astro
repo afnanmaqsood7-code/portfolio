@@ -14,7 +14,7 @@ import portraitSmoke from '../../assets/studio/portrait-smoke.jpg';
 // `video` (optional): a short silent loop in /public/studio that plays over
 // the still image. The still is the poster, so no-JS / reduced motion just
 // see the illustration.
-// Home shows four pieces; the full collection goes on /studio.
+// Four pieces; no separate Studio page (Afnan's call) — nav links to #studio.
 type Tile = { caption: string; src: ImageMetadata; alt: string; video?: string };
 const tiles: Tile[] = [
   {
@@ -45,11 +45,11 @@ const posters = await Promise.all(
 );
 ---
 
-<section class="studio" aria-labelledby="studio-title">
+<section id="studio" class="studio" aria-labelledby="studio-title">
   <div class="studio__inner">
     <div class="studio__head">
       <h2 id="studio-title" class="studio__title">From the <em class="accent">studio</em></h2>
-      <a class="brush-link" href="/studio">See all paintings &amp; illustration →</a>
+      <p class="studio__note">Paintings, illustration and animation, made by hand.</p>
     </div>
     <ul class="studio__grid" role="list">
       {tiles.map((t, i) => (
@@ -138,5 +138,6 @@ const posters = await Promise.all(
     cursor: pointer;
   }
   .studio__toggle[hidden] { display: none; }
+  .studio__note { color: var(--color-text-muted); }
   .studio__cap { margin-top: 0.6rem; font-style: italic; color: var(--color-text-muted); }
 </style>

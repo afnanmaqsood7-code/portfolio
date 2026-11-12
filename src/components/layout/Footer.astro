@@ -1,34 +1,54 @@
 ---
 /**
- * Contact + footer (all pages, #contact). Amy-style "Let's get in touch!"
- * block with a dverso-style row of small mono labels underneath.
+ * Contact + footer (all pages, #contact) — the one bold colour moment.
+ * Full-bleed deep sage with the painted grid behind (same clay cells as the
+ * hero, lighting up under the cursor), an "Open to work" status, a huge
+ * "Let's get in touch" headline, the email as a big link plus a Copy button,
+ * LinkedIn / Resume buttons, the footer nav, a meta row, and a giant outlined
+ * name as a sign-off.
+ * Contrast on sage: cream 9.0, on-sage-soft 6.3, peach accent 5.4 (all AA).
  */
 import { nav, site } from '../../site.config';
+import Button from '../ui/Button.astro';
 
 const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer" id="contact">
+<footer class="site-footer" id="contact" data-contact>
+  <canvas class="site-footer__grid" data-contact-grid aria-hidden="true"></canvas>
+
   <div class="site-footer__inner">
     <div class="contact">
-      <h2 class="contact__title">Let&rsquo;s get in touch!</h2>
-      <p class="contact__sub">Open to new opportunities in product, brand and web design.</p>
-      <ul role="list" class="contact__links">
-        <li><a class="brush-link" href={`mailto:${site.email}`}>{site.email}</a></li>
-        <li><a class="brush-link" href={site.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a></li>
-        <li><a class="brush-link" href={site.resume} download>Resume (PDF)</a></li>
-      </ul>
+      <p class="contact__status mono-label"><i class="contact__dot" aria-hidden="true"></i>{site.home.status} · {site.home.location}</p>
+      <h2 class="contact__title">Let&rsquo;s get in <em class="accent">touch</em></h2>
+      <p class="contact__sub">Hiring for product, brand, web or marketing design? I&rsquo;d love to hear about it.</p>
+
+      <div class="contact__mail">
+        <a class="contact__email" href={`mailto:${site.email}`}>
+          {site.email}<span class="contact__arrow" aria-hidden="true">↗</span>
+        </a>
+        <button type="button" class="contact__copy mono-label" data-copy={site.email} hidden>
+          <span data-copy-label>Copy email</span>
+        </button>
+        <span class="visually-hidden" role="status" data-copy-status></span>
+      </div>
+
+      <div class="contact__ctas">
+        <Button href={site.linkedin} external>LinkedIn ↗</Button>
+        <Button href={site.resume} variant="ghost" download>Resume ↓</Button>
+      </div>
     </div>
+
     <nav class="fnav" aria-label="Footer">
       <ul role="list">
         <li><a href="/">Home</a></li>
         {nav.filter((l) => l.label !== 'Contact').map((l) => <li><a href={l.href}>{l.label}</a></li>)}
-        <li><a href={site.resume} download>Resume ↓</a></li>
       </ul>
     </nav>
+
     <div class="meta" aria-label="Site details">
       <span>&copy; {year} {site.name}</span>
-      <span>Based in Ontario, Canada</span>
+      <span>{site.home.location}</span>
       <!-- Revealed by scripts/motion/sound.ts. Off by default. -->
       <button type="button" class="sound" data-sound-toggle aria-pressed="false" hidden>
         Sound <span aria-hidden="true" data-sound-state>off</span>
@@ -36,41 +56,145 @@ const year = new Date().getFullYear();
       <a href="#main">Back to top ↑</a>
     </div>
   </div>
+
+  <p class="signoff" aria-hidden="true">{site.name}</p>
 </footer>
 
+<script>
+  import { paintGrid } from '../../scripts/paint-grid';
+
+  const footer = document.querySelector<HTMLElement>('[data-contact]');
+  if (footer) {
+    // Painted grid across the whole block, lighter lines on sage.
+    paintGrid(footer, footer.querySelector<HTMLCanvasElement>('[data-contact-grid]')!, {
+      band: (w, h, cell) => {
+        const cols = Math.ceil(w / cell);
+        const rows = Math.ceil(h / cell);
+        return { cols, rows, x0: Math.round((w - cols * cell) / 2), y0: 0 };
+      },
+      line: '#fcf6e7',
+      lineAlpha: 0.08,
+      fill: '#b4532f',
+      maxAlpha: 0.95, // vivid clay, not a muddy blend
+      breathe: 1.2,
+    });
+
+    // Copy email (only shown where the Clipboard API exists).
+    const copy = footer.querySelector<HTMLButtonElement>('[data-copy]');
+    const label = footer.querySelector<HTMLElement>('[data-copy-label]');
+    const status = footer.querySelector<HTMLElement>('[data-copy-status]');
+    if (copy && label && status && navigator.clipboard) {
+      copy.hidden = false;
+      let t = 0;
+      copy.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(copy.dataset.copy!);
+          label.textContent = 'Copied ✓';
+          status.textContent = 'Email address copied';
+        } catch {
+          label.textContent = 'Press Ctrl+C';
+        }
+        clearTimeout(t);
+        t = window.setTimeout(() => { label.textContent = 'Copy email'; status.textContent = ''; }, 2000);
+      });
+    }
+  }
+</script>
+
 <style>
-  .site-footer { border-top: 1px solid var(--color-border); }
+  .site-footer {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--sage);
+    color: var(--on-sage);
+    /* Re-map semantic tokens so links, buttons and focus work on sage. */
+    --color-text: var(--on-sage);
+    --color-text-muted: var(--on-sage-soft);
+    --color-bg: var(--sage);
+    --color-border: rgb(252 246 231 / 0.2);
+    --color-accent: #f0b393; /* peach clay, 5.4:1 on sage */
+    --color-on-accent: #1d3127;
+    --color-focus: var(--on-sage);
+  }
+  .site-footer__grid { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
   .site-footer__inner {
     max-width: var(--container-max);
     margin-inline: auto;
-    padding: var(--space-2xl) var(--container-pad) var(--space-m);
+    padding: var(--space-3xl) var(--container-pad) var(--space-m);
   }
-  .contact { display: grid; gap: 0.5rem; justify-items: start; }
+
+  .contact { display: grid; justify-items: start; gap: var(--space-s); }
+  .contact__status { display: inline-flex; align-items: center; gap: 0.55rem; color: var(--on-sage); }
+  .contact__dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: #8fd3a5;
+    animation: contact-pulse 2.2s ease-out infinite;
+  }
+  @keyframes contact-pulse {
+    0% { box-shadow: 0 0 0 0 rgb(143 211 165 / 0.6); }
+    70%, 100% { box-shadow: 0 0 0 0.55rem rgb(143 211 165 / 0); }
+  }
   .contact__title {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.6rem);
-    letter-spacing: 0;
+    font: 500 clamp(3rem, 0.9rem + 8.6vw, 9rem) / 0.92 var(--font-text);
+    letter-spacing: -0.05em;
+    color: var(--on-sage);
+    text-wrap: balance;
   }
-  .contact__sub { font-style: italic; color: var(--color-text-muted); }
-  .contact__links {
+  .contact__title .accent { color: var(--color-accent); letter-spacing: -0.02em; }
+  .contact__sub { max-width: 34rem; font-size: var(--step-1); color: var(--on-sage-soft); }
+
+  .contact__mail {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.25rem 2rem;
+    align-items: center;
+    gap: 0.5rem 1.25rem;
     margin-top: var(--space-s);
   }
-  .contact__links a { display: inline-flex; align-items: center; min-height: 44px; }
-  .fnav { margin-top: var(--space-xl); }
+  .contact__email {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35em;
+    min-height: 44px;
+    font: 500 clamp(1.3rem, 0.7rem + 2.8vw, 3.2rem) / 1.1 var(--font-text);
+    letter-spacing: -0.035em;
+    color: var(--on-sage);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    overflow-wrap: anywhere;
+  }
+  .contact__email:hover { color: var(--color-accent); }
+  .contact__arrow { display: inline-block; transition: transform 0.35s var(--ease-out); }
+  .contact__email:hover .contact__arrow,
+  .contact__email:focus-visible .contact__arrow { transform: translate(0.12em, -0.12em); }
+  .contact__copy {
+    min-height: 44px;
+    padding: 0 1rem;
+    border: 1px solid rgb(252 246 231 / 0.4);
+    border-radius: 999px;
+    background: none;
+    color: var(--on-sage);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .contact__copy[hidden] { display: none; }
+  .contact__copy:hover { background: var(--on-sage); color: var(--sage); }
+  .contact__ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: var(--space-2xs); }
+
+  .fnav { margin-top: var(--space-2xl); }
   .fnav ul { display: flex; flex-wrap: wrap; gap: 0 clamp(1rem, 0.5rem + 2vw, 2.5rem); }
   .fnav a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
     font: 400 clamp(1.15rem, 1rem + 0.6vw, 1.5rem) var(--font-display);
-    color: var(--color-text);
+    color: var(--on-sage);
     text-decoration: none;
   }
-  .fnav a:hover { font-style: italic; color: var(--color-text); }
+  .fnav a:hover { font-style: italic; color: var(--on-sage); }
   .sound {
     min-height: 44px;
     margin-block: -12px;
@@ -85,7 +209,7 @@ const year = new Date().getFullYear();
   }
   .sound[hidden] { display: none; }
   .sound:hover,
-  .sound[aria-pressed='true'] { color: var(--color-text); }
+  .sound[aria-pressed='true'] { color: var(--on-sage); }
   .meta {
     display: flex;
     flex-wrap: wrap;
@@ -97,8 +221,26 @@ const year = new Date().getFullYear();
     font: 400 0.75rem var(--font-mono);
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    color: var(--on-sage-soft);
   }
   .meta a { color: inherit; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; margin-block: -12px; }
-  .meta a:hover { color: var(--color-text); }
+  .meta a:hover { color: var(--on-sage); }
+
+  /* Giant outlined name, cropped by the bottom edge: a quiet sign-off. */
+  .signoff {
+    margin: var(--space-l) 0 -0.18em;
+    font: 600 13.2vw / 0.9 var(--font-text);
+    letter-spacing: -0.06em;
+    white-space: nowrap;
+    text-align: center;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(252 246 231 / 0.45);
+    user-select: none;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact__dot { animation: none; }
+    .contact__arrow { transition: none; }
+  }
 </style>

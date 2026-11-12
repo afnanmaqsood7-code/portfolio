@@ -1,66 +1,86 @@
 ---
 /**
- * Home hero — the merged direction (dversostudio.io × itsamy.ca).
- * - Cream page; a hairline GRID across the middle whose cells light up in
- *   clay where the cursor passes and slowly fade (our "painted grid").
- * - A huge OUTLINED "afnan" wordmark over the grid (dverso).
- * - "I am ___" typing rotating words in Lora (Amy).
- * - Bottom-left H1: "Hi, I'm Afnan Maqsood" eyebrow + a big sans headline
- *   with italic serif accent words (dverso). Corner mono labels with a live
- *   Ontario clock and "Scroll down to discover" + a clay square.
- * Accessibility: the H1 is real text; the wordmark, grid and typing are
- * decorative (the full "I am …" sentence is in visually-hidden text).
- * Reduced motion: static grid with a few clay cells, first word, no caret.
+ * Home hero — name first, profession second, painting last.
+ * - Centred stack: mono "Hi, I'm" → big solid "Afnan Maqsood" (H1) → role
+ *   line "<Product> designer" whose first word rotates (Lora italic) →
+ *   short professional intro → two buttons.
+ * - The painted grid is a SMALL band hugging the name (not the whole hero):
+ *   cells light clay under the cursor and fade; one breathes every ~1.6 s.
+ * - Bottom row (mono): "Based in Canada" · "Open to work" · scroll link.
+ * Accessibility: H1 = name + role (visually-hidden role text); the rotating
+ * word is aria-hidden with the full list in visually-hidden text.
+ * Reduced motion: static grid with a few cells, first role word, no caret.
  */
 import { site } from '../../site.config';
-import Accent from '../ui/Accent.astro';
+import Button from '../ui/Button.astro';
 
-const words = site.home.words;
+const { roles, intro, location, status } = site.home;
+const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`;
 ---
 
 <section class="hero" aria-labelledby="hero-title" data-hero>
   <canvas class="hero__grid" data-hero-grid aria-hidden="true"></canvas>
 
-  <div class="hero__center" aria-hidden="true">
-    <div class="hero__word">afnan</div>
-    <p class="hero__type">I am <span class="hero__typed" data-typed data-words={JSON.stringify(words)}>{words[0]}</span><span class="hero__caret" data-caret></span></p>
+  <div class="hero__inner">
+    <div class="hero__id" data-hero-name>
+      <p class="hero__hello mono-label"><i class="hero__square" aria-hidden="true"></i>Hi, I&rsquo;m</p>
+      <h1 id="hero-title" class="hero__name">
+        {site.name}<span class="visually-hidden">, {roleList.toLowerCase()}</span>
+      </h1>
+    </div>
+
+    <p class="hero__role" aria-hidden="true">
+      <span class="hero__typed" data-typed data-words={JSON.stringify(roles)}>{roles[0]}</span><span class="hero__caret" data-caret></span>{' '}designer
+    </p>
+
+    <p class="hero__intro">{intro}</p>
+
+    <div class="hero__ctas">
+      <Button href="#work">View my work</Button>
+      <Button href="#contact" variant="ghost">Get in touch</Button>
+    </div>
   </div>
-  <p class="visually-hidden">I am {words.join(', ')}.</p>
 
   <div class="hero__bottom">
-    <h1 id="hero-title" class="hero__title">
-      <span class="hero__hello mono-label"><i class="hero__square" aria-hidden="true"></i>{site.home.hello.replace('Afnan', site.name)}</span>
-      <span class="hero__headline"><Accent text={site.home.headline} /></span>
-    </h1>
-    <div class="hero__labels">
-      <p class="mono-label">Based in Ontario, Canada<br /><span data-clock>Open to relocating</span></p>
-      <a class="hero__scroll mono-label" href="#work">Scroll down<br />to discover <i class="hero__square" aria-hidden="true"></i></a>
-    </div>
+    <p class="mono-label">{location}</p>
+    <p class="mono-label hero__status"><i class="hero__dot" aria-hidden="true"></i>{status}</p>
+    <a class="mono-label hero__scroll" href="#work">Scroll <span aria-hidden="true">↓</span></a>
   </div>
 </section>
 
 <script>
-  import { getTier, hasFinePointer } from '../../scripts/motion/capabilities';
+  import { getTier } from '../../scripts/motion/capabilities';
+  import { paintGrid } from '../../scripts/paint-grid';
 
   const hero = document.querySelector<HTMLElement>('[data-hero]');
   if (hero) {
-    const calm = getTier() === 'none';
-    initClock(hero);
-    initGrid(hero, calm);
-    if (!calm) initTyping(hero);
+    const canvas = hero.querySelector<HTMLCanvasElement>('[data-hero-grid]')!;
+    const name = hero.querySelector<HTMLElement>('[data-hero-name]')!;
+    const css = getComputedStyle(document.documentElement);
+    paintGrid(hero, canvas, {
+      // A band that hugs the name block: one cell of air left/right, centred.
+      band: (_w, _h, cell) => {
+        const r = name.getBoundingClientRect();
+        const root = hero.getBoundingClientRect();
+        // Never wider than the screen (phones): whole cells only.
+        const cols = Math.min(Math.ceil(r.width / cell) + 2, Math.floor((root.width - 16) / cell));
+        const rows = Math.max(2, Math.ceil(r.height / cell) + 1);
+        const cx = r.left - root.left + r.width / 2;
+        const cy = r.top - root.top + r.height / 2;
+        return { cols, rows, x0: Math.round(cx - (cols * cell) / 2), y0: Math.round(cy - (rows * cell) / 2) };
+      },
+      cell: (w) => (w < 700 ? 36 : 56),
+      line: css.getPropertyValue('--ink').trim() || '#111',
+      lineAlpha: 0.14,
+      fill: css.getPropertyValue('--clay-bright').trim() || '#b4532f',
+      maxAlpha: 0.55, // the name stays readable over lit cells
+      breathe: 1.6,
+      observe: [name],
+    });
+    if (getTier() !== 'none') initTyping(hero);
   }
 
-  /** Live Ontario time in the corner label (dverso has a live clock too). */
-  function initClock(root: HTMLElement) {
-    const el = root.querySelector<HTMLElement>('[data-clock]');
-    if (!el) return;
-    const fmt = new Intl.DateTimeFormat('en-CA', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Toronto', timeZoneName: 'short' });
-    const set = () => (el.textContent = fmt.format(new Date()));
-    set();
-    setInterval(set, 30_000);
-  }
-
-  /** "I am ___": type, hold, erase, next word. */
+  /** "<word> designer": type, hold, erase, next word. */
   function initTyping(root: HTMLElement) {
     const el = root.querySelector<HTMLElement>('[data-typed]');
     const caret = root.querySelector<HTMLElement>('[data-caret]');
@@ -69,128 +89,27 @@ const words = site.home.words;
     caret.classList.add('is-on');
     let w = 0;
     let i = words[0].length;
-    let erasing = false;
+    let erasing = true;
     const step = () => {
       const word = words[w];
       if (!erasing) {
-        i++;
-        el.textContent = word.slice(0, i);
+        el.textContent = word.slice(0, ++i);
         if (i >= word.length) {
           erasing = true;
-          return void setTimeout(step, 1700);
+          return void setTimeout(step, 1800);
         }
-        setTimeout(step, 75);
+        setTimeout(step, 80);
       } else {
-        i--;
-        el.textContent = word.slice(0, i);
+        el.textContent = word.slice(0, --i);
         if (i <= 0) {
           erasing = false;
           w = (w + 1) % words.length;
           return void setTimeout(step, 250);
         }
-        setTimeout(step, 40);
+        setTimeout(step, 45);
       }
     };
-    erasing = true;
-    setTimeout(step, 2200);
-  }
-
-  /**
-   * Grid of hairline cells across the middle of the hero. Cells under the
-   * cursor light up in clay and fade over ~1.2 s; now and then a random cell
-   * lights up on its own so the hero breathes. Canvas 2D, DPR ≤ 2, pauses
-   * when the hero is off screen or nothing is fading.
-   */
-  function initGrid(root: HTMLElement, calm: boolean) {
-    const canvas = root.querySelector<HTMLCanvasElement>('[data-hero-grid]');
-    const ctx = canvas?.getContext('2d');
-    if (!canvas || !ctx) return;
-    const css = getComputedStyle(document.documentElement);
-    const ink = css.getPropertyValue('--ink').trim() || '#111';
-    const clay = css.getPropertyValue('--clay-bright').trim() || '#b4532f';
-
-    let w = 0, h = 0, cell = 64, cols = 0, rows = 0, x0 = 0, y0 = 0;
-    const heat = new Map<number, number>(); // cell index → 0..1
-    const resize = () => {
-      const r = root.getBoundingClientRect();
-      const dpr = Math.min(devicePixelRatio, 2);
-      w = r.width; h = r.height;
-      canvas.width = w * dpr; canvas.height = h * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      cell = w < 700 ? 40 : 64;
-      // Grid band: ~70% of the width, ~56% of the height, centred.
-      cols = Math.floor((w * 0.72) / cell);
-      rows = Math.floor((h * 0.56) / cell);
-      x0 = Math.round((w - cols * cell) / 2);
-      y0 = Math.round(h * 0.16);
-      draw();
-    };
-    const draw = () => {
-      ctx.clearRect(0, 0, w, h);
-      for (const [k, v] of heat) {
-        const cx = k % cols, cy = Math.floor(k / cols);
-        ctx.globalAlpha = v;
-        ctx.fillStyle = clay;
-        ctx.fillRect(x0 + cx * cell, y0 + cy * cell, cell, cell);
-      }
-      ctx.globalAlpha = 0.16;
-      ctx.strokeStyle = ink;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      for (let c = 0; c <= cols; c++) { const x = x0 + c * cell + 0.5; ctx.moveTo(x, y0); ctx.lineTo(x, y0 + rows * cell); }
-      for (let r = 0; r <= rows; r++) { const y = y0 + r * cell + 0.5; ctx.moveTo(x0, y); ctx.lineTo(x0 + cols * cell, y); }
-      ctx.stroke();
-      ctx.globalAlpha = 1;
-    };
-    resize();
-    new ResizeObserver(resize).observe(root);
-
-    if (calm) {
-      // Reduced motion: a few fixed clay cells, no animation.
-      [3, cols + 6, cols * 2 + 2].forEach((k) => heat.set(k % (cols * rows), 0.9));
-      return draw();
-    }
-
-    let running = false;
-    let visible = true;
-    let last = performance.now();
-    const loop = (now: number) => {
-      const dt = Math.min((now - last) / 1000, 0.05);
-      last = now;
-      for (const [k, v] of heat) {
-        const nv = v - dt / 1.2;
-        if (nv <= 0) heat.delete(k); else heat.set(k, nv);
-      }
-      draw();
-      if (heat.size && visible) requestAnimationFrame(loop);
-      else running = false;
-    };
-    const kick = () => {
-      if (running || !visible) return;
-      running = true;
-      last = performance.now();
-      requestAnimationFrame(loop);
-    };
-    const light = (cx: number, cy: number, v = 1) => {
-      if (cx < 0 || cy < 0 || cx >= cols || cy >= rows) return;
-      const k = cy * cols + cx;
-      heat.set(k, Math.max(heat.get(k) ?? 0, v));
-      kick();
-    };
-    if (hasFinePointer()) {
-      root.addEventListener('pointermove', (e) => {
-        const r = root.getBoundingClientRect();
-        light(Math.floor((e.clientX - r.left - x0) / cell), Math.floor((e.clientY - r.top - y0) / cell));
-      });
-    } else {
-      root.addEventListener('touchmove', (e) => {
-        const t = e.touches[0], r = root.getBoundingClientRect();
-        light(Math.floor((t.clientX - r.left - x0) / cell), Math.floor((t.clientY - r.top - y0) / cell));
-      }, { passive: true });
-    }
-    // The grid breathes: a random cell every ~1.4 s.
-    setInterval(() => visible && light(Math.floor(Math.random() * cols), Math.floor(Math.random() * rows), 0.85), 1400);
-    new IntersectionObserver((en) => { visible = en.some((x) => x.isIntersecting); kick(); }).observe(root);
+    setTimeout(step, 2400);
   }
 </script>
 
@@ -201,87 +120,100 @@ const words = site.home.words;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
   }
-  .hero__grid { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero__grid { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 
-  .hero__center {
+  .hero__inner {
     position: relative;
     flex: 1;
-    display: grid;
-    place-content: center;
-    justify-items: center;
-    gap: 0.5rem;
-    padding-top: 2vh;
-    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-s);
+    max-width: var(--container-max);
+    width: 100%;
+    margin-inline: auto;
+    padding: var(--space-xl) var(--container-pad) var(--space-l);
+    text-align: center;
   }
-  /* Huge outlined wordmark (dverso). */
-  .hero__word {
-    font: 600 clamp(6rem, 3rem + 20vw, 22rem) / 0.8 var(--font-text);
-    letter-spacing: -0.06em;
-    color: transparent;
-    -webkit-text-stroke: 1.5px var(--color-text);
-    user-select: none;
-  }
-  /* "I am ___" (Amy). */
-  .hero__type {
-    font-family: var(--font-display);
-    font-size: clamp(1.6rem, 1.1rem + 2.2vw, 3.6rem);
-    line-height: 1.1;
+  .hero__id { display: grid; justify-items: center; gap: 0.6rem; }
+  .hero__hello { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-text); }
+  .hero__square { display: inline-block; width: 0.65rem; height: 0.65rem; background: var(--clay-bright); }
+
+  /* The name: big, solid, confident. Wraps to two lines on small phones. */
+  .hero__name {
+    font: 600 clamp(3rem, 0.9rem + 9.2vw, 9.5rem) / 0.92 var(--font-text);
+    letter-spacing: -0.055em;
     color: var(--color-text);
-    min-height: 1.2em;
+    text-wrap: balance;
+    padding-inline: 0.05em; /* tight tracking clips the last glyph otherwise */
   }
-  .hero__typed { font-style: italic; }
+
+  /* "<Product> designer" — the profession, right under the name. */
+  .hero__role {
+    font: 400 clamp(1.5rem, 1.1rem + 1.8vw, 2.6rem) / 1.15 var(--font-text);
+    letter-spacing: -0.03em;
+    color: var(--color-text);
+    min-height: 1.15em;
+    margin-top: var(--space-xs); /* clear of the grid band */
+  }
+  .hero__typed { font-family: var(--font-display); font-style: italic; letter-spacing: 0; color: var(--color-accent); }
   .hero__caret {
     display: none;
     width: 2px;
-    height: 0.9em;
-    margin-left: 4px;
+    height: 0.85em;
+    margin-left: 3px;
     vertical-align: -0.08em;
-    background: currentColor;
+    background: var(--color-accent);
     animation: hero-blink 1s step-end infinite;
   }
   .hero__caret:global(.is-on) { display: inline-block; }
   @keyframes hero-blink { 50% { opacity: 0; } }
 
+  .hero__intro {
+    max-width: 36rem;
+    font-size: var(--step-0);
+    line-height: 1.55;
+    color: var(--color-text-muted);
+    text-wrap: pretty;
+  }
+  .hero__ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: var(--space-2xs); }
+
+  /* Bottom labels: left · centre · right on one baseline. */
   .hero__bottom {
     position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1.5rem 2rem;
-    padding: 0 var(--container-pad) 1.75rem;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
     max-width: var(--container-max);
     width: 100%;
     margin-inline: auto;
+    padding: 0 var(--container-pad) 1.25rem;
   }
-  .hero__title { display: grid; gap: 0.75rem; max-width: 34rem; font: inherit; letter-spacing: normal; }
-  .hero__hello { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-text); }
-  /* Big sans headline with italic serif accents (dverso). */
-  .hero__headline {
-    font: 400 clamp(1.9rem, 1.3rem + 1.9vw, 2.9rem) / 1.06 var(--font-text);
-    letter-spacing: -0.04em;
-    color: var(--color-text);
-    text-wrap: balance;
+  .hero__bottom > * { white-space: nowrap; }
+  .hero__bottom > :first-child { justify-self: start; }
+  .hero__bottom > :last-child { justify-self: end; }
+  .hero__status { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-text); }
+  .hero__dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: #3f8a5c;
+    box-shadow: 0 0 0 0 rgb(63 138 92 / 0.5);
+    animation: hero-pulse 2.2s ease-out infinite;
   }
-  .hero__square {
-    display: inline-block;
-    width: 0.7rem;
-    height: 0.7rem;
-    background: var(--clay-bright);
-  }
-  .hero__labels {
-    display: flex;
-    gap: 2.5rem;
-    align-items: flex-end;
-  }
-  .hero__scroll {
-    display: inline-flex;
-    align-items: flex-end;
-    gap: 0.6rem;
-    text-decoration: none;
-    text-align: right;
-  }
+  @keyframes hero-pulse { 70%, 100% { box-shadow: 0 0 0 0.5rem rgb(63 138 92 / 0); } }
+  .hero__scroll { display: inline-flex; align-items: center; min-height: 44px; gap: 0.4rem; text-decoration: none; }
   .hero__scroll:hover { color: var(--color-text); }
+
+  @media (max-width: 22rem) {
+    .hero__bottom { grid-template-columns: 1fr auto; }
+    .hero__scroll { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__dot { animation: none; }
+  }
 </style>

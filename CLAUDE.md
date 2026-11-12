@@ -40,7 +40,7 @@ characters, illustrations, testimonials or text.
 - **Kind words / testimonials REMOVED** (Afnan's decision). Do not re-add
   unless she asks.
 - Nav (clear navigation, Afnan's request): simple text links, no pills.
-  Name (left) = Home. Order Work · About · Studio · Play · Contact, then
+  Name (left) = Home. Order Work · About · Studio (/#studio) · Play · Contact, then
   "Resume ↓" set apart (accent colour, left hairline). Current page
   underlined (`aria-current="page"`); on the home page only, a scroll-spy
   (IntersectionObserver, -45% margins) underlines Work / Contact while those
@@ -52,6 +52,7 @@ characters, illustrations, testimonials or text.
   sound toggle.
 - Contact: email `afnanmaqsood7@gmail.com`, LinkedIn
   `https://www.linkedin.com/in/afnan-maqsood7/` (in `site.config.ts`).
+  Location copy everywhere: "Based in Canada" + "Open to work".
   Domain and resume PDF still TODO.
 - Removed in the merge: black hero, liquid glass, Unbounded/Instrument
   Serif/Inter, laptop badge, sage-paper palette.
@@ -251,28 +252,37 @@ underneath the whole time (no LCP blocking).
   "Loading" + counter + hairline bar, ≤ 1.1 s, home only, first visit per
   session (`sessionStorage['am-intro']`, inline head-time check), skipped by
   click/key, never with reduced motion or no JS.
-- `Hero.astro`: cream; canvas hairline GRID (64 px cells, 40 on phones,
-  ~72% × 56% band) whose cells light clay under the cursor/touch and fade
-  over 1.2 s, plus a random cell every 1.4 s; huge outlined "afnan" (Geist
-  600, text-stroke); "I am ___" typing `site.home.words` in Lora italic;
-  bottom-left H1 = mono "Hi, I'm Afnan Maqsood." + Geist headline with italic
-  accents (`site.home.headline`); corner mono labels (Ontario + live Toronto
-  clock; "Scroll down to discover" + clay square → #work).
+- `Hero.astro` (rebuilt at Afnan's request: name first, profession second,
+  painting last; NO "painter's hand" line): centred stack — mono "Hi, I'm"
+  → big solid "Afnan Maqsood" H1 (Geist 600) → role line "<Product>
+  designer" (first word rotates through `site.home.roles` in Lora italic
+  clay) → `site.home.intro` (5+ yrs, MDM TMU, BFA, "Off-screen, I paint") →
+  View my work / Get in touch buttons. Painted grid is now a SMALL band
+  hugging the name block (`scripts/paint-grid.ts`, shared with the footer).
+  Bottom row (mono): "Based in Canada" · ● "Open to work" · Scroll ↓.
+  No clock, no outlined wordmark.
 - `ProjectGrid.astro` (#work): centred Lora "Featured Projects" + role lens;
   Amy-style 2-col cards (image on a soft panel, title + mono tag chips from
   optional `tags` frontmatter, else discipline + first tool).
-- `StudioStrip.astro`: "From the *studio*", link to /studio. FOUR of
+- `StudioStrip.astro` (#studio): "From the *studio*". **No separate Studio
+  page** (Afnan: not needed) — `pages/studio.astro` deleted; nav "Studio"
+  → `/#studio`. FOUR of
   Afnan's pieces in one row (Afnan: "keep only 4"): whirling dervish
   painting, vector portrait (glasses), city portrait (animated), smoke
   portrait (animated, cropped 4:5 from her 1080² clip). Stills in
   `src/assets/studio`, loops in `public/studio`. 4-col desktop, 2-col phone.
   Loops are muted (~60–100 KB), play only on screen, never with reduced
   motion, 44px pause/play button top-right (her signature is bottom-right).
-  `iftar-table.jpg` (wide illustration) was removed from home at Afnan's
-  request; kept in `src/assets/studio` for the full /studio page (Phase 4).
-- `Footer.astro` (#contact, all pages): "Let's get in touch!" + email,
-  LinkedIn, resume; footer nav (Home + pages + Resume ↓); mono meta row
-  (© · Ontario · sound toggle · Back to top).
+  `iftar-table.jpg` (wide illustration) was removed at Afnan's request;
+  file kept in `src/assets/studio` in case she wants it back.
+- `Footer.astro` (#contact, all pages) — the bold colour moment: full-bleed
+  sage with the painted grid (clay cells under the cursor), ● "Open to work
+  · Based in Canada", huge "Let's get in *touch*" (peach accent #f0b393,
+  5.4:1 on sage), big mailto email + Copy email button (Clipboard API,
+  live-region feedback), LinkedIn / Resume buttons, Lora footer nav, mono
+  meta row (© · Based in Canada · sound toggle · Back to top), giant
+  outlined "Afnan Maqsood" sign-off cropped at the bottom. Semantic tokens
+  are re-mapped inside the footer so buttons/links/focus work on sage.
 - `Header.astro`: sticky cream, name + text links + "Resume ↓"; scroll-spy
   on home; full-screen `<details>` Menu on phones (see Nav above).
 
@@ -426,7 +436,8 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
 ## Defaults chosen (Afnan said "build" without answering questions)
 - Domain `https://www.example.com` and resume placeholder path (TODO); email
   and LinkedIn are Afnan's real ones — all in `src/site.config.ts`.
-- Positioning line: "Product designer with a painter's hand." (TODO).
+- Positioning: "Product, brand and web designer based in Canada." The old
+  "painter's hand" line was removed from the hero at Afnan's request.
 - Hero copy: `site.heroTitle`, `heroSubtitle`, `heroCta` (TODO: Afnan's
   final words).
 - Lens: three options mapped as above; grid only.
