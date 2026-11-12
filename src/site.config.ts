@@ -19,23 +19,22 @@ export const site = {
       { title: 'Web design', items: ['Landing pages', 'SaaS dashboards', 'E-commerce', 'Responsive UI', 'Figma to build'] },
       { title: 'Painting & art', items: ['Acrylic & oil', 'Illustration', 'Motion & animation', 'Social content', 'Editorial art'] },
     ],
-    /** PLACEHOLDERS — replace with real quotes (or empty the list to hide the section). */
-    testimonials: [
-      { quote: 'Placeholder: add a short quote here from a manager, client or professor about working with Afnan.', name: 'Name Surname', role: 'Role, Company' },
-    ],
     marquee: "Product designer with a painter's hand",
   },
   location: 'Based in Ontario, open to relocating within Canada',
   description:
     'Afnan Maqsood is a product, brand and web designer in Ontario, Canada, with 5+ years of experience and a painter’s eye.',
-  email: 'hello@example.com', // TODO: public email
-  linkedin: 'https://www.linkedin.com/in/your-handle', // TODO: real LinkedIn URL
+  email: 'afnanmaqsood7@gmail.com',
+  linkedin: 'https://www.linkedin.com/in/afnan-maqsood7/',
   resume: '/resume/afnan-maqsood-resume.pdf', // TODO: drop the real PDF in /public/resume
 } as const;
 
+/** Primary navigation, in order of what recruiters need first.
+ *  The name in the header links home; Resume is a separate download. */
 export const nav = [
   { label: 'Work', href: '/#work' },
-  { label: 'Play', href: '/play' },
-  { label: 'Studio', href: '/studio' },
   { label: 'About', href: '/about' },
+  { label: 'Studio', href: '/studio' },
+  { label: 'Play', href: '/play' },
+  { label: 'Contact', href: '#contact' },
 ] as const;

@@ -3,7 +3,7 @@
  * Contact + footer (all pages, #contact). Amy-style "Let's get in touch!"
  * block with a dverso-style row of small mono labels underneath.
  */
-import { site } from '../../site.config';
+import { nav, site } from '../../site.config';
 
 const year = new Date().getFullYear();
 ---
@@ -19,9 +19,20 @@ const year = new Date().getFullYear();
         <li><a class="brush-link" href={site.resume} download>Resume (PDF)</a></li>
       </ul>
     </div>
+    <nav class="fnav" aria-label="Footer">
+      <ul role="list">
+        <li><a href="/">Home</a></li>
+        {nav.filter((l) => l.label !== 'Contact').map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        <li><a href={site.resume} download>Resume ↓</a></li>
+      </ul>
+    </nav>
     <div class="meta" aria-label="Site details">
       <span>&copy; {year} {site.name}</span>
       <span>Based in Ontario, Canada</span>
+      <!-- Revealed by scripts/motion/sound.ts. Off by default. -->
+      <button type="button" class="sound" data-sound-toggle aria-pressed="false" hidden>
+        Sound <span aria-hidden="true" data-sound-state>off</span>
+      </button>
       <a href="#main">Back to top ↑</a>
     </div>
   </div>
@@ -49,12 +60,38 @@ const year = new Date().getFullYear();
     margin-top: var(--space-s);
   }
   .contact__links a { display: inline-flex; align-items: center; min-height: 44px; }
+  .fnav { margin-top: var(--space-xl); }
+  .fnav ul { display: flex; flex-wrap: wrap; gap: 0 clamp(1rem, 0.5rem + 2vw, 2.5rem); }
+  .fnav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font: 400 clamp(1.15rem, 1rem + 0.6vw, 1.5rem) var(--font-display);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .fnav a:hover { font-style: italic; color: var(--color-text); }
+  .sound {
+    min-height: 44px;
+    margin-block: -12px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+  .sound[hidden] { display: none; }
+  .sound:hover,
+  .sound[aria-pressed='true'] { color: var(--color-text); }
   .meta {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 0.5rem 1.5rem;
-    margin-top: var(--space-xl);
+    margin-top: var(--space-m);
     padding-top: var(--space-s);
     border-top: 1px solid var(--color-border);
     font: 400 0.75rem var(--font-mono);

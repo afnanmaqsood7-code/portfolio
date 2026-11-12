@@ -33,8 +33,23 @@ characters, illustrations, testimonials or text.
 - Fonts: Geist (text + big sans headlines, tight -0.04em), Geist Mono (small
   uppercase labels), Lora (section headings, italic accent words via *word*).
 - Home: Loader → Hero → Disciplines (sage) → Featured Projects → All projects
-  table → Kind words → From the studio → Marquee → Contact/footer.
-- Nav: simple text links (Afnan's preference), no pills.
+  table → From the studio → Marquee → Contact/footer.
+- **Kind words / testimonials REMOVED** (Afnan's decision). Do not re-add
+  unless she asks.
+- Nav (clear navigation, Afnan's request): simple text links, no pills.
+  Name (left) = Home. Order Work · About · Studio · Play · Contact, then
+  "Resume ↓" set apart (accent colour, left hairline). Current page
+  underlined (`aria-current="page"`); on the home page only, a scroll-spy
+  (IntersectionObserver, -45% margins) underlines Work / Contact while those
+  sections cross mid-screen. Phones (< 56rem): `<details>` "Menu" opens a
+  full-screen list of big Lora links + resume + email; works without JS,
+  JS adds Esc / link-click close and locks page scroll. The header's
+  `backdrop-filter` is dropped while the menu is open (it would trap the
+  fixed panel inside the header). Footer repeats the nav and now holds the
+  sound toggle.
+- Contact: email `afnanmaqsood7@gmail.com`, LinkedIn
+  `https://www.linkedin.com/in/afnan-maqsood7/` (in `site.config.ts`).
+  Domain and resume PDF still TODO.
 - Removed in the merge: black hero, liquid glass, Unbounded/Instrument
   Serif/Inter, laptop badge, sage-paper palette.
 
@@ -250,17 +265,16 @@ underneath the whole time (no LCP blocking).
 - `ProjectTable.astro`: "All *projects* ↙" rows (mono name · type · year ·
   View case →); hover = floating cover preview following the cursor with a
   velocity tilt (mouse + motion only).
-- `Testimonials.astro`: Lora "Kind words", bordered card; entries from
-  `site.home.testimonials` (PLACEHOLDER flagged visibly until real quotes).
 - `StudioStrip.astro`: "From the *studio*" 4 tiles (placeholders until her
   paintings are in `src/assets/studio`), link to /studio.
 - `Marquee.astro`: "✿ Product designer with a painter's hand" in Lora
   italic; drifts, speeds up with scroll, follows scroll direction; static
   for reduced motion.
 - `Footer.astro` (#contact, all pages): "Let's get in touch!" + email,
-  LinkedIn, resume; mono meta row (© · Ontario · Back to top).
-- `Header.astro`: sticky cream, name + simple text links + mono sound toggle;
-  `<details>` Menu on phones.
+  LinkedIn, resume; footer nav (Home + pages + Resume ↓); mono meta row
+  (© · Ontario · sound toggle · Back to top).
+- `Header.astro`: sticky cream, name + text links + "Resume ↓"; scroll-spy
+  on home; full-screen `<details>` Menu on phones (see Nav above).
 
 ### 2c. Video ribbon — REMOVED (Afnan's decision)
 The 3D "Vante" ribbon section (cards sweeping along a 3D rail into a grid)
@@ -384,7 +398,7 @@ About → (g) performance + accessibility pass.
   { detail: 'view' | null }))`.
 - Lenis instance exposed as `window.__lenis` for lazily loaded modules.
 - Home order: see DESIGN DIRECTION (Loader → Hero → Disciplines → Featured
-  Projects `#work` → All projects → Kind words → Studio → Marquee → #contact).
+  Projects `#work` → All projects → Studio → Marquee → #contact).
 
 ### Painted assets needed from Afnan (placeholders until then)
 Brush-stroke scans (PNG, transparent), a bristle/brush stamp texture, a
@@ -410,8 +424,8 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
 7. Clean, readable code; comment non-obvious logic.
 
 ## Defaults chosen (Afnan said "build" without answering questions)
-- Domain `https://www.example.com`, email `hello@example.com`, LinkedIn
-  placeholder, resume placeholder path — all in `src/site.config.ts` (TODO).
+- Domain `https://www.example.com` and resume placeholder path (TODO); email
+  and LinkedIn are Afnan's real ones — all in `src/site.config.ts`.
 - Positioning line: "Product designer with a painter's hand." (TODO).
 - Hero copy: `site.heroTitle`, `heroSubtitle`, `heroCta` (TODO: Afnan's
   final words).
