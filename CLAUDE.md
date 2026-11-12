@@ -190,7 +190,9 @@ Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover
    720p (`public/work/into-the-heart-of-mine/trailer.mp4`, ~12.7 MB, poster
    jpg beside it). Role written as "UX & sound designer (confirm with
    Afnan)" — confirm and remove the note.
-   Behind-the-scenes: 3 silent 4:5 loops from her phone clips
+   Removed at Afnan's request: the lab selfie + lab playtest photo pair and
+   the headset clip (Red Bull Gaming screen). Do not re-add.
+   Behind-the-scenes: 2 silent 4:5 loops from her phone clips
    (`public/work/into-the-heart-of-mine/bts-*.mp4`, 0.5–2 MB each) via the
    `LoopGrid` MDX component, + 2 Blueprint stills. Her .uasset crystal
    meshes can't be read outside Unreal — asked for a .glb/.fbx export
