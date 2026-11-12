@@ -191,7 +191,8 @@ Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover
    jpg beside it). Role written as "UX & sound designer (confirm with
    Afnan)" — confirm and remove the note.
    Removed at Afnan's request: the lab selfie + lab playtest photo pair and
-   the headset clip (Red Bull Gaming screen). Do not re-add.
+   the headset clip (Red Bull Gaming screen), and the Essential Sound panel
+   screenshot. Do not re-add.
    Behind-the-scenes: 2 silent 4:5 loops from her phone clips
    (`public/work/into-the-heart-of-mine/bts-*.mp4`, 0.5–2 MB each) via the
    `LoopGrid` MDX component, + 2 Blueprint stills. Her .uasset crystal
