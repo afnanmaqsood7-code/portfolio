@@ -40,7 +40,7 @@ characters, illustrations, testimonials or text.
 - **Kind words / testimonials REMOVED** (Afnan's decision). Do not re-add
   unless she asks.
 - Nav (clear navigation, Afnan's request): simple text links, no pills.
-  Name (left) = Home. Order Work · About · Studio (/#studio) · Play · Contact, then
+  Name (left) = Home. Order Work · About · Studio (/#studio) · Contact, then
   "Resume ↓" set apart (accent colour, left hairline). Current page
   underlined (`aria-current="page"`); on the home page only, a scroll-spy
   (IntersectionObserver, -45% margins) underlines Work / Contact while those
@@ -50,6 +50,8 @@ characters, illustrations, testimonials or text.
   `backdrop-filter` is dropped while the menu is open (it would trap the
   fixed panel inside the header). Footer repeats the nav and now holds the
   sound toggle.
+- **Play page REMOVED** (Afnan: "extra"); its games are now projects.
+  `pages/play.astro` deleted, Play dropped from nav.
 - Contact: email `afnanmaqsood7@gmail.com`, LinkedIn
   `https://www.linkedin.com/in/afnan-maqsood7/` (in `site.config.ts`).
   Location copy everywhere: "Based in Canada" + "Open to work".
@@ -179,6 +181,10 @@ Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover
    mobile app screens. Large images grouped by type + short process note
    (research → wireframes → hi-fi). Replaced `neighbourhood-coffee` (removed at
    Afnan's request).
+6. `ar-vr-game` (product, order 6) — AR/VR game (all copy TODO from Afnan).
+7. `life-goes-on` (both, order 7, brand lens #3) — "Life Goes On" tribute
+   game (all copy TODO). Both added at Afnan's request; they used to be
+   planned for the Play page.
 
 Case study page order: hero (title, cover, 30-second summary card: role,
 timeline, team, tools, 2–3 outcomes) → MDX body (context, problem, process,
