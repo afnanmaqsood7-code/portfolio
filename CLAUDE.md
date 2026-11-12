@@ -207,7 +207,8 @@ Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover
    has a subscription; exported files stay clean if it lapses). Cover and
    banner (Afnan's choice): the game's opening frame (glowing title +
    door of light, from her video at 21 s, empty gap between title and door
-   removed) fading into the clean final room on pink. Composed in PIL; do
+   removed) and the clean final room on pink, as two rounded cards side by
+   side on cream (Afnan disliked a soft dark-to-pink fade between them). Composed in PIL; do
    not add text or darken her scenes.
    Case study: Play button (Canva view link — Afnan must set the design to
    "anyone with the link") → stats → Overview → Problem (problem /
