@@ -33,15 +33,6 @@ export default defineConfig({
     },
     {
       provider: fontProviders.google(),
-      name: 'Inter Tight', // ← video ribbon headline
-      cssVariable: '--font-tight-src',
-      weights: [400, 500, 600],
-      styles: ['normal'],
-      subsets: ['latin'],
-      fallbacks: ['system-ui', 'sans-serif'],
-    },
-    {
-      provider: fontProviders.google(),
       name: 'Unbounded', // ← bold, wide hero headline ("Hi there, I'm Afnan!")
       cssVariable: '--font-hero-src',
       weights: ['600 800'],
@@ -51,7 +42,7 @@ export default defineConfig({
     },
     {
       provider: fontProviders.google(),
-      name: 'IBM Plex Mono', // ← monospace (video ribbon labels)
+      name: 'IBM Plex Mono', // ← monospace (project list, labels)
       cssVariable: '--font-mono-src',
       weights: [400, 500],
       styles: ['normal'],

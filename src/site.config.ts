@@ -11,13 +11,6 @@ export const site = {
   heroSubtitle:
     'a product, brand and web designer with a painter\u2019s hand, on a mission to design products and brands that make everyday life feel a little easier.',
   heroCta: 'View my work',
-  /** Video ribbon section (home). TODO: Afnan's final words. */
-  ribbon: {
-    line1: 'DESIGNED',
-    line2: 'BY HAND',
-    caption: 'Selected product, brand and web work.',
-    note: 'Product, brand and web work, shaped by research and finished with a painter\u2019s eye.',
-  },
   location: 'Based in Ontario, open to relocating within Canada',
   description:
     'Afnan Maqsood is a product, brand and web designer in Ontario, Canada, with 5+ years of experience and a painter’s eye.',

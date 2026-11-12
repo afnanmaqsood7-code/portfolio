@@ -7,7 +7,6 @@
  *   hero it shrinks into a small badge docked bottom-right and ROTATES ONCE
  *   (exactly 360°) during that move. Docked, it just keeps playing.
  *   Phones: docked from the start, no rotation.
- * - Fades out while the video ribbon section is pinned on screen.
  * - Decorative (aria-hidden, pointer-events none). Reduced motion / no JS: a
  *   still badge in the hero.
  */
@@ -34,7 +33,6 @@ import still from '../../assets/loop/laptop-still.jpg';
     const badge = el.querySelector<HTMLElement>('[data-loop-badge]')!;
     const video = el.querySelector<HTMLVideoElement>('[data-loop-video]')!;
     const hero = document.querySelector<HTMLElement>('[data-hero]');
-    const ribbon = document.querySelector<HTMLElement>('[data-ribbon-track]');
     el.classList.add('loop--live');
 
     // Plays by itself, looping seamlessly.
@@ -86,11 +84,6 @@ import still from '../../assets/loop/laptop-still.jpg';
       badge.style.transform = `translate3d(${x.toFixed(1)}px, ${yPos.toFixed(1)}px, 0) rotate(${angle.toFixed(2)}deg)`;
       badge.style.width = badge.style.height = `${size.toFixed(1)}px`;
 
-      // Step aside while the video ribbon is pinned on screen.
-      if (ribbon) {
-        const r = ribbon.getBoundingClientRect();
-        el.classList.toggle('loop--hidden', r.top < vh * 0.5 && r.bottom > vh * 0.5);
-      }
       requestAnimationFrame(frame);
     };
     requestAnimationFrame(frame);
@@ -148,6 +141,4 @@ import still from '../../assets/loop/laptop-still.jpg';
     box-shadow: 0 10px 30px rgb(0 0 0 / 0.25);
   }
   .loop:global(.loop--ready) .loop__video { opacity: 1; }
-  .loop:global(.loop--live) { transition: opacity 0.4s var(--ease-out); }
-  .loop:global(.loop--hidden) { opacity: 0; }
 </style>

@@ -100,9 +100,8 @@ src/
   (`--color-bg`, `--color-surface`, `--color-text`, `--color-text-muted`,
   `--color-border`, `--color-accent`, `--color-on-accent`, `--color-focus`).
 - Fonts: display **Instrument Serif** (`--font-display`), text **Inter**
-  (`--font-text`), hero headline **Unbounded** (`--font-hero`), ribbon
-  **Inter Tight** (`--font-tight`), mono **IBM Plex Mono** (`--font-mono`) —
-  placeholders.
+  (`--font-text`), hero headline **Unbounded** (`--font-hero`), mono
+  **IBM Plex Mono** (`--font-mono`) — placeholders.
 - Light: paper `#e9ece4`, paper-deep `#dde2d6`, ink `#1f2a24`, ink-soft
   `#4c5a51`, line `#c5ccbe`, accent (text-safe clay) `#a24826`, accent-ink
   `#fbf8f2`, clay-bright `#b4532f` (decorative only, never text).
@@ -253,34 +252,13 @@ cropped to the badge, tail cross-faded into head (seamless), keyframe every 2.
   hero it shrinks to an 84 px badge docked bottom-right and ROTATES ONCE
   (angle = 360° × smoothstep(dock progress)); docked it stays upright.
   Phones: docked (64 px) from the start, no rotation.
-- Fades out (`.loop--hidden`) while the video ribbon is pinned on screen.
 - Reduced motion / no JS: still badge in the hero.
 
-### 2c. Video ribbon (Afnan's "Vante" recreation prompt, adapted)
-`src/components/home/VideoRibbon.astro` + `src/scripts/motion/video-ribbon.ts`
-(lazy-loaded three.js), between the hero and Selected work.
-- Ported faithfully: one progress value p (smoothed `p += (target-p)*.09`),
-  900vh track + sticky 100svh stage, headline lines sliding in opposite
-  directions (rise 0–.12, run −50vw→+76vw over 0–.58), caption fade .52–.57,
-  intro glow/hairline/hint fade by .05, fixed rail (161-point centripetal
-  CatmullRom, 1201 arc-length samples, same depth/edge/phase formulas),
-  2.1×1.32 cards (gap .03, 28×3 segments re-posed per frame), same shader
-  (rounded rect r .018, cover fit, .075 placeholder, back-face uv flip,
-  NoColorSpace + LinearSRGB output), FOV 35 with the <16:9 correction, grid
-  3×2 at z −8 (74% width; <.9 aspect → 2×3 at 88%), cards fly to slots over
-  .13 with out-cubic, rule draws .72–.86, hover name pill after .86.
-- Adapted for Afnan: cards = her 5 featured projects + a "Studio —
-  paintings" card (covers via `getImage`, 1200w webp; optional `video` per
-  card supported). **The prompt's eight third-party videos are NOT used**
-  (another studio's portfolio work). No Vante logo/pager/pills (site header
-  instead). Copy in `site.ribbon` (line1 "DESIGNED", line2 "BY HAND",
-  caption, note). Bottom labels PRODUCT / BRAND / WEB / PAINTING and a
-  "VIEW ALL WORK" link (#work); hint "START A PROJECT →" links #contact.
-  Scroll progress is measured relative to the section; rendering pauses off
-  screen / hidden tab; grid cards are clickable (open the case study).
-- Fonts: Inter Tight (`--font-tight`) for the ribbon; IBM Plex Mono replaced
-  JetBrains Mono as `--font-mono`.
-- Reduced motion / no WebGL / no JS: short static block (no 900vh track).
+### 2c. Video ribbon — REMOVED (Afnan's decision)
+The 3D "Vante" ribbon section (cards sweeping along a 3D rail into a grid)
+was built and then removed at Afnan's request, with its Inter Tight font.
+Do not re-add unless she asks; it's in git history (commit "Home: 3D video
+ribbon of work…").
 
 ### 3. Custom cursor
 DOM element (not WebGL), transform-only, lerped via `gsap.quickTo`. States by
@@ -397,8 +375,8 @@ About → (g) performance + accessibility pass.
   scenes override with `document.dispatchEvent(new CustomEvent('cursor:state',
   { detail: 'view' | null }))`.
 - Lenis instance exposed as `window.__lenis` for lazily loaded modules.
-- Home order: hero (+ fixed laptop badge) → video ribbon → Selected work grid
-  + role lens `#work` → Play → Studio → About → footer `#contact`.
+- Home order: hero (+ fixed laptop badge) → Selected work grid + role lens
+  `#work` → Play → Studio → About → footer `#contact`.
 
 ### Painted assets needed from Afnan (placeholders until then)
 Brush-stroke scans (PNG, transparent), a bristle/brush stamp texture, a
