@@ -206,7 +206,7 @@ Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover
    export_quality "pro"** — regular exports carry Canva watermarks (Afnan
    has a subscription; exported files stay clean if it lapses). Cover and
    banner are custom key art (diagonal dark/lit split of the candle room,
-   glowing Lora title, NEXT button cropped out) rendered with Playwright.
+   glowing Lora title; the table spans the seam — painting in the dark half, lit candle in the warm half; NEXT button cropped out) rendered with Playwright.
    Case study: Play button (Canva view link — Afnan must set the design to
    "anyone with the link") → stats → Overview → Problem (problem /
    opportunity / audience / goal) → My role → Concept: four chapter cards →
