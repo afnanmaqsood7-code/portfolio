@@ -12,13 +12,6 @@ export const site = {
     /** Rotating words after "I am" (typed, then erased). */
     words: ['a painter', 'detail-obsessed', 'a systems thinker', 'always curious'],
     headline: "*Product* designer with a *painter's* hand",
-    disciplinesTitle: '*Thinking* in systems, *working* by hand',
-    disciplines: [
-      { title: 'Product design', items: ['UX research', 'Interaction design', 'Prototyping', 'Design systems', 'Usability testing'] },
-      { title: 'Brand & graphic', items: ['Brand identity', 'Logo & type', 'Packaging', 'Art direction', 'Print & editorial'] },
-      { title: 'Web design', items: ['Landing pages', 'SaaS dashboards', 'E-commerce', 'Responsive UI', 'Figma to build'] },
-      { title: 'Painting & art', items: ['Acrylic & oil', 'Illustration', 'Motion & animation', 'Social content', 'Editorial art'] },
-    ],
   },
   location: 'Based in Ontario, open to relocating within Canada',
   description:

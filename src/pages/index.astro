@@ -2,24 +2,20 @@
 /**
  * Home — merged direction (dversostudio.io × itsamy.ca), see CLAUDE.md.
  * Loader → hero (outlined name over the painted grid, "I am ___", accent
- * headline) → sage disciplines (sketchbook opens, cards fly out) → featured
- * projects (Amy cards + role lens) → all-projects table (hover previews) →
- * from the studio → contact (footer).
+ * headline) → featured projects (Amy cards + role lens) → from the
+ * studio → contact (footer). Disciplines + all-projects table removed at
+ * Afnan's request.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Preloader from '../components/home/Preloader.astro';
 import Hero from '../components/home/Hero.astro';
-import Disciplines from '../components/home/Disciplines.astro';
 import ProjectGrid from '../components/home/ProjectGrid.astro';
-import ProjectTable from '../components/home/ProjectTable.astro';
 import StudioStrip from '../components/home/StudioStrip.astro';
 ---
 
 <BaseLayout>
   <Preloader />
   <Hero />
-  <Disciplines />
   <ProjectGrid />
-  <ProjectTable />
   <StudioStrip />
 </BaseLayout>

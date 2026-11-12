@@ -32,8 +32,9 @@ characters, illustrations, testimonials or text.
   #2f4a3c bold block, clay #b4532f decorative / #a24826 text accent, white cards.
 - Fonts: Geist (text + big sans headlines, tight -0.04em), Geist Mono (small
   uppercase labels), Lora (section headings, italic accent words via *word*).
-- Home: Loader → Hero → Disciplines (sage) → Featured Projects → All projects
-  table → From the studio → Contact/footer.
+- Home: Loader → Hero → Featured Projects → From the studio → Contact/footer.
+- **"What I do" Disciplines (sage sketchbook + flying cards) and the "All
+  projects" table REMOVED** (Afnan's decision). Do not re-add unless she asks.
 - **Marquee ("✿ Product designer with a painter's hand") REMOVED** (Afnan's
   decision). Do not re-add unless she asks.
 - **Kind words / testimonials REMOVED** (Afnan's decision). Do not re-add
@@ -256,17 +257,10 @@ underneath the whole time (no LCP blocking).
   600, text-stroke); "I am ___" typing `site.home.words` in Lora italic;
   bottom-left H1 = mono "Hi, I'm Afnan Maqsood." + Geist headline with italic
   accents (`site.home.headline`); corner mono labels (Ontario + live Toronto
-  clock; "Scroll down to discover" + clay square → #disciplines).
-- `Disciplines.astro` (#disciplines): sage block, title with accents; a CSS
-  3D sketchbook (cover rotates open) and 4 white cards (Geist title + mono
-  hairline lists, `site.home.disciplines`) fly out into a tilted fan — GSAP
-  ScrollTrigger scrub, sticky stage, ≥ 48rem with motion. Else a card grid.
+  clock; "Scroll down to discover" + clay square → #work).
 - `ProjectGrid.astro` (#work): centred Lora "Featured Projects" + role lens;
   Amy-style 2-col cards (image on a soft panel, title + mono tag chips from
   optional `tags` frontmatter, else discipline + first tool).
-- `ProjectTable.astro`: "All *projects* ↙" rows (mono name · type · year ·
-  View case →); hover = floating cover preview following the cursor with a
-  velocity tilt (mouse + motion only).
 - `StudioStrip.astro`: "From the *studio*", link to /studio. FOUR of
   Afnan's pieces in one row (Afnan: "keep only 4"): whirling dervish
   painting, vector portrait (glasses), city portrait (animated), smoke
@@ -403,8 +397,8 @@ About → (g) performance + accessibility pass.
   scenes override with `document.dispatchEvent(new CustomEvent('cursor:state',
   { detail: 'view' | null }))`.
 - Lenis instance exposed as `window.__lenis` for lazily loaded modules.
-- Home order: see DESIGN DIRECTION (Loader → Hero → Disciplines → Featured
-  Projects `#work` → All projects → Studio → #contact).
+- Home order: see DESIGN DIRECTION (Loader → Hero → Featured
+  Projects `#work` → Studio → #contact).
 
 ### Painted assets needed from Afnan (placeholders until then)
 Brush-stroke scans (PNG, transparent), a bristle/brush stamp texture, a
