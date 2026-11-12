@@ -174,7 +174,16 @@ position overrides), `format` (`case-study` default | `showcase`),
 `src/content.config.ts`; the `slug` field is the entry id and the URL.
 
 Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover.jpg`:
-1. `axivus` (product) — zero-to-one B2B automotive SaaS, mechanic mobile app, 24 flows
+1. `axivus` (product) — REAL content from her Figma file 4GqV1ummyjVoXGmGZ3Ll6E
+   (pages: Mechanic Design Flow = 106 iPhone screens; Advisor = iPad
+   1194×834; Design = web command centre 1500×1048) + her briefs (Shop Web
+   Designer Brief V1, Advisor V1 Flows). Case study covers all THREE apps:
+   mechanic phone, service-advisor iPad, shop-owner web; cross-app rule
+   "shop job vs independent job". 13 mechanic screens in
+   `src/assets/projects/axivus/screen-*.png` via the `Phones` MDX
+   component. Cover/banner = phone screens on navy (PIL). TODO: export iPad
+   + web screens (Figma MCP Starter plan hit its call limit) and add them.
+   Figma host www.figma.com is allowed in the environment.
 2. `bridging-divides` (product) — TMU research platform, ORCID, researcher workflows
 3. `glitchard` (product) — AI MetaHuman comedian; Unreal, Convai, ElevenLabs; human in the loop
 4. `brand-identity` (brand, brand lens #1) — brand book, identity, packaging

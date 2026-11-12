@@ -1,49 +1,221 @@
 ---
 title: Axivus
 slug: axivus
-summary: Zero-to-one B2B automotive SaaS. I designed the mechanic-side mobile app end to end, from first interviews to 24 interactive flows.
+summary: A zero-to-one B2B automotive platform — a mechanic phone app, a service-advisor iPad app and a shop-owner web command centre, designed as one system.
 role: Lead Product Designer
-timeline: TODO (e.g. 2024 · 8 months)
-team: TODO (e.g. 1 designer, 1 PM, 4 engineers)
-tools: [Figma, FigJam, Maze]
+timeline: '2025–2026'
+team: Startup product team
+tools: [Figma, Component library, Prototyping]
 outcomes:
-  - 24 interactive flows designed and prototyped
-  - TODO metric (e.g. job time-to-start cut by 40%)
-  - TODO metric
+  - Three connected apps — mobile, iPad and web — on one design system
+  - 106 mechanic screens across 20+ end-to-end flows
+  - The full job lifecycle — bid, drop-off, inspection, estimate, repair and payment
 lens: product
+tags: [Mobile · iPad · Web, B2B SaaS]
 cover: ../../assets/projects/axivus/cover.jpg
-coverAlt: Placeholder cover for Axivus, a terracotta paint mark over a deep green brush stroke.
+coverAlt: Three Axivus mechanic app screens — the marketplace, the command-centre dashboard and an active job — on a deep navy background.
+banner: ../../assets/projects/axivus/banner.jpg
+bannerAlt: Five Axivus app screens in a row on navy — login, marketplace, dashboard, active job and a payment receipt.
 featured: true
 order: 1
 ---
 
-{/* PLACEHOLDER CONTENT — replace each section with the real story.
-    Keep sections short and scannable; lead with decisions and outcomes. */}
+import Phones from '../../components/mdx/Phones.astro';
+import Split from '../../components/mdx/Split.astro';
+import Cards from '../../components/mdx/Cards.astro';
+import Stats from '../../components/mdx/Stats.astro';
+import Quote from '../../components/mdx/Quote.astro';
 
-## Context
+import cover from '../../assets/projects/axivus/cover.jpg';
+import onboard from '../../assets/projects/axivus/screen-onboard.png';
+import login from '../../assets/projects/axivus/screen-login.png';
+import dashboard from '../../assets/projects/axivus/screen-dashboard.png';
+import market from '../../assets/projects/axivus/screen-market.png';
+import activeJob from '../../assets/projects/axivus/screen-activejob.png';
+import inspect from '../../assets/projects/axivus/screen-inspect.png';
+import estimate from '../../assets/projects/axivus/screen-estimate.png';
+import axiTouch from '../../assets/projects/axivus/screen-axitouch.png';
+import guest from '../../assets/projects/axivus/screen-guest.png';
+import messages from '../../assets/projects/axivus/screen-messages.png';
+import receipt from '../../assets/projects/axivus/screen-receipt.png';
+import profile from '../../assets/projects/axivus/screen-profile.png';
+import audit from '../../assets/projects/axivus/screen-audit.png';
 
-TODO: Who was this for, what was the business, and where did you come in?
+<Stats
+  items={[
+    { value: '3', label: 'Connected apps' },
+    { value: '106', label: 'Mechanic screens' },
+    { value: '20+', label: 'End-to-end flows' },
+    { value: '0→1', label: 'New product' },
+  ]}
+/>
 
-## Problem
+<Split src={cover} alt="Three Axivus mechanic app screens — marketplace, dashboard and an active job — on deep navy.">
 
-TODO: The user and business problem in two or three sentences.
+## Overview
 
-## Process
+Axivus is a platform for auto repair. Customers post a job; mechanics find it, bid, and carry it through to payment — and inside the shop, service advisors and owners run the work behind it.
 
-TODO: Research, synthesis, ideation and testing. What did you learn, and from whom?
+I designed the product from scratch across three connected apps: the information architecture, the flows, the screens and the component system that ties them together.
 
-## Key decisions
+</Split>
 
-TODO: Two to four decisions, each with the trade-off you weighed and why you chose it.
+## One platform, three apps
 
-## Final design
+Each person in a repair has a different job and a different device, so Axivus meets them where they work — all sharing the same data, statuses and design language.
 
-TODO: The shipped solution. Large images go here (components arrive in Phase 3).
+<Cards
+  items={[
+    { kicker: 'iPhone', title: 'Mechanic app', body: 'For mechanics on the move: find and bid on jobs, run drop-off, inspection, estimate and repair, message customers and get paid.' },
+    { kicker: 'iPad', title: 'Service Advisor app', body: 'For the front desk: an inbox, customers, appointments and repair orders — with MPI, estimates, approvals, a timeline and an audit log on every RO.' },
+    { kicker: 'Desktop web', title: 'Shop Owner Command Centre', body: 'For the owner: an urgent strip, a priority queue, blockers, tech and job snapshots, reports, a bay-capacity calendar and payments.' },
+  ]}
+/>
 
-## Results
+## The problem
 
-TODO: What changed, with numbers where possible.
+Independent mechanics run their business from a phone, a notebook and a lot of calls. That creates friction on both sides of every job.
+
+<Cards
+  cols={2}
+  items={[
+    { kicker: 'Mechanics', title: 'Work is scattered', body: 'Leads, quotes, approvals and payments live in calls, texts and paper — easy to lose track of, hard to scale.' },
+    { kicker: 'Customers', title: 'Trust is low', body: 'People worry about surprise charges and unnecessary work, and approving a quote often means another phone call.' },
+    { kicker: 'Money', title: 'Getting paid is risky', body: 'Mechanics buy parts up front and chase payment after; customers pay before they know the work is done.' },
+    { kicker: 'Goal', title: 'One clear job flow', body: 'Give mechanics a single place to find, run and get paid for a job — with transparency built in for the customer.' },
+  ]}
+/>
+
+## My role
+
+<Cards
+  items={[
+    { kicker: 'Strategy', title: 'Information architecture', body: 'Mapped the whole job lifecycle into a home, a marketplace, jobs, messages and a profile, with one consistent bottom navigation.' },
+    { kicker: 'UX', title: 'End-to-end flows', body: 'Designed 20+ flows, including the edge cases: scope changes mid-job, top-up payments, objections and guest approvals.' },
+    { kicker: 'UI', title: 'Screens & components', body: 'Built 106 screens on a shared component library, with a consistent status language and a navy, high-contrast look.' },
+  ]}
+/>
+
+## The job, from start to finish
+
+The whole app is organised around one journey. A clear five-step tracker — **Hired → Drop-off → Inspection → Estimate → Repair** — appears on every active job, so a mechanic always knows where they are and what's next.
+
+<Phones
+  screens={[
+    { src: market, alt: 'Marketplace listing open jobs nearby with payout ranges, distance and verified-customer, OBD and photo badges.', label: '1 · Find & bid' },
+    { src: activeJob, alt: 'Active job with a five-step progress tracker, a drop-off alert, customer details and job scope with escrow funded.', label: '2 · Drop-off' },
+    { src: inspect, alt: 'Add line item screen for parts and labour with quantity, unit cost, markup and a live pricing preview.', label: '3 · Inspection' },
+    { src: estimate, alt: 'Estimate builder with quick templates, line items with margins, an estimate breakdown and the mechanic\'s take-home.', label: '4 · Estimate' },
+    { src: receipt, alt: 'Payment receipt showing the customer approved, the escrow breakdown with two staged releases and the platform fee.', label: '5 · Paid' },
+  ]}
+  caption="One job, five stages — each screen answers “what’s happening and what do I do next?”"
+/>
+
+## Key design decisions
+
+### 1. A command centre, not a menu
+
+The home screen leads with the job in progress and the actions that can't wait — approvals waiting, payments to collect, customer replies — then today's route and nearby jobs. Mechanics open the app between tasks, so the next action has to be one tap away.
+
+### 2. Bids built on trust signals
+
+Every marketplace card shows what a mechanic needs to decide fast: the payout range, distance, and badges for a **verified customer**, **OBD codes attached** and **photos attached**. Filters for *Today* and *High payout* match how mechanics actually choose work.
+
+### 3. Transparent estimates, with an assistant
+
+The estimate builder shows parts, labour, margin and the mechanic's **take-home** in real time, with quick templates for common jobs. **Axi Touch** then reviews the estimate before it's sent — grouping line items, rewriting technical wording in plain language and flagging sensible add-ons — and shows a clear before and after so the mechanic stays in control.
+
+<Phones
+  screens={[
+    { src: estimate, alt: 'Estimate builder with line items, margins and take-home pay.', label: 'Estimate builder' },
+    { src: axiTouch, alt: 'Axi Touch summary showing three improvements with before and after examples for grouping, wording and upsell logic.', label: 'Axi Touch review' },
+    { src: guest, alt: 'Guest approval screen: one-tap approval by link with no account needed, next steps and the estimate to approve.', label: 'Guest approval' },
+  ]}
+/>
+
+### 4. Approval without an account
+
+Customers can approve an estimate from a secure link — **no sign-up, no app**. Removing that step takes the friction out of the moment that most often stalls a repair.
+
+### 5. Escrow on both sides
+
+Customers fund the job up front into escrow; mechanics see it marked *funded* before they start. Money is released in two stages — when the repair begins and when the customer signs off — so both sides are protected, and every release appears in the receipt.
+
+### 6. Trust you can see
+
+Profiles show certifications, specialities, ratings and approval rate, and an **audit trail** keeps a full job history. Messages are grouped by what needs action — objections, approvals, estimates — rather than by time alone.
+
+<Phones
+  screens={[
+    { src: messages, alt: 'Messages screen with conversations grouped into action needed and active jobs, with quick actions to send proof or adjust an estimate.', label: 'Messages' },
+    { src: profile, alt: 'Mechanic profile with ratings, jobs completed, approval rate, specialities and certifications.', label: 'Profile' },
+    { src: audit, alt: 'Job history and audit trail with earnings, jobs completed and recent jobs.', label: 'Audit trail' },
+  ]}
+/>
+
+<Quote text="Every screen answers one question: what's happening, and what do I do next?" />
+
+## The Service Advisor app (iPad)
+
+Inside a shop, the service advisor sits between the customer and the technician: answering calls, opening repair orders (ROs), building estimates, chasing approvals and collecting payment. Their app runs on a shop tablet, so I designed it for one-handed use at the counter, with a sidebar as the only navigation.
+
+<Cards
+  cols={2}
+  items={[
+    { kicker: 'Hierarchy', title: 'Action first', body: 'The Inbox leads with what needs a decision now — approvals waiting, no response, payments due — then jobs, then communication. No screen only displays information; every one has a clear next step.' },
+    { kicker: 'Both sides', title: 'What was asked vs. what was found', body: 'Every RO shows the customer’s concern next to the technician’s findings, so the advisor never has to piece the story together.' },
+    { kicker: 'Risk', title: 'Delays are flagged, not hidden', body: 'Missing information and delay risks — like parts on backorder — appear as explicit flags with the suggested next action.' },
+    { kicker: 'States', title: 'Nine clear RO states', body: 'From Needs Estimate to Sent, Viewed, Approved, In Progress, Waiting Parts, Ready and Completed — the same language everywhere, with a full audit log on each RO.' },
+  ]}
+/>
+
+## The Shop Owner Command Centre (web)
+
+For owners and advisors at a desk or on a shop tablet, the Command Centre is the start of every shift. The brief was simple and strict: answer “what do I do next?” in under three seconds.
+
+<Cards
+  cols={2}
+  items={[
+    { kicker: 'Overview', title: 'KPIs that lead to action', body: 'Cards for approvals waiting, viewed-not-approved, waiting parts, waiting payment and in progress each show a count and a dollar value — and open the matching list in one click.' },
+    { kicker: 'Urgency', title: 'Aging you can see', body: 'Approvals and payments are sorted by age, with timers that turn orange and then red, so the oldest money at risk is always on top.' },
+    { kicker: 'Operations', title: 'Board, calendar and payments', body: 'An RO board by stage, a calendar showing bay and technician capacity, reports, and a payments view for what is due, pending or failed.' },
+    { kicker: 'States', title: 'Designed beyond the happy path', body: 'Every list has empty, loading and error states — skeleton shimmer instead of spinners, inline “Retry” banners instead of error pages — on both desktop and tablet layouts.' },
+  ]}
+/>
+
+## One system across three apps
+
+Designing three apps at once surfaced a key rule: there are **two kinds of job**. On a *shop job*, the advisor owns the estimate and talks to the customer, while the technician only inspects and repairs. On an *independent job*, the mechanic does everything. Making this rule explicit resolved most apparent conflicts between the apps — who sends the estimate, who the customer messages, and how they pay (in-app escrow or a payment link).
+
+<Cards
+  items={[
+    { kicker: 'Shared', title: 'One status language', body: 'The same job and payment states, colours and chips across phone, tablet and desktop.' },
+    { kicker: 'Shared', title: 'Axi Touch everywhere', body: 'The estimate assistant appears wherever estimates are sent, always explaining the work in plain language, grouping it into Fix now / Fix soon / Later and suggesting related services.' },
+    { kicker: 'Shared', title: 'Built for the floor', body: 'Large touch targets on tablets, glanceable rows with a single primary action, and screens readable at arm’s length.' },
+  ]}
+/>
+
+## Designing for the shop floor
+
+Mechanics use the app with busy hands, often standing up and in a hurry. So the interface uses large tap targets, a fixed bottom bar with **Jobs** raised in the centre, consistent status colours (in progress, next up, awaiting approval) and short, plain labels. A deep navy brand with bright blue actions keeps important buttons easy to find at a glance.
+
+<Phones
+  screens={[
+    { src: onboard, alt: 'Axivus splash screen with the logo on a deep navy background.', label: 'Splash' },
+    { src: login, alt: 'Login screen with email, password, Google sign-in and a sign-up link.', label: 'Login' },
+    { src: dashboard, alt: 'Command-centre dashboard.', label: 'Home' },
+  ]}
+/>
 
 ## Reflection
 
-TODO: What you would do differently, and what you'd take to your next team.
+<Cards
+  items={[
+    { kicker: 'Learned', title: 'Design the edges, not just the happy path', body: 'Scope changes, objections and top-up payments are where real jobs go wrong — designing them early made the product believable.' },
+    { kicker: 'Learned', title: 'Trust is a feature', body: 'Escrow, guest approval and visible history did more for the experience than any single screen.' },
+    { kicker: 'Learned', title: 'One journey keeps it simple', body: 'Tying every screen to the five job stages kept a large product easy to navigate.' },
+    { kicker: 'Next', title: 'Test with mechanics in the shop', body: 'Run usability sessions on the floor to see how the app holds up with gloves, noise and interruptions.' },
+    { kicker: 'Next', title: 'Measure the funnel', body: 'Track bid-to-hire and estimate-to-approval rates to find where jobs stall.' },
+    { kicker: 'Next', title: 'Extend to the advisor side', body: 'Carry the same system into the service-advisor experience for larger shops.' },
+  ]}
+/>
