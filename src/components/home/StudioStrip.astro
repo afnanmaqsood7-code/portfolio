@@ -7,6 +7,8 @@
  */
 import { Image } from 'astro:assets';
 import dervish from '../../assets/studio/whirling-dervish.jpg';
+import portraitGlasses from '../../assets/studio/portrait-glasses.png';
+import portraitCity from '../../assets/studio/portrait-city.webp';
 
 type Tile = { caption: string; src?: ImageMetadata; alt?: string };
 const tiles: Tile[] = [
@@ -15,8 +17,16 @@ const tiles: Tile[] = [
     src: dervish,
     alt: 'Painting of a whirling dervish in a white robe and red hat, arms outstretched mid-spin, against warm ochre and coral brushwork.',
   },
-  { caption: 'Illustration' },
-  { caption: 'Motion' },
+  {
+    caption: 'Vector portrait, illustration',
+    src: portraitGlasses,
+    alt: 'Vector illustration of a woman with wavy dark hair, bangs and round glasses, looking up, inside a white circle on a coral background.',
+  },
+  {
+    caption: 'City portrait, illustration',
+    src: portraitCity,
+    alt: 'Vector illustration of a bearded man in round sunglasses, a white shirt and a teal jacket, in front of colourful city buildings on a blue sky.',
+  },
   { caption: 'Social' },
 ];
 ---

@@ -269,7 +269,8 @@ underneath the whole time (no LCP blocking).
   velocity tilt (mouse + motion only).
 - `StudioStrip.astro`: "From the *studio*" 4 tiles, link to /studio. Tile 1
   = Afnan's real painting `src/assets/studio/whirling-dervish.jpg`
-  ("Whirling dervish"); tiles 2–4 placeholders until more work arrives.
+  ("Whirling dervish"); tiles 2–3 = her vector illustrations
+  `portrait-glasses.png`, `portrait-city.webp`; tile 4 (Social) placeholder.
 - `Footer.astro` (#contact, all pages): "Let's get in touch!" + email,
   LinkedIn, resume; footer nav (Home + pages + Resume ↓); mono meta row
   (© · Ontario · sound toggle · Back to top).
