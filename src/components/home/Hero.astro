@@ -111,9 +111,10 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
 </script>
 
 <style>
+  /* Sized by its content (no forced full screen), so there's no empty band
+     before Featured Projects — which now peeks in, inviting the scroll. */
   .hero {
     position: relative;
-    min-height: calc(100svh - var(--header-h));
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -131,7 +132,7 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     max-width: var(--container-max);
     width: 100%;
     margin-inline: auto;
-    padding: var(--space-xl) var(--container-pad);
+    padding: var(--space-3xl) var(--container-pad) var(--space-xl);
     text-align: center;
   }
   .hero__id { display: grid; justify-items: center; gap: 0.6rem; }

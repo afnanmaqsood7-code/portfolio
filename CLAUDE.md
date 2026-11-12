@@ -261,7 +261,9 @@ underneath the whole time (no LCP blocking).
   hugging the name block (`scripts/paint-grid.ts`, shared with the footer).
   Status chip at the TOP of the stack: ● "Open to work · Based in
   Canada" (Afnan: no labels row at the bottom of the hero). No clock, no
-  outlined wordmark, no scroll label.
+  outlined wordmark, no scroll label. Hero is sized by its content (no
+  100svh min-height) so there's no empty band before Featured Projects,
+  which peeks into the first screen.
 - `ProjectGrid.astro` (#work): centred Lora "Featured Projects" + role lens;
   Amy-style 2-col cards (image on a soft panel, title + mono tag chips from
   optional `tags` frontmatter, else discipline + first tool).
