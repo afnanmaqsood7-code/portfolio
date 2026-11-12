@@ -24,6 +24,7 @@ order: 6
 import Figure from '../../components/mdx/Figure.astro';
 import FigurePair from '../../components/mdx/FigurePair.astro';
 import Video from '../../components/mdx/Video.astro';
+import LoopGrid from '../../components/mdx/LoopGrid.astro';
 
 import concept from '../../assets/projects/into-the-heart-of-mine/slide-concept.jpg';
 import elias from '../../assets/projects/into-the-heart-of-mine/slide-elias.jpg';
@@ -40,6 +41,8 @@ import labSelfie from '../../assets/projects/into-the-heart-of-mine/lab-selfie.j
 import labPlaytest from '../../assets/projects/into-the-heart-of-mine/lab-playtest.jpg';
 import ingameTunnel from '../../assets/projects/into-the-heart-of-mine/ingame-tunnel.jpg';
 import ingameBlue from '../../assets/projects/into-the-heart-of-mine/ingame-blue.jpg';
+import blueprintDesk from '../../assets/projects/into-the-heart-of-mine/blueprint-desk.jpg';
+import blueprintGraph from '../../assets/projects/into-the-heart-of-mine/blueprint-graph.jpg';
 
 <Video
   src="/work/into-the-heart-of-mine/trailer.mp4"
@@ -129,6 +132,23 @@ We built the mine in Unreal Engine and playtested it in the lab, watching where 
     { src: labPlaytest, alt: 'A teammate pointing at an Unreal Engine viewport of the mine level while others watch in the lab.' },
   ]}
   caption="Working in Unreal Engine and reviewing the level together in the lab."
+/>
+
+<LoopGrid
+  clips={[
+    { src: '/work/into-the-heart-of-mine/bts-headset.mp4', poster: '/work/into-the-heart-of-mine/bts-headset.jpg', label: 'Clip: testing the experience with a VR headset in the lab.' },
+    { src: '/work/into-the-heart-of-mine/bts-level.mp4', poster: '/work/into-the-heart-of-mine/bts-level.jpg', label: 'Clip: the mine level open in Unreal Engine, purple crystals glowing in the editor, a VR headset on the desk.' },
+    { src: '/work/into-the-heart-of-mine/bts-playtest.mp4', poster: '/work/into-the-heart-of-mine/bts-playtest.jpg', label: 'Clip: a classmate playtesting the mine-cart ride on a lab monitor.' },
+  ]}
+  caption="Behind the scenes: headset tests, the level in Unreal, and a playtest of the mine-cart ride."
+/>
+
+<FigurePair
+  items={[
+    { src: blueprintDesk, alt: 'A lab workstation with Unreal Engine open on a large monitor and the game running on a laptop beside it.' },
+    { src: blueprintGraph, alt: 'Close-up of an Unreal Engine Blueprint graph on a monitor.' },
+  ]}
+  caption="Wiring interactions in Unreal Blueprints."
 />
 
 <Figure src={finale} alt="Closing slide: a glowing purple crystal held in a hand, with the line 'The curse is yours… but the fortune awaits.'" caption="The curse is yours… but the fortune awaits." />

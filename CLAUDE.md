@@ -190,6 +190,11 @@ Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover
    720p (`public/work/into-the-heart-of-mine/trailer.mp4`, ~12.7 MB, poster
    jpg beside it). Role written as "UX & sound designer (confirm with
    Afnan)" — confirm and remove the note.
+   Behind-the-scenes: 3 silent 4:5 loops from her phone clips
+   (`public/work/into-the-heart-of-mine/bts-*.mp4`, 0.5–2 MB each) via the
+   `LoopGrid` MDX component, + 2 Blueprint stills. Her .uasset crystal
+   meshes can't be read outside Unreal — asked for a .glb/.fbx export
+   (could become an interactive three.js crystal).
 7. `life-goes-on` (both, order 7, brand lens #3) — "Life Goes On" tribute
    game (all copy TODO). Both added at Afnan's request; they used to be
    planned for the Play page.
@@ -475,7 +480,8 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
       30-second summary card, breakout-grid body: text 42rem, `.cs-wide`,
       `.cs-full`; next-project link) and `components/mdx/` Figure (size
       text|wide|full, framed), FigurePair, Video (self-hosted, controls,
-      preload none, poster). Still TODO: PhoneFrame, MetricRow, PullQuote,
+      preload none, poster), LoopGrid (muted loops, on-screen only, no
+      autoplay with reduced motion, 44px pause button). Still TODO: PhoneFrame, MetricRow, PullQuote,
       showcase layout.
 - [ ] Phase 4 — Play, Studio (lightbox), About.
 - [ ] Phase 5 — immersive motion layer, expanded to the award-level brief

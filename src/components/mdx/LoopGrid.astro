@@ -1,0 +1,63 @@
+---
+/**
+ * Row of short, silent, looping clips (behind-the-scenes). Each clip plays
+ * only while on screen, never with reduced motion, and has a 44px
+ * pause/play button (WCAG 2.2.2). Poster = still for no-JS / reduced motion.
+ */
+interface Clip { src: string; poster: string; label: string }
+interface Props { clips: Clip[]; caption?: string }
+const { clips, caption } = Astro.props;
+---
+
+<figure class="loops cs-wide" data-reveal>
+  <div class="loops__grid" style={`--n:${clips.length}`}>
+    {clips.map((c) => (
+      <div class="loops__item" data-loop-clip>
+        <video src={c.src} poster={c.poster} muted loop playsinline preload="none" role="img" aria-label={c.label}></video>
+        <button type="button" class="loops__btn" data-loop-btn hidden aria-pressed="false">
+          <span class="visually-hidden" data-loop-label>Pause clip</span><span aria-hidden="true" data-loop-icon>❚❚</span>
+        </button>
+      </div>
+    ))}
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-loop-clip]').forEach((box) => {
+    const video = box.querySelector('video')!;
+    const btn = box.querySelector<HTMLButtonElement>('[data-loop-btn]')!;
+    const label = box.querySelector<HTMLElement>('[data-loop-label]')!;
+    const icon = box.querySelector<HTMLElement>('[data-loop-icon]')!;
+    let paused = reduce;
+    let onScreen = false;
+    const sync = () => {
+      if (!paused && onScreen) void video.play().catch(() => {});
+      else video.pause();
+      btn.setAttribute('aria-pressed', String(paused));
+      label.textContent = paused ? 'Play clip' : 'Pause clip';
+      icon.textContent = paused ? '▶' : '❚❚';
+    };
+    btn.hidden = false;
+    btn.addEventListener('click', () => { paused = !paused; sync(); });
+    new IntersectionObserver((e) => { onScreen = e[0].isIntersecting; sync(); }).observe(box);
+    sync();
+  });
+</script>
+
+<style>
+  .loops { margin-block: var(--space-l); }
+  .loops__grid { display: grid; gap: var(--space-s); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 48rem) { .loops__grid { grid-template-columns: repeat(var(--n), minmax(0, 1fr)); } }
+  .loops__item { position: relative; }
+  video { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; background: #111; border-radius: var(--radius-m); }
+  .loops__btn {
+    position: absolute; right: 0.5rem; top: 0.5rem;
+    width: 44px; height: 44px; display: grid; place-items: center;
+    border: 0; border-radius: 50%;
+    background: rgb(17 17 17 / 0.72); color: #fcf6e7; font-size: 0.75rem; cursor: pointer;
+  }
+  .loops__btn[hidden] { display: none; }
+  figcaption { margin-top: 0.6rem; font-size: var(--step--1); color: var(--color-text-muted); font-style: italic; }
+</style>
