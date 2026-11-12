@@ -200,9 +200,14 @@ Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover
    `LoopGrid` MDX component, + 2 Blueprint stills. Her .uasset crystal
    meshes can't be read outside Unreal — asked for a .glb/.fbx export
    (could become an interactive three.js crystal).
-7. `life-goes-on` (both, order 7, brand lens #3) — "Life Goes On" tribute
-   game (all copy TODO). Both added at Afnan's request; they used to be
-   planned for the Play page.
+7. `life-goes-on` (both, order 7, brand lens #3) — REAL content: her solo
+   interactive grief game built in Canva (design DAGjvTi6z6w, spring 2025,
+   31 screens, 4 chapters, 6 puzzles). Banner = title screen, cover = the
+   candle room (her dervish painting is on the table). Four 16:9 crossfade
+   loops (`public/work/life-goes-on/*.mp4`, 80–160 KB) show rooms going from
+   dark to warm; posters are the lit end state. Personal letter content is
+   shown but no family names are written in the copy. Role "Game designer
+   & illustrator", team "Solo project" — written from the deck; confirm.
 
 Case study page order: hero (title, cover, 30-second summary card: role,
 timeline, team, tools, 2–3 outcomes) → MDX body (context, problem, process,

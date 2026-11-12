@@ -5,12 +5,19 @@
  * pause/play button (WCAG 2.2.2). Poster = still for no-JS / reduced motion.
  */
 interface Clip { src: string; poster: string; label: string }
-interface Props { clips: Clip[]; caption?: string }
-const { clips, caption } = Astro.props;
+interface Props {
+  clips: Clip[];
+  caption?: string;
+  /** CSS aspect-ratio of each clip, e.g. '16 / 9'. Default 4:5. */
+  aspect?: string;
+  /** Columns on desktop (defaults to the number of clips). */
+  cols?: number;
+}
+const { clips, caption, aspect = '4 / 5', cols } = Astro.props;
 ---
 
 <figure class="loops cs-wide" data-reveal>
-  <div class="loops__grid" style={`--n:${clips.length}`}>
+  <div class="loops__grid" style={`--n:${cols ?? clips.length};--ar:${aspect}`}>
     {clips.map((c) => (
       <div class="loops__item" data-loop-clip>
         <video src={c.src} poster={c.poster} muted loop playsinline preload="none" role="img" aria-label={c.label}></video>
@@ -51,7 +58,7 @@ const { clips, caption } = Astro.props;
   .loops__grid { display: grid; gap: var(--space-s); grid-template-columns: repeat(2, minmax(0, 1fr)); }
   @media (min-width: 48rem) { .loops__grid { grid-template-columns: repeat(var(--n), minmax(0, 1fr)); } }
   .loops__item { position: relative; }
-  video { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; background: #111; border-radius: var(--radius-m); }
+  video { display: block; width: 100%; aspect-ratio: var(--ar); object-fit: cover; background: #111; border-radius: var(--radius-m); }
   .loops__btn {
     position: absolute; right: 0.5rem; top: 0.5rem;
     width: 44px; height: 44px; display: grid; place-items: center;
