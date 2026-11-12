@@ -2,18 +2,23 @@
 /**
  * "From the studio": Afnan's paintings & illustrations (Amy illustrates her
  * services with her own art — Afnan's version shows her paintings).
- * Real paintings live in src/assets/studio; remaining tiles are
- * PLACEHOLDERS until more of her work arrives.
+ * Her paintings/illustrations live in src/assets/studio; animated loops in
+ * public/studio.
  */
 import { Image, getImage } from 'astro:assets';
 import dervish from '../../assets/studio/whirling-dervish.jpg';
 import portraitGlasses from '../../assets/studio/portrait-glasses.png';
 import portraitCity from '../../assets/studio/portrait-city.webp';
+import portraitSmoke from '../../assets/studio/portrait-smoke.jpg';
+import iftar from '../../assets/studio/iftar-table.jpg';
 
 // `video` (optional): a short silent loop in /public/studio that plays over
 // the still image. The still is the poster, so no-JS / reduced motion just
 // see the illustration.
-type Tile = { caption: string; src?: ImageMetadata; alt?: string; video?: string };
+// `wide`: landscape piece, spans two columns (8:5) instead of one (4:5).
+// Desktop is a 6-col grid: row 1 = three tall tiles, row 2 = one tall + one
+// wide (a 4-col 8:5 tile is ~the height of a 2-col 4:5 tile, so rows align).
+type Tile = { caption: string; src: ImageMetadata; alt: string; video?: string; wide?: boolean };
 const tiles: Tile[] = [
   {
     caption: 'Whirling dervish, painting',
@@ -31,7 +36,18 @@ const tiles: Tile[] = [
     video: '/studio/city-portrait.mp4',
     alt: 'Vector illustration of a bearded man in round sunglasses, a white shirt and a teal jacket, in front of colourful city buildings on a blue sky.',
   },
-  { caption: 'Social' },
+  {
+    caption: 'Smoke portrait, animated illustration',
+    src: portraitSmoke,
+    alt: 'Vector illustration of a bearded man in sunglasses and a grey shirt holding a cigarette, smoke curling up against a black background.',
+    video: '/studio/smoke-portrait.mp4',
+  },
+  {
+    caption: 'Iftar table, illustration',
+    src: iftar,
+    alt: 'Illustration of a laughing grandfather and two boys in white headscarves at an iftar table with dates, a bottle of rose syrup and glasses, under golden lanterns in a blue room.',
+    wide: true,
+  },
 ];
 const posters = await Promise.all(
   tiles.map((t) => (t.video && t.src ? getImage({ src: t.src, width: 640, format: 'webp' }) : null)),
@@ -46,7 +62,7 @@ const posters = await Promise.all(
     </div>
     <ul class="studio__grid" role="list">
       {tiles.map((t, i) => (
-        <li class="studio__tile" data-reveal style={`transition-delay:${i * 80}ms`}>
+        <li class:list={['studio__tile', { 'studio__tile--wide': t.wide }]} data-reveal style={`transition-delay:${i * 80}ms`}>
           {t.video ? (
             <div class="studio__media" data-loop>
               <video class="studio__img" src={t.video} poster={posters[i]?.src} muted loop playsinline preload="none" role="img" aria-label={t.alt}></video>
@@ -54,10 +70,8 @@ const posters = await Promise.all(
                 <span class="visually-hidden">Pause animation</span><span aria-hidden="true" data-loop-icon>❚❚</span>
               </button>
             </div>
-          ) : t.src ? (
-            <Image class="studio__img" src={t.src} alt={t.alt!} widths={[320, 480, 640]} sizes="(min-width: 64rem) 22vw, 45vw" loading="lazy" />
           ) : (
-            <div class="studio__art"><span class="mono-label">Your {t.caption.toLowerCase()} here</span></div>
+            <Image class="studio__img" src={t.src} alt={t.alt} widths={t.wide ? [640, 960, 1280] : [320, 480, 640]} sizes={t.wide ? '(min-width: 64rem) 60vw, 92vw' : '(min-width: 64rem) 30vw, 45vw'} loading="lazy" />
           )}
           <p class="studio__cap">{t.caption}</p>
         </li>
@@ -107,15 +121,12 @@ const posters = await Promise.all(
   }
   .studio__title { font: 400 clamp(1.9rem, 1.4rem + 1.8vw, 2.9rem) / 1.05 var(--font-text); letter-spacing: -0.04em; }
   .studio__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--grid-gap); }
-  @media (min-width: 64rem) { .studio__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-  .studio__art {
-    aspect-ratio: 4 / 5;
-    border-radius: 12px;
-    background: var(--color-surface);
-    display: grid;
-    place-items: center;
-    text-align: center;
-    padding: 1rem;
+  .studio__tile--wide { grid-column: 1 / -1; }
+  .studio__tile--wide .studio__img { aspect-ratio: 8 / 5; }
+  @media (min-width: 64rem) {
+    .studio__grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .studio__tile { grid-column: span 2; }
+    .studio__tile--wide { grid-column: span 4; }
   }
   .studio__img {
     display: block;
@@ -129,7 +140,7 @@ const posters = await Promise.all(
   .studio__toggle {
     position: absolute;
     right: 0.6rem;
-    bottom: 0.6rem;
+    top: 0.6rem; /* top corner: her signature sits bottom-right */
     width: 44px;
     height: 44px;
     display: grid;

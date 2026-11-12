@@ -267,13 +267,14 @@ underneath the whole time (no LCP blocking).
 - `ProjectTable.astro`: "All *projects* ↙" rows (mono name · type · year ·
   View case →); hover = floating cover preview following the cursor with a
   velocity tilt (mouse + motion only).
-- `StudioStrip.astro`: "From the *studio*" 4 tiles, link to /studio. Tile 1
-  = Afnan's real painting `src/assets/studio/whirling-dervish.jpg`
-  ("Whirling dervish"); tiles 2–3 = her vector illustrations
-  `portrait-glasses.png`, `portrait-city.webp`; tile 4 (Social) placeholder.
-  Tile 3 plays her animation `public/studio/city-portrait.mp4` (720², no
-  audio, ~100 KB) over the still poster: muted loop, plays only on screen,
-  never with reduced motion, 44px pause/play button (WCAG 2.2.2).
+- `StudioStrip.astro`: "From the *studio*", link to /studio. Five of
+  Afnan's real pieces (stills in `src/assets/studio`, loops in
+  `public/studio`): whirling dervish painting, vector portrait (glasses),
+  city portrait (animated), smoke portrait (animated, cropped 4:5 from her
+  1080² clip), iftar table (wide 8:5). Desktop 6-col grid: three tall tiles,
+  then tall + wide; phones 2-col with the wide piece full width. Loops are
+  muted (~60–100 KB), play only on screen, never with reduced motion, with
+  a 44px pause/play button top-right (her signature is bottom-right).
 - `Footer.astro` (#contact, all pages): "Let's get in touch!" + email,
   LinkedIn, resume; footer nav (Home + pages + Resume ↓); mono meta row
   (© · Ontario · sound toggle · Back to top).
