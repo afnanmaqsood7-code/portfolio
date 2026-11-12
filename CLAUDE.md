@@ -202,12 +202,17 @@ Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover
    (could become an interactive three.js crystal).
 7. `life-goes-on` (both, order 7, brand lens #3) — REAL content: her solo
    interactive grief game built in Canva (design DAGjvTi6z6w, spring 2025,
-   31 screens, 4 chapters, 6 puzzles). Banner = title screen, cover = the
-   candle room (her dervish painting is on the table). Four 16:9 crossfade
-   loops (`public/work/life-goes-on/*.mp4`, 80–160 KB) show rooms going from
-   dark to warm; posters are the lit end state. Personal letter content is
-   shown but no family names are written in the copy. Role "Game designer
-   & illustrator", team "Solo project" — written from the deck; confirm.
+   31 screens, 4 chapters, 6 puzzles). **Export Canva images with
+   export_quality "pro"** — regular exports carry Canva watermarks (Afnan
+   has a subscription; exported files stay clean if it lapses). Cover and
+   banner are custom key art (diagonal dark/lit split of the candle room,
+   glowing Lora title, NEXT button cropped out) rendered with Playwright.
+   Case study: Play button (Canva view link — Afnan must set the design to
+   "anyone with the link") → stats → Overview → Problem (problem /
+   opportunity / audience / goal) → My role → Concept: four chapter cards →
+   quote → Key design decisions (light loops, puzzles, personal objects,
+   visual language) → Building the prototype → Ending → Reflection
+   (learned + next). No family names in the copy.
 
 Case study page order: hero (title, cover, 30-second summary card: role,
 timeline, team, tools, 2–3 outcomes) → MDX body (context, problem, process,

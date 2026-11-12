@@ -8,15 +8,15 @@ year: '2025'
 team: Solo project
 tools: [Canva, Digital illustration, Interaction design]
 outcomes:
-  - Playable click-through game with four chapters and six gentle puzzles
-  - Illustrated rooms whose light shifts from dark to warm as the player heals
-  - Shared with players and closed with an open invitation to reflect
+  - Playable game — 4 chapters, 6 puzzles, 31 screens — built with no code
+  - A light system where each room moves from dark to warm as the player heals
+  - Shared with players, closing with an open invitation to reflect
 lens: both
 tags: [Narrative game, Illustration]
 cover: ../../assets/projects/life-goes-on/cover.jpg
-coverAlt: An illustrated room with a lit candle, a stack of books and a framed painting of a whirling dervish on a small table beside an armchair.
+coverAlt: Life Goes On key art — a room split diagonally between darkness and warm light, a lit candle, books and a framed painting of a whirling dervish on a small table.
 banner: ../../assets/projects/life-goes-on/banner.jpg
-bannerAlt: Title screen of Life Goes On — glowing gold lettering on black with an 'Enter the room' button.
+bannerAlt: Life Goes On key art — the title in glowing gold on the dark half of a room, a candle-lit table with books and a painting on the bright half.
 featured: true
 order: 7
 lensOrder:
@@ -30,109 +30,148 @@ import Split from '../../components/mdx/Split.astro';
 import Cards from '../../components/mdx/Cards.astro';
 import Stats from '../../components/mdx/Stats.astro';
 import Quote from '../../components/mdx/Quote.astro';
+import Button from '../../components/ui/Button.astro';
 
+import title from '../../assets/projects/life-goes-on/title.jpg';
+import plantGrown from '../../assets/projects/life-goes-on/plant-grown.jpg';
 import candleLit from '../../assets/projects/life-goes-on/candle-lit.jpg';
+import memoryWall from '../../assets/projects/life-goes-on/memory-wall.jpg';
+import roomTidy from '../../assets/projects/life-goes-on/room-tidy.jpg';
 import anagram from '../../assets/projects/life-goes-on/puzzle-anagram.jpg';
 import crossword from '../../assets/projects/life-goes-on/puzzle-crossword.jpg';
 import letter from '../../assets/projects/life-goes-on/puzzle-letter.jpg';
 import maze from '../../assets/projects/life-goes-on/puzzle-maze.jpg';
-import memoryWall from '../../assets/projects/life-goes-on/memory-wall.jpg';
 import finalRoom from '../../assets/projects/life-goes-on/final-room.jpg';
+
+<div class="cs-actions">
+  <Button href="https://www.canva.com/d/5MyAHT2vzUARm4U" external>Play the game ↗</Button>
+</div>
 
 <Stats
   items={[
     { value: '4', label: 'Chapters' },
     { value: '6', label: 'Puzzles' },
     { value: '31', label: 'Screens' },
-    { value: '1', label: 'Designer' },
+    { value: '0', label: 'Lines of code' },
   ]}
 />
 
-<Split src={candleLit} alt="An illustrated room with a lit candle, a stack of books and a framed painting of a whirling dervish on a small table beside an armchair.">
+<Split src={title} alt="Title screen: 'Life Goes On…' in glowing gold on black, with an 'Enter the room' button.">
 
-## The idea
+## Overview
 
-Life Goes On is a short, playable game that lets players move through grief as a journey. It isn't about forgetting someone — it's about learning how to carry the loss differently.
+Life Goes On is a short, playable game that lets people move through grief as a journey. It isn't about forgetting someone. It's about learning how to carry the loss differently.
 
-**Why a game?** Grief is universal, but games rarely touch it. Most focus on action, competition or escape. I wanted to make a small, gentle space for reflection, healing and empathy instead.
+The player enters a series of quiet rooms. Each one is dim and still until they solve a small puzzle and act on it — then the light returns. I designed, illustrated and built the whole game myself.
 
 </Split>
 
-<Quote text="I don't have to let go. I've just learned how to hold differently." />
+## The problem
 
-## My role
-
-This was a solo project: I took it from a personal idea to a finished, playable game.
+Grief is one of the most universal human experiences, yet games almost never make room for it.
 
 <Cards
+  cols={2}
   items={[
-    { kicker: 'Story', title: 'Concept & narrative', body: 'Shaped grief into four chapters — Letting Go, Healing, Acceptance and Life Goes On — each a room with one small task.' },
-    { kicker: 'Art', title: 'Illustration & rooms', body: 'Illustrated every room and object in a soft sage, clay and gold palette, and designed the lighting that changes as you play.' },
-    { kicker: 'Interaction', title: 'Puzzles & flow', body: 'Designed and built six puzzles and the click-through flow in Canva, so the whole game plays without any code.' },
+    { kicker: 'Problem', title: 'Games rarely touch grief', body: 'Most games are built around action, competition or escape. Very few explore emotional realism, especially something as personal as loss.' },
+    { kicker: 'Opportunity', title: 'Play can help us process', body: 'Interaction lets people do something with a feeling — not just read about it. Small actions can make a big emotion feel manageable.' },
+    { kicker: 'Audience', title: 'Anyone carrying a loss', body: 'Players who may not be “gamers” at all, so the experience had to be calm, simple to control and free of pressure.' },
+    { kicker: 'Goal', title: 'A gentle space to reflect', body: 'Design a short game that feels safe, moves the player from heaviness to warmth, and leaves them with something to hold on to.' },
   ]}
 />
 
-## How it plays
+## My role
 
-The game opens on a black screen and a single invitation: *Enter the room.* From a simple menu, players move through four chapters — *Letting Go*, *Healing*, *Acceptance* and *Life Goes On*. Each room starts dim and still. Solving a small puzzle — and acting on what it reveals — slowly brings the room back to life.
+A solo project: I took it from a personal idea to a finished, playable game.
 
+<Cards
+  items={[
+    { kicker: 'Story', title: 'Concept & narrative', body: 'Turned grief into four chapters, each a room with one small, meaningful task.' },
+    { kicker: 'Art', title: 'Illustration & rooms', body: 'Illustrated every room and object, and designed how light and colour change as the player progresses.' },
+    { kicker: 'Interaction', title: 'Puzzles & prototype', body: 'Designed six puzzles and built the full click-through game in Canva, with every state as its own screen.' },
+  ]}
+/>
 
-## Light as emotion
+## Concept: grief as four rooms
 
-The core design idea is that **the room heals with the player**. Every scene begins in shadow. As you prune a dead plant and water it, light a candle, pin memories to a wall or tidy a room, the light warms, colour returns and the space opens up. No text tells you how to feel — the room shows it.
+Instead of telling a story about grief, the game lets the player *move through* it. Each chapter is a stage of healing, a room, a puzzle and a small act of care.
+
+<Cards
+  cols={2}
+  items={[
+    { src: plantGrown, alt: 'A potted plant growing in sunlight beside a bright window.', kicker: 'Chapter 1', title: 'Letting Go', body: 'Unscramble the word “regrow”, then cut back a dead plant, give it new soil and water it. Something new can grow.' },
+    { src: candleLit, alt: 'A candle burning on a small table beside a framed painting and a stack of books.', kicker: 'Chapter 2', title: 'Healing', body: 'Solve a crossword for “candle”, then light it. Warmth returns to a room that was in shadow.' },
+    { src: memoryWall, alt: 'A memory wall: notes, a heart drawing and a handwritten letter pinned to a grid on a sage wall.', kicker: 'Chapter 3', title: 'Acceptance', body: 'Piece together a torn handwritten letter, then pin memories to the wall — keeping them close instead of hiding them away.' },
+    { src: roomTidy, alt: 'A tidy room with a wooden dresser and a golden key on the floor.', kicker: 'Chapter 4', title: 'Life Goes On', body: 'Find a way through a maze to the keys, clear the room and open the door to what comes next.' },
+  ]}
+/>
+
+<Quote text="I don't have to let go. I've just learned how to hold differently." />
+
+## Key design decisions
+
+### 1. Light is the feedback
+
+The core idea: **the room heals with the player.** Every scene opens in shadow. When the player acts, the light warms, colour returns and the space opens up. There are no scores or progress bars — the room itself shows that something has changed, so players *feel* progress instead of reading it.
 
 <LoopGrid
   aspect="16 / 9"
   cols={2}
   clips={[
     { src: '/work/life-goes-on/plant.mp4', poster: '/work/life-goes-on/plant.jpg', label: 'Loop: a dead plant is cut back, given fresh soil and water, and a new plant grows in the sunlight.' },
-    { src: '/work/life-goes-on/candle.mp4', poster: '/work/life-goes-on/candle.jpg', label: 'Loop: a candle is lit on a table beside a framed painting, and the dark room fills with warm light.' },
-    { src: '/work/life-goes-on/memories.mp4', poster: '/work/life-goes-on/memories.jpg', label: 'Loop: memories from a box are pinned one by one to a grid on the wall, and the room brightens.' },
-    { src: '/work/life-goes-on/room.mp4', poster: '/work/life-goes-on/room.jpg', label: 'Loop: a messy room is cleared, revealing a golden key.' },
+    { src: '/work/life-goes-on/candle.mp4', poster: '/work/life-goes-on/candle.jpg', label: 'Loop: a candle is lit and the dark room fills with warm light.' },
+    { src: '/work/life-goes-on/memories.mp4', poster: '/work/life-goes-on/memories.jpg', label: 'Loop: memories are pinned to a grid on the wall and the room brightens.' },
+    { src: '/work/life-goes-on/room.mp4', poster: '/work/life-goes-on/room.jpg', label: 'Loop: a messy room is cleared and the light comes back.' },
   ]}
-  caption="Each room moves from dark to warm as the player acts: regrowing a plant, lighting a candle, pinning memories, clearing the room."
+  caption="Dark to warm: each room changes the moment the player acts."
 />
 
-## Gentle puzzles
+### 2. Puzzles are pauses, not tests
 
-The puzzles are deliberately simple. They aren't there to challenge — they give the player a reason to slow down, look closely and take part. An anagram spells *regrow*; a crossword hides the word *candle*; a torn handwritten letter is pieced back together; and a small maze leads to the keys that let you leave.
+The puzzles are deliberately easy. Their job is to slow the player down and invite them to look closely — not to frustrate them. There are no timers, no lives and no way to fail. Each answer also names the action that follows: *regrow*, *candle*.
 
 <FigureRow
   items={[
-    { src: anagram, alt: 'Anagram puzzle: the letters G R E R W O to arrange into one word, under a string of warm lights.' },
-    { src: crossword, alt: 'Crossword-style "Guess the word" grid on a sage background.' },
+    { src: anagram, alt: 'Anagram puzzle: the letters G R E R W O to arrange into one word, under warm string lights.' },
+    { src: crossword, alt: 'Crossword-style “Guess the word” grid on a sage background.' },
   ]}
 />
 
 <FigureRow
   items={[
-    { src: letter, alt: 'Jigsaw puzzle: a torn handwritten letter, with English and Urdu writing and a small drawing, pieced back together.' },
-    { src: maze, alt: 'A simple maze with a small gold ball at the entrance and golden keys at the exit.' },
+    { src: letter, alt: 'Jigsaw puzzle: a torn handwritten letter being pieced back together.' },
+    { src: maze, alt: 'A simple maze with a small gold ball at the start and golden keys at the exit.' },
   ]}
-  caption="Anagram, crossword, a letter jigsaw and a maze — small, quiet moments of focus."
+  caption="Anagram, crossword, letter jigsaw and maze — small moments of focus."
 />
 
-## Personal details
+### 3. Real objects make it personal
 
-The game is full of small, real things: a handwritten letter, children's drawings, and — on the table next to the candle — my own painting of a whirling dervish. These details make the rooms feel lived in, and remind the player that grief is always about someone specific.
+Grief is always about someone specific, so the rooms are full of real things: a handwritten letter, children's drawings, and my own painting of a whirling dervish on the table beside the candle. These details made the game feel lived in rather than generic.
 
-<Figure src={memoryWall} alt="A memory wall: notes, a red heart drawing and a handwritten letter pinned to a grid on a sage wall, with a laptop below and a box labelled Memories." caption="The memory wall, filled in by the player." />
+### 4. A calm visual language
+
+Soft sage walls, warm clay and wood, and gold for anything hopeful — a candle flame, a key, a string of lights. One serif typeface, gentle textures and slow transitions keep the whole experience quiet, so nothing pulls the player out of the moment.
+
+## Building the prototype
+
+I built the game entirely in Canva. Every state of every room is its own screen, and links on buttons and objects move the player forward — 31 screens in all. Working this way let me iterate on the art and the flow at the same time, and share a playable game with nothing more than a link.
 
 ## The ending
 
-After the last room, the player arrives somewhere new: a bright, calm, lived-in room. Life goes on — not because the loss is gone, but because there is room to hold it. The game closes by inviting players to share their own thoughts.
+After the last room, the player arrives somewhere new: a bright, calm, lived-in room. Life goes on — not because the loss is gone, but because there's room to hold it. The game closes with an invitation for players to share their own thoughts.
 
 <Figure src={finalRoom} alt="An isometric illustration of a bright, tidy bedroom with plants, shelves, a desk, a bed with a teal cover and a window." caption="The final room: bright, calm and lived in." />
 
-## What I learned
+## Reflection
 
 <Cards
   items={[
-    { kicker: '01', title: 'Design for feelings, not just tasks', body: 'Every interaction had to mean something emotionally. A puzzle only earned its place if it moved the story — and the player — forward.' },
-    { kicker: '02', title: 'Light can tell the story', body: 'Changing brightness and colour communicated progress better than any text, and let players feel the change instead of reading about it.' },
-    { kicker: '03', title: 'Gentle is a design choice', body: 'For a sensitive subject, low difficulty and a calm pace kept players reflecting instead of feeling tested.' },
-    { kicker: '04', title: 'Prototype with what you have', body: 'Building the whole game in Canva proved that strong interaction design doesn’t need code — just clear states and good transitions.' },
-    { kicker: '05', title: 'Personal makes it universal', body: 'The most specific details — a letter, a painting — were what players connected with most.' },
-    { kicker: '06', title: 'Leave space for the player', body: 'Ending with an open question, rather than an answer, let each player bring their own story to it.' },
+    { kicker: 'Learned', title: 'Design for feelings, not just tasks', body: 'Every interaction had to mean something emotionally. A puzzle only earned its place if it moved the player forward.' },
+    { kicker: 'Learned', title: 'Gentle is a design choice', body: 'For a sensitive subject, low difficulty and a calm pace kept players reflecting instead of feeling tested.' },
+    { kicker: 'Learned', title: 'Personal makes it universal', body: 'The most specific details — a letter, a painting — were the ones that made the game feel honest.' },
+    { kicker: 'Next', title: 'Add sound', body: 'Soft ambient audio and small sounds for each action would deepen the shift from heavy to hopeful.' },
+    { kicker: 'Next', title: 'Test with more players', body: 'Run structured playtests to see where people pause, what they feel and which moments land.' },
+    { kicker: 'Next', title: 'Take it into a game engine', body: 'Rebuild it with real lighting and animation so the rooms can change smoothly, not screen by screen.' },
   ]}
 />
