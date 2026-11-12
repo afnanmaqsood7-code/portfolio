@@ -153,7 +153,9 @@ src/
   `.accent` (italic Lora), `.mono-label` (uppercase mono), `[data-reveal]`.
 - Fluid scales, layout and motion tokens unchanged.
 - Network: the "portfolio" cloud environment allows fonts.google(apis).com /
-  gstatic.com, so sandbox builds now use the real fonts.
+  gstatic.com, so sandbox builds now use the real fonts. Also allowed:
+  export-download.canva.com, drive.google.com, drive.usercontent.google.com
+  (to pull Afnan's Canva exports and Drive files).
 
 ## Layout system (`grid.css`)
 Mobile first. `.container`; `.grid` = 4 cols → 8 at ≥48rem → 12 at ≥64rem.
@@ -181,7 +183,13 @@ Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover
    mobile app screens. Large images grouped by type + short process note
    (research → wireframes → hi-fi). Replaced `neighbourhood-coffee` (removed at
    Afnan's request).
-6. `ar-vr-game` (product, order 6) — AR/VR game (all copy TODO from Afnan).
+6. `into-the-heart-of-mine` (product, order 6) — REAL content: VR game,
+   "AR/VR in Practice" course, summer 2025, team of 6. Copy written from her
+   Canva pitch deck (DAGqEZKSSk0) + her Premiere/lab screenshots. Trailer
+   from her Canva design DAHarzAWuAQ, exported to MP4 and compressed to
+   720p (`public/work/into-the-heart-of-mine/trailer.mp4`, ~12.7 MB, poster
+   jpg beside it). Role written as "UX & sound designer (confirm with
+   Afnan)" — confirm and remove the note.
 7. `life-goes-on` (both, order 7, brand lens #3) — "Life Goes On" tribute
    game (all copy TODO). Both added at Afnan's request; they used to be
    planned for the Play page.
@@ -462,6 +470,13 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
       `/work/[slug]` is a basic stub until Phase 3.
 - [ ] Phase 3 — case study template + MDX components + PhoneFrame + showcase
       gallery layout for `format: showcase`.
+      BUILT so far: `pages/work/[slug].astro` (back link, mono eyebrow, big
+      title, lede, wide hero = optional `banner`/`bannerAlt` else cover,
+      30-second summary card, breakout-grid body: text 42rem, `.cs-wide`,
+      `.cs-full`; next-project link) and `components/mdx/` Figure (size
+      text|wide|full, framed), FigurePair, Video (self-hosted, controls,
+      preload none, poster). Still TODO: PhoneFrame, MetricRow, PullQuote,
+      showcase layout.
 - [ ] Phase 4 — Play, Studio (lightbox), About.
 - [ ] Phase 5 — immersive motion layer, expanded to the award-level brief
       (steps a–g above). Approved. Step (a) done. Desk scene built then removed.

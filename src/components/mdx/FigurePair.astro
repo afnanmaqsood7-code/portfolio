@@ -1,0 +1,25 @@
+---
+/** Two images side by side (stacked on phones). Alt text required for both. */
+import { Image } from 'astro:assets';
+
+interface Item { src: ImageMetadata; alt: string }
+interface Props { items: [Item, Item]; caption?: string }
+const { items, caption } = Astro.props;
+---
+
+<figure class="pair cs-wide" data-reveal>
+  <div class="pair__grid">
+    {items.map((it) => (
+      <Image src={it.src} alt={it.alt} widths={[480, 720, 960, 1200]} sizes="(min-width: 48rem) 36rem, 100vw" loading="lazy" />
+    ))}
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .pair { margin-block: var(--space-l); }
+  .pair__grid { display: grid; gap: var(--space-s); align-items: start; }
+  @media (min-width: 48rem) { .pair__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .pair__grid :global(img) { display: block; width: 100%; height: auto; border-radius: var(--radius-m); }
+  figcaption { margin-top: 0.6rem; font-size: var(--step--1); color: var(--color-text-muted); font-style: italic; }
+</style>

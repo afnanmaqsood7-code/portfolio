@@ -1,37 +1,162 @@
 ---
 /**
- * Case study route. PHASE 2 STUB: renders the basics so the home cards link
- * somewhere real. Phase 3 replaces this with the full template (hero, 30-second
- * summary card, MDX components, PhoneFrame, showcase format, next project).
+ * Case study page (calm, editorial).
+ * Hero: back link → mono eyebrow → big title → summary → wide image →
+ * 30-second summary card (role, timeline, team, tools + outcomes).
+ * Body: MDX in a breakout grid — text sits in a ~42rem reading column;
+ * figures with .cs-wide / .cs-full break out wider (see components/mdx).
+ * End: next project.
  */
 import { render } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PageIntro from '../../components/ui/PageIntro.astro';
-import { getProjects } from '../../utils/projects';
+import { getProjects, lensLabel } from '../../utils/projects';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
-  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, next: projects[(i + 1) % projects.length] },
+  }));
 }
 
-const { project } = Astro.props;
+const { project, next } = Astro.props;
 const { Content } = await render(project);
-const { title, summary, cover, coverAlt } = project.data;
+const d = project.data;
+const heroSrc = d.banner ?? d.cover;
+const heroAlt = d.banner ? (d.bannerAlt ?? d.coverAlt) : d.coverAlt;
+const eyebrow = [d.tags?.join(' · ') ?? lensLabel(d.lens), d.year].filter(Boolean).join(' · ');
+const facts = [
+  ['Role', d.role],
+  ['Timeline', d.timeline],
+  ['Team', d.team],
+  ['Tools', d.tools.join(', ')],
+];
 ---
 
-<BaseLayout title={title} description={summary}>
-  <PageIntro eyebrow="Case study · full template in Phase 3" title={title} lede={summary} />
-  <div class="container">
-    <Image src={cover} alt={coverAlt} widths={[800, 1200, 1600]} sizes="100vw" loading="eager" class="cover" />
-    <article class="prose body">
+<BaseLayout title={d.title} description={d.summary}>
+  <article class="cs">
+    <header class="cs-hero">
+      <div class="cs-hero__text">
+        <a class="cs-back mono-label" href="/#work"><span aria-hidden="true">←</span> All work</a>
+        <p class="mono-label cs-eyebrow">{eyebrow}</p>
+        <h1 class="cs-title">{d.title}</h1>
+        <p class="cs-lede">{d.summary}</p>
+      </div>
+
+      <Image class="cs-hero__img" src={heroSrc} alt={heroAlt} widths={[800, 1200, 1600, 2000]} sizes="(min-width: 90rem) 84rem, 100vw" loading="eager" fetchpriority="high" />
+
+      <section class="cs-card" aria-label="Project summary">
+        <dl class="cs-facts">
+          {facts.map(([k, v]) => (
+            <div><dt class="mono-label">{k}</dt><dd>{v}</dd></div>
+          ))}
+        </dl>
+        <div class="cs-outcomes">
+          <h2 class="mono-label">Outcomes</h2>
+          <ul role="list">
+            {d.outcomes.slice(0, 3).map((o) => <li>{o}</li>)}
+          </ul>
+        </div>
+      </section>
+    </header>
+
+    <div class="cs-body">
       <Content />
-    </article>
-  </div>
+    </div>
+
+    <nav class="cs-next" aria-label="Next project">
+      <a href={`/work/${next.id}/`}>
+        <span class="mono-label">Next project</span>
+        <span class="cs-next__title">{next.data.title} <span aria-hidden="true">→</span></span>
+      </a>
+    </nav>
+  </article>
 </BaseLayout>
 
 <style>
-  .cover { width: 100%; border-radius: var(--radius-m); }
-  .body { padding-block: var(--space-2xl); }
-  .body :global(h2) { margin-top: var(--space-xl); }
+  .cs { --text: min(42rem, calc(100% - 2 * var(--container-pad))); }
+
+  /* ---- Hero ---- */
+  .cs-hero {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-xl) var(--container-pad) 0;
+  }
+  .cs-hero__text { display: grid; gap: var(--space-xs); max-width: 52rem; }
+  .cs-back { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; width: fit-content; text-decoration: none; color: var(--color-text-muted); }
+  .cs-back:hover { color: var(--color-text); }
+  .cs-eyebrow { color: var(--color-accent); }
+  .cs-title {
+    font: 600 clamp(2.6rem, 1.2rem + 6vw, 6.5rem) / 0.95 var(--font-text);
+    letter-spacing: -0.05em;
+    text-wrap: balance;
+  }
+  .cs-lede { font-size: var(--step-1); line-height: 1.45; color: var(--color-text-muted); max-width: 40rem; text-wrap: pretty; }
+  .cs-hero__img { display: block; width: 100%; height: auto; margin-top: var(--space-l); border-radius: var(--radius-m); }
+
+  /* 30-second summary card */
+  .cs-card {
+    display: grid;
+    gap: var(--space-m);
+    margin-top: var(--space-m);
+    padding: var(--space-m);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-m);
+    background: var(--color-card);
+  }
+  @media (min-width: 56rem) { .cs-card { grid-template-columns: 3fr 2fr; gap: var(--space-l); } }
+  .cs-facts { display: grid; gap: var(--space-s) var(--space-m); grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
+  .cs-facts dt, .cs-outcomes h2 { color: var(--color-text-muted); margin-bottom: 0.3rem; }
+  .cs-facts dd { margin: 0; line-height: 1.4; }
+  .cs-outcomes ul { display: grid; gap: 0.5rem; }
+  .cs-outcomes li { padding-left: 1.1rem; position: relative; line-height: 1.4; }
+  .cs-outcomes li::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 0.45rem; height: 0.45rem; background: var(--clay-bright); }
+
+  /* ---- Body: breakout grid ---- */
+  .cs-body {
+    display: grid;
+    grid-template-columns:
+      [full-start] minmax(var(--container-pad), 1fr)
+      [wide-start] minmax(0, 15rem)
+      [text-start] var(--text) [text-end]
+      minmax(0, 15rem) [wide-end]
+      minmax(var(--container-pad), 1fr) [full-end];
+    padding-block: var(--space-2xl);
+  }
+  .cs-body > :global(*) { grid-column: text; }
+  .cs-body > :global(.cs-wide) { grid-column: wide; }
+  .cs-body > :global(.cs-full) { grid-column: full; }
+  .cs-body :global(h2) {
+    margin-top: var(--space-xl);
+    font: 500 clamp(1.7rem, 1.3rem + 1.4vw, 2.4rem) / 1.1 var(--font-display);
+  }
+  .cs-body :global(h2:first-child) { margin-top: 0; }
+  .cs-body :global(h3) { margin-top: var(--space-m); font: 600 var(--step-1) / 1.25 var(--font-text); letter-spacing: -0.02em; }
+  .cs-body :global(p),
+  .cs-body :global(li) { font-size: var(--step-0); line-height: 1.7; }
+  .cs-body :global(p) { margin-top: 1em; }
+  .cs-body :global(ul:not([role])) { margin-top: 1em; padding-left: 1.2rem; list-style: disc; }
+  .cs-body :global(ul:not([role]) li + li) { margin-top: 0.4em; }
+  .cs-body :global(strong) { font-weight: 600; }
+  .cs-body :global(blockquote) {
+    margin-block: var(--space-l);
+    padding-left: var(--space-s);
+    border-left: 3px solid var(--clay-bright);
+    font: italic 400 var(--step-2) / 1.3 var(--font-display);
+  }
+
+  /* ---- Next project ---- */
+  .cs-next { border-top: 1px solid var(--color-border); }
+  .cs-next a {
+    display: grid;
+    gap: 0.4rem;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-xl) var(--container-pad);
+    text-decoration: none;
+    color: var(--color-text);
+  }
+  .cs-next__title { font: 600 clamp(2rem, 1rem + 4vw, 4.5rem) / 1 var(--font-text); letter-spacing: -0.045em; }
+  .cs-next a:hover .cs-next__title { color: var(--color-accent); }
 </style>

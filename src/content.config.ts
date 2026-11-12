@@ -32,6 +32,9 @@ const projects = defineCollection({
 
       cover: image(),
       coverAlt: z.string().min(1, 'coverAlt is required (describe the cover image)'),
+      // Optional wide hero image for the case-study page (else the cover).
+      banner: image().optional(),
+      bannerAlt: z.string().optional(),
 
       featured: z.boolean().default(false),
       // Position in the "Everything" lens (1 = first).

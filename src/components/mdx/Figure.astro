@@ -1,0 +1,30 @@
+---
+/**
+ * Case-study image. `size`: 'text' (reading column), 'wide' (default, wider
+ * than the text) or 'full' (container width). Alt text is required.
+ */
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+  size?: 'text' | 'wide' | 'full';
+  /** Frame light/UI screenshots with a hairline so they don't float. */
+  framed?: boolean;
+}
+const { src, alt, caption, size = 'wide', framed = false } = Astro.props;
+const sizes = size === 'text' ? '(min-width: 48rem) 42rem, 100vw' : size === 'wide' ? '(min-width: 72rem) 72rem, 100vw' : '100vw';
+---
+
+<figure class:list={['fig', `cs-${size}`, { 'fig--framed': framed }]} data-reveal>
+  <Image src={src} alt={alt} widths={[640, 960, 1440, 1920]} sizes={sizes} loading="lazy" />
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .fig { margin-block: var(--space-l); }
+  .fig :global(img) { display: block; width: 100%; height: auto; border-radius: var(--radius-m); }
+  .fig--framed :global(img) { border: 1px solid var(--color-border); }
+  figcaption { margin-top: 0.6rem; font-size: var(--step--1); color: var(--color-text-muted); font-style: italic; }
+</style>
