@@ -31,17 +31,27 @@ import Cards from '../../components/mdx/Cards.astro';
 import Stats from '../../components/mdx/Stats.astro';
 import Quote from '../../components/mdx/Quote.astro';
 import Button from '../../components/ui/Button.astro';
+import Band from '../../components/mdx/Band.astro';
+import Video from '../../components/mdx/Video.astro';
 
 import title from '../../assets/projects/life-goes-on/title.jpg';
 import plantGrown from '../../assets/projects/life-goes-on/plant-grown.jpg';
 import candleLit from '../../assets/projects/life-goes-on/candle-lit.jpg';
 import memoryWall from '../../assets/projects/life-goes-on/memory-wall.jpg';
-import roomTidy from '../../assets/projects/life-goes-on/room-tidy.jpg';
 import anagram from '../../assets/projects/life-goes-on/puzzle-anagram.jpg';
 import crossword from '../../assets/projects/life-goes-on/puzzle-crossword.jpg';
 import letter from '../../assets/projects/life-goes-on/puzzle-letter.jpg';
 import maze from '../../assets/projects/life-goes-on/puzzle-maze.jpg';
 import finalRoom from '../../assets/projects/life-goes-on/final-room.jpg';
+
+<Band label="Gameplay">
+  <Video
+    src="/work/life-goes-on/gameplay.mp4"
+    poster="/work/life-goes-on/gameplay.jpg"
+    title="Life Goes On — full playthrough of the game"
+    caption="The whole game in 74 seconds — every chapter, with the waiting between clicks taken out."
+  />
+</Band>
 
 <div class="cs-actions">
   <Button href="https://www.canva.com/d/5MyAHT2vzUARm4U" external>Play the game ↗</Button>
@@ -102,7 +112,7 @@ Instead of telling a story about grief, the game lets the player *move through* 
     { src: plantGrown, alt: 'A potted plant growing in sunlight beside a bright window.', kicker: 'Chapter 1', title: 'Letting Go', body: 'Unscramble the word “regrow”, then cut back a dead plant, give it new soil and water it. Something new can grow.' },
     { src: candleLit, alt: 'A candle burning on a small table beside a framed painting and a stack of books.', kicker: 'Chapter 2', title: 'Healing', body: 'Solve a crossword for “candle”, then light it. Warmth returns to a room that was in shadow.' },
     { src: memoryWall, alt: 'A memory wall: notes, a heart drawing and a handwritten letter pinned to a grid on a sage wall.', kicker: 'Chapter 3', title: 'Acceptance', body: 'Piece together a torn handwritten letter, then pin memories to the wall — keeping them close instead of hiding them away.' },
-    { src: roomTidy, alt: 'A tidy room with a wooden dresser and a golden key on the floor.', kicker: 'Chapter 4', title: 'Life Goes On', body: 'Find a way through a maze to the keys, clear the room and open the door to what comes next.' },
+    { src: finalRoom, alt: 'A bright, tidy isometric bedroom with plants, shelves, a desk and a bed with a teal cover.', kicker: 'Chapter 4', title: 'Life Goes On', body: 'Find a way through a maze to the keys, clear away the mess and step into a calm, bright room — ready for what comes next.' },
   ]}
 />
 
@@ -161,7 +171,6 @@ I built the game entirely in Canva. Every state of every room is its own screen,
 
 After the last room, the player arrives somewhere new: a bright, calm, lived-in room. Life goes on — not because the loss is gone, but because there's room to hold it. The game closes with an invitation for players to share their own thoughts.
 
-<Figure src={finalRoom} alt="An isometric illustration of a bright, tidy bedroom with plants, shelves, a desk, a bed with a teal cover and a window." caption="The final room: bright, calm and lived in." />
 
 ## Reflection
 

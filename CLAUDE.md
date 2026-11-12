@@ -214,6 +214,11 @@ Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover
    quote → Key design decisions (light loops, puzzles, personal objects,
    visual language) → Building the prototype → Ending → Reflection
    (learned + next). No family names in the copy.
+   Gameplay video at the top (Band): Afnan's 3-min recording with every
+   still/waiting stretch cut to 0.7 s (2.6 s on the two intro text
+   screens) via freezedetect + select → 74 s, silent, 720p, ~2.3 MB
+   (`public/work/life-goes-on/gameplay.mp4`). Chapter 4 card = the clean
+   final room (Afnan: "should be a clean room").
 
 Case study page order: hero (title, cover, 30-second summary card: role,
 timeline, team, tools, 2–3 outcomes) → MDX body (context, problem, process,
