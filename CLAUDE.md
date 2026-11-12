@@ -100,8 +100,9 @@ src/
   (`--color-bg`, `--color-surface`, `--color-text`, `--color-text-muted`,
   `--color-border`, `--color-accent`, `--color-on-accent`, `--color-focus`).
 - Fonts: display **Instrument Serif** (`--font-display`), text **Inter**
-  (`--font-text`), hero headline **Unbounded** (`--font-hero`), mono
-  **JetBrains Mono** (`--font-mono`, project list) — placeholders.
+  (`--font-text`), hero headline **Unbounded** (`--font-hero`), ribbon
+  **Inter Tight** (`--font-tight`), mono **IBM Plex Mono** (`--font-mono`) —
+  placeholders.
 - Light: paper `#e9ece4`, paper-deep `#dde2d6`, ink `#1f2a24`, ink-soft
   `#4c5a51`, line `#c5ccbe`, accent (text-safe clay) `#a24826`, accent-ink
   `#fbf8f2`, clay-bright `#b4532f` (decorative only, never text).
@@ -242,28 +243,44 @@ data. Built in Astro + plain CSS/TS (stack rule), `src/components/home/Hero.astr
 - Replaced: the earlier typewriter + mouse-scrub hero and the third-party
   "Mainframe" clip.
 
-### 2b. Scroll-driven infinite laptop loop (Afnan's request)
-`src/components/home/LaptopLoop.astro` (home, right after the hero). Source:
-Afnan's "Laptop Computer" clip (illustrated circular badge, typing hands,
-black bg, 10 s with grow-in/shrink-out). Prepared as
-`/public/loop/laptop-loop.mp4`: frames 90–241 (full-size typing section),
-cropped to the 490 px badge square → 480 px, tail cross-faded into head
-(K = 24 frames) so last → first is seamless (seam diff 1.29 < normal 1.44),
-H.264 CRF 30, keyframe every 2 frames, 4.27 s, ~560 KB. Still frame:
-`src/assets/loop/laptop-still.jpg`.
-- Scroll position → `turns = smoothY / 1400` (PX_PER_TURN). Phase = fractional
-  part: video time = phase × duration (queued seeks, rests when settled) and
-  badge rotation = phase × 360°. Down = forward/clockwise, up = backward;
-  infinite, no visible reset (clip seamless + 360° wrap).
-- Smoothing: rAF, frame-rate-independent lerp (EASE 0.1) toward scrollY;
-  idle when settled (no writes/seeks).
-- One fixed layer (z 15, pointer-events none, aria-hidden), badge clipped to
-  a circle (`border-radius: 50%`). Desktop: large on the right of the black
-  hero (min(36vw, 62vh, 560px), centred at 74% width), smoothstep-shrinks to
-  a docked 84 px badge bottom-right over the first 70% of the hero; stays
-  docked and turning for the rest of the page. Phones: docked from the start
-  (64 px).
-- Reduced motion / no JS: static still badge on the right of the hero only.
+### 2b. Laptop badge (Afnan's request, revised)
+`src/components/home/LaptopLoop.astro` (home, after the hero). Source: her
+"Laptop Computer" clip; `/public/loop/laptop-loop.mp4` = typing section,
+cropped to the badge, tail cross-faded into head (seamless), keyframe every 2.
+- PLAYS continuously (`loop`, muted) — NOT scroll-scrubbed (Afnan changed her
+  mind: "don't rotate when scrolling, keep it playing").
+- Desktop: large on the right of the black hero; while scrolling out of the
+  hero it shrinks to an 84 px badge docked bottom-right and ROTATES ONCE
+  (angle = 360° × smoothstep(dock progress)); docked it stays upright.
+  Phones: docked (64 px) from the start, no rotation.
+- Fades out (`.loop--hidden`) while the video ribbon is pinned on screen.
+- Reduced motion / no JS: still badge in the hero.
+
+### 2c. Video ribbon (Afnan's "Vante" recreation prompt, adapted)
+`src/components/home/VideoRibbon.astro` + `src/scripts/motion/video-ribbon.ts`
+(lazy-loaded three.js), between the hero and Selected work.
+- Ported faithfully: one progress value p (smoothed `p += (target-p)*.09`),
+  900vh track + sticky 100svh stage, headline lines sliding in opposite
+  directions (rise 0–.12, run −50vw→+76vw over 0–.58), caption fade .52–.57,
+  intro glow/hairline/hint fade by .05, fixed rail (161-point centripetal
+  CatmullRom, 1201 arc-length samples, same depth/edge/phase formulas),
+  2.1×1.32 cards (gap .03, 28×3 segments re-posed per frame), same shader
+  (rounded rect r .018, cover fit, .075 placeholder, back-face uv flip,
+  NoColorSpace + LinearSRGB output), FOV 35 with the <16:9 correction, grid
+  3×2 at z −8 (74% width; <.9 aspect → 2×3 at 88%), cards fly to slots over
+  .13 with out-cubic, rule draws .72–.86, hover name pill after .86.
+- Adapted for Afnan: cards = her 5 featured projects + a "Studio —
+  paintings" card (covers via `getImage`, 1200w webp; optional `video` per
+  card supported). **The prompt's eight third-party videos are NOT used**
+  (another studio's portfolio work). No Vante logo/pager/pills (site header
+  instead). Copy in `site.ribbon` (line1 "DESIGNED", line2 "BY HAND",
+  caption, note). Bottom labels PRODUCT / BRAND / WEB / PAINTING and a
+  "VIEW ALL WORK" link (#work); hint "START A PROJECT →" links #contact.
+  Scroll progress is measured relative to the section; rendering pauses off
+  screen / hidden tab; grid cards are clickable (open the case study).
+- Fonts: Inter Tight (`--font-tight`) for the ribbon; IBM Plex Mono replaced
+  JetBrains Mono as `--font-mono`.
+- Reduced motion / no WebGL / no JS: short static block (no 900vh track).
 
 ### 3. Custom cursor
 DOM element (not WebGL), transform-only, lerped via `gsap.quickTo`. States by
@@ -380,8 +397,8 @@ About → (g) performance + accessibility pass.
   scenes override with `document.dispatchEvent(new CustomEvent('cursor:state',
   { detail: 'view' | null }))`.
 - Lenis instance exposed as `window.__lenis` for lazily loaded modules.
-- Home order: hero → Selected work grid + role lens `#work` → Play → Studio →
-  About → footer `#contact`.
+- Home order: hero (+ fixed laptop badge) → video ribbon → Selected work grid
+  + role lens `#work` → Play → Studio → About → footer `#contact`.
 
 ### Painted assets needed from Afnan (placeholders until then)
 Brush-stroke scans (PNG, transparent), a bristle/brush stamp texture, a

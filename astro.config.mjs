@@ -33,6 +33,15 @@ export default defineConfig({
     },
     {
       provider: fontProviders.google(),
+      name: 'Inter Tight', // ← video ribbon headline
+      cssVariable: '--font-tight-src',
+      weights: [400, 500, 600],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['system-ui', 'sans-serif'],
+    },
+    {
+      provider: fontProviders.google(),
       name: 'Unbounded', // ← bold, wide hero headline ("Hi there, I'm Afnan!")
       cssVariable: '--font-hero-src',
       weights: ['600 800'],
@@ -42,9 +51,9 @@ export default defineConfig({
     },
     {
       provider: fontProviders.google(),
-      name: 'JetBrains Mono', // ← monospace placeholder (desk scene labels)
+      name: 'IBM Plex Mono', // ← monospace (video ribbon labels)
       cssVariable: '--font-mono-src',
-      weights: ['400 700'],
+      weights: [400, 500],
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['ui-monospace', 'monospace'],
