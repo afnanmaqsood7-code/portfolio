@@ -33,7 +33,9 @@ characters, illustrations, testimonials or text.
 - Fonts: Geist (text + big sans headlines, tight -0.04em), Geist Mono (small
   uppercase labels), Lora (section headings, italic accent words via *word*).
 - Home: Loader → Hero → Disciplines (sage) → Featured Projects → All projects
-  table → From the studio → Marquee → Contact/footer.
+  table → From the studio → Contact/footer.
+- **Marquee ("✿ Product designer with a painter's hand") REMOVED** (Afnan's
+  decision). Do not re-add unless she asks.
 - **Kind words / testimonials REMOVED** (Afnan's decision). Do not re-add
   unless she asks.
 - Nav (clear navigation, Afnan's request): simple text links, no pills.
@@ -267,9 +269,6 @@ underneath the whole time (no LCP blocking).
   velocity tilt (mouse + motion only).
 - `StudioStrip.astro`: "From the *studio*" 4 tiles (placeholders until her
   paintings are in `src/assets/studio`), link to /studio.
-- `Marquee.astro`: "✿ Product designer with a painter's hand" in Lora
-  italic; drifts, speeds up with scroll, follows scroll direction; static
-  for reduced motion.
 - `Footer.astro` (#contact, all pages): "Let's get in touch!" + email,
   LinkedIn, resume; footer nav (Home + pages + Resume ↓); mono meta row
   (© · Ontario · sound toggle · Back to top).
@@ -398,7 +397,7 @@ About → (g) performance + accessibility pass.
   { detail: 'view' | null }))`.
 - Lenis instance exposed as `window.__lenis` for lazily loaded modules.
 - Home order: see DESIGN DIRECTION (Loader → Hero → Disciplines → Featured
-  Projects `#work` → All projects → Studio → Marquee → #contact).
+  Projects `#work` → All projects → Studio → #contact).
 
 ### Painted assets needed from Afnan (placeholders until then)
 Brush-stroke scans (PNG, transparent), a bristle/brush stamp texture, a

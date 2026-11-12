@@ -4,7 +4,7 @@
  * Loader → hero (outlined name over the painted grid, "I am ___", accent
  * headline) → sage disciplines (sketchbook opens, cards fly out) → featured
  * projects (Amy cards + role lens) → all-projects table (hover previews) →
- * from the studio → marquee → contact (footer).
+ * from the studio → contact (footer).
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Preloader from '../components/home/Preloader.astro';
@@ -13,7 +13,6 @@ import Disciplines from '../components/home/Disciplines.astro';
 import ProjectGrid from '../components/home/ProjectGrid.astro';
 import ProjectTable from '../components/home/ProjectTable.astro';
 import StudioStrip from '../components/home/StudioStrip.astro';
-import Marquee from '../components/home/Marquee.astro';
 ---
 
 <BaseLayout>
@@ -23,5 +22,4 @@ import Marquee from '../components/home/Marquee.astro';
   <ProjectGrid />
   <ProjectTable />
   <StudioStrip />
-  <Marquee />
 </BaseLayout>

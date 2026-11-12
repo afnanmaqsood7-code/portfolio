@@ -19,7 +19,6 @@ export const site = {
       { title: 'Web design', items: ['Landing pages', 'SaaS dashboards', 'E-commerce', 'Responsive UI', 'Figma to build'] },
       { title: 'Painting & art', items: ['Acrylic & oil', 'Illustration', 'Motion & animation', 'Social content', 'Editorial art'] },
     ],
-    marquee: "Product designer with a painter's hand",
   },
   location: 'Based in Ontario, open to relocating within Canada',
   description:
