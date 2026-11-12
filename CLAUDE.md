@@ -267,14 +267,15 @@ underneath the whole time (no LCP blocking).
 - `ProjectTable.astro`: "All *projects* ↙" rows (mono name · type · year ·
   View case →); hover = floating cover preview following the cursor with a
   velocity tilt (mouse + motion only).
-- `StudioStrip.astro`: "From the *studio*", link to /studio. Five of
-  Afnan's real pieces (stills in `src/assets/studio`, loops in
-  `public/studio`): whirling dervish painting, vector portrait (glasses),
-  city portrait (animated), smoke portrait (animated, cropped 4:5 from her
-  1080² clip), iftar table (wide 8:5). Desktop 6-col grid: three tall tiles,
-  then tall + wide; phones 2-col with the wide piece full width. Loops are
-  muted (~60–100 KB), play only on screen, never with reduced motion, with
-  a 44px pause/play button top-right (her signature is bottom-right).
+- `StudioStrip.astro`: "From the *studio*", link to /studio. FOUR of
+  Afnan's pieces in one row (Afnan: "keep only 4"): whirling dervish
+  painting, vector portrait (glasses), city portrait (animated), smoke
+  portrait (animated, cropped 4:5 from her 1080² clip). Stills in
+  `src/assets/studio`, loops in `public/studio`. 4-col desktop, 2-col phone.
+  Loops are muted (~60–100 KB), play only on screen, never with reduced
+  motion, 44px pause/play button top-right (her signature is bottom-right).
+  `iftar-table.jpg` (wide illustration) was removed from home at Afnan's
+  request; kept in `src/assets/studio` for the full /studio page (Phase 4).
 - `Footer.astro` (#contact, all pages): "Let's get in touch!" + email,
   LinkedIn, resume; footer nav (Home + pages + Resume ↓); mono meta row
   (© · Ontario · sound toggle · Back to top).
