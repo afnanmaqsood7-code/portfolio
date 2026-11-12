@@ -271,6 +271,9 @@ underneath the whole time (no LCP blocking).
   = Afnan's real painting `src/assets/studio/whirling-dervish.jpg`
   ("Whirling dervish"); tiles 2–3 = her vector illustrations
   `portrait-glasses.png`, `portrait-city.webp`; tile 4 (Social) placeholder.
+  Tile 3 plays her animation `public/studio/city-portrait.mp4` (720², no
+  audio, ~100 KB) over the still poster: muted loop, plays only on screen,
+  never with reduced motion, 44px pause/play button (WCAG 2.2.2).
 - `Footer.astro` (#contact, all pages): "Let's get in touch!" + email,
   LinkedIn, resume; footer nav (Home + pages + Resume ↓); mono meta row
   (© · Ontario · sound toggle · Back to top).

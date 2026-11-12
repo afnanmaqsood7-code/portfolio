@@ -5,12 +5,15 @@
  * Real paintings live in src/assets/studio; remaining tiles are
  * PLACEHOLDERS until more of her work arrives.
  */
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import dervish from '../../assets/studio/whirling-dervish.jpg';
 import portraitGlasses from '../../assets/studio/portrait-glasses.png';
 import portraitCity from '../../assets/studio/portrait-city.webp';
 
-type Tile = { caption: string; src?: ImageMetadata; alt?: string };
+// `video` (optional): a short silent loop in /public/studio that plays over
+// the still image. The still is the poster, so no-JS / reduced motion just
+// see the illustration.
+type Tile = { caption: string; src?: ImageMetadata; alt?: string; video?: string };
 const tiles: Tile[] = [
   {
     caption: 'Whirling dervish, painting',
@@ -23,12 +26,16 @@ const tiles: Tile[] = [
     alt: 'Vector illustration of a woman with wavy dark hair, bangs and round glasses, looking up, inside a white circle on a coral background.',
   },
   {
-    caption: 'City portrait, illustration',
+    caption: 'City portrait, animated illustration',
     src: portraitCity,
+    video: '/studio/city-portrait.mp4',
     alt: 'Vector illustration of a bearded man in round sunglasses, a white shirt and a teal jacket, in front of colourful city buildings on a blue sky.',
   },
   { caption: 'Social' },
 ];
+const posters = await Promise.all(
+  tiles.map((t) => (t.video && t.src ? getImage({ src: t.src, width: 640, format: 'webp' }) : null)),
+);
 ---
 
 <section class="studio" aria-labelledby="studio-title">
@@ -40,7 +47,14 @@ const tiles: Tile[] = [
     <ul class="studio__grid" role="list">
       {tiles.map((t, i) => (
         <li class="studio__tile" data-reveal style={`transition-delay:${i * 80}ms`}>
-          {t.src ? (
+          {t.video ? (
+            <div class="studio__media" data-loop>
+              <video class="studio__img" src={t.video} poster={posters[i]?.src} muted loop playsinline preload="none" role="img" aria-label={t.alt}></video>
+              <button class="studio__toggle" type="button" data-loop-toggle hidden aria-pressed="false">
+                <span class="visually-hidden">Pause animation</span><span aria-hidden="true" data-loop-icon>❚❚</span>
+              </button>
+            </div>
+          ) : t.src ? (
             <Image class="studio__img" src={t.src} alt={t.alt!} widths={[320, 480, 640]} sizes="(min-width: 64rem) 22vw, 45vw" loading="lazy" />
           ) : (
             <div class="studio__art"><span class="mono-label">Your {t.caption.toLowerCase()} here</span></div>
@@ -51,6 +65,31 @@ const tiles: Tile[] = [
     </ul>
   </div>
 </section>
+
+<script>
+  // Animated tiles: play only while on screen, never with reduced motion,
+  // and always with a visible pause button (WCAG 2.2.2).
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-loop]').forEach((box) => {
+    const video = box.querySelector('video')!;
+    const btn = box.querySelector<HTMLButtonElement>('[data-loop-toggle]')!;
+    const icon = btn.querySelector<HTMLElement>('[data-loop-icon]')!;
+    const label = btn.querySelector<HTMLElement>('.visually-hidden')!;
+    let paused = reduce; // the visitor's choice
+    let onScreen = false;
+    const sync = () => {
+      if (!paused && onScreen) void video.play().catch(() => {});
+      else video.pause();
+      btn.setAttribute('aria-pressed', String(paused));
+      label.textContent = paused ? 'Play animation' : 'Pause animation';
+      icon.textContent = paused ? '▶' : '❚❚';
+    };
+    btn.hidden = false;
+    btn.addEventListener('click', () => { paused = !paused; sync(); });
+    new IntersectionObserver((e) => { onScreen = e[0].isIntersecting; sync(); }).observe(box);
+    sync();
+  });
+</script>
 
 <style>
   .studio__inner {
@@ -86,5 +125,22 @@ const tiles: Tile[] = [
     object-fit: cover;
     border-radius: 12px;
   }
+  .studio__media { position: relative; }
+  .studio__toggle {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 0;
+    background: rgb(17 17 17 / 0.72);
+    color: #fcf6e7;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+  .studio__toggle[hidden] { display: none; }
   .studio__cap { margin-top: 0.6rem; font-style: italic; color: var(--color-text-muted); }
 </style>
