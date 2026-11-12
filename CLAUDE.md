@@ -188,8 +188,10 @@ Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover
    Canva pitch deck (DAGqEZKSSk0) + her Premiere/lab screenshots. Trailer
    from her Canva design DAHarzAWuAQ, exported to MP4 and compressed to
    720p (`public/work/into-the-heart-of-mine/trailer.mp4`, ~12.7 MB, poster
-   jpg beside it). Role written as "UX & sound designer (confirm with
-   Afnan)" — confirm and remove the note.
+   jpg beside it). Role (Afnan confirmed): she built the VR experience in Unreal, designed
+   the environments, helped with 3D assets (crystals), shaped the idea and
+   aesthetics, and presented. Sound design is described as team work.
+   **Do NOT name team members** anywhere ("Team of 6 designers").
    Removed at Afnan's request: the lab selfie + lab playtest photo pair and
    the headset clip (Red Bull Gaming screen), and the Essential Sound panel
    screenshot. Do not re-add.

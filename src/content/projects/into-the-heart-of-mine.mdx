@@ -2,15 +2,15 @@
 title: Into the Heart of Mine
 slug: into-the-heart-of-mine
 summary: An immersive VR journey through a cursed, ancient mine — designed so that sound, light and the player's own body tell the story.
-role: UX & sound designer (confirm with Afnan)
+role: VR environment & experience designer
 timeline: Summer 2025 · AR/VR in Practice
 year: '2025'
-team: 6 designers — Joel Daniel, Igor Ivanov, Zahra Mohammad Ali Maddi, Lavanya Dandona, Mariam Mohuiddin, Afnan Maqsood
+team: Team of 6 designers
 tools: [Unreal Engine, Adobe Premiere Pro, Canva, Midjourney]
 outcomes:
-  - Playable VR prototype built in Unreal Engine and playtested in the lab
-  - Seven-stage player journey and a complete UX flow, from onboarding to the curse's ending
-  - Layered 12-track soundscape that guides, warns and frightens the player
+  - Playable VR experience built in Unreal Engine and playtested in the lab
+  - Mine environments and 3D crystal assets that carry the story through light and space
+  - Concept, aesthetic direction and final pitch presented to the class
 lens: product
 tags: [VR, Game & UX design]
 cover: ../../assets/projects/into-the-heart-of-mine/cover.jpg
@@ -53,6 +53,16 @@ import blueprintGraph from '../../assets/projects/into-the-heart-of-mine/bluepri
 *First step in, last chance out.* Into the Heart of Mine is a VR journey through an ancient mine. You are a treasure hunter sent to retrieve a legendary crystal, and to complete it you have to collect shards scattered through the tunnels. Every shard brings you closer to the fortune — and deeper into a curse.
 
 We wanted an experience where **the environment itself is the interface**. There is no HUD to read. Spatial audio, reactive lighting and shifting textures guide the player and threaten them at the same time, and the player's body becomes the controller.
+
+## My role
+
+I worked across the whole project, from the first idea to the final presentation:
+
+- **Building the VR experience** in Unreal Engine — setting up the level so it ran and played in a headset.
+- **Designing the environments** — the mine tunnels, shafts and caverns, and how light and colour lead the player through them.
+- **3D assets** — helping create and set up the crystal shards and the pieces of the full crystal the player collects.
+- **Idea and aesthetics** — shaping the concept, the mood and the visual direction with the team.
+- **Presenting** — pitching the concept and showing the final experience.
 
 <Figure src={concept} alt="Concept slide: a mine tunnel with glowing purple crystals beside the text 'Step into the shadows, if you dare' and a short description of the experience." caption="Concept overview from our pitch deck." />
 
@@ -97,7 +107,7 @@ Each barrier became a design response:
 
 ## Sound: the guide in the dark
 
-In a dark mine, the player hears more than they see, so audio carried much of the design. I built the soundscape in Premiere Pro across 12 layered tracks — cave ambience, dripping water and rock, crystal hums, footsteps, breathing and Elias's voice — and balanced them so the player always has a cue to follow, even when the mood gets tense.
+In a dark mine, the player hears more than they see, so audio carried much of the design. The team built the soundscape in Premiere Pro across 12 layered tracks — cave ambience, dripping water and rock, crystal hums, footsteps, breathing and Elias's voice — and balanced them so the player always has a cue to follow, even when the mood gets tense.
 
 Elias's lines were processed to sound distant and unreal: a *make distant* preset, speech enhancement and de-essing, then levelled against the ambience so he cuts through without breaking the atmosphere.
 
@@ -107,7 +117,7 @@ Elias's lines were processed to sound distant and unreal: a *make distant* prese
 
 ## Building and playtesting
 
-We built the mine in Unreal Engine and playtested it in the lab, watching where people hesitated, where they got lost and what made them jump.
+I built the mine environments in Unreal Engine: tunnels framed in timber, rail tracks that pull the eye forward, and crystal shards that act as both light source and objective. We playtested in the lab, watching where people hesitated, where they got lost and what made them jump, and adjusted the spaces in response.
 
 <FigurePair
   items={[
@@ -137,8 +147,16 @@ We built the mine in Unreal Engine and playtested it in the lab, watching where 
 
 ## What I learned
 
-- **In VR, sound is navigation.** When you can't rely on a HUD, audio cues decide whether players feel guided or lost.
-- **Map the body, not just the feelings.** Writing down physical barriers like headset discomfort and motion sickness changed our design as much as the emotional journey did.
-- **Make consequences visible.** Players only feel a curse if the world changes the moment they act.
+**Design for the body, not the screen.** In VR the player is *inside* the design. Scale, ceiling height and how close a wall feels matter more than any layout on a screen. Spaces that looked fine in the editor felt cramped or endless in a headset, so I learned to check every change in VR, not on a monitor.
+
+**Light is the interface.** With no HUD, the environment has to tell people where to go. Placing a glowing shard at the end of a tunnel, or warming the light near a safe path, guided players better than any sign. Lighting became my main wayfinding tool.
+
+**Comfort comes first.** Motion sickness can end an experience in seconds. Keeping movement steady, giving players something fixed to look at and keeping the mine-cart ride short made the difference between tense and unbearable.
+
+**Real-time 3D has a budget.** Detailed rocks, glowing crystals and dynamic light all cost performance, and VR needs a high, steady frame rate. I learned to balance how good an asset looks against how smoothly it runs, and to set assets up properly — scale, pivots, collision — so they behave in the world.
+
+**Prototype early, playtest often.** Our first playtests showed problems we never saw on paper: people missed shards, turned the wrong way and froze at the wrong moments. Testing early let us fix the spaces instead of defending them.
+
+**One vision, many hands.** A shared moodboard and user journey kept six people building the same world. Presenting the idea clearly — to the team and to the class — was as much a design skill as building it.
 
 *Concept art and references: Midjourney, Canva AI, Pinterest, Pexels and Unsplash. Trailer resources: Fab, Pexels, Adobe Stock and Motion Array; generative voice and art: ElevenLabs and Canva AI.*
