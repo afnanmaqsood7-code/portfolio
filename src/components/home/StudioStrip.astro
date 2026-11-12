@@ -2,9 +2,23 @@
 /**
  * "From the studio": Afnan's paintings & illustrations (Amy illustrates her
  * services with her own art — Afnan's version shows her paintings).
- * PLACEHOLDER tiles until her images are in src/assets/studio.
+ * Real paintings live in src/assets/studio; remaining tiles are
+ * PLACEHOLDERS until more of her work arrives.
  */
-const tiles = ['Painting', 'Illustration', 'Motion', 'Social'];
+import { Image } from 'astro:assets';
+import dervish from '../../assets/studio/whirling-dervish.jpg';
+
+type Tile = { caption: string; src?: ImageMetadata; alt?: string };
+const tiles: Tile[] = [
+  {
+    caption: 'Whirling dervish, painting',
+    src: dervish,
+    alt: 'Painting of a whirling dervish in a white robe and red hat, arms outstretched mid-spin, against warm ochre and coral brushwork.',
+  },
+  { caption: 'Illustration' },
+  { caption: 'Motion' },
+  { caption: 'Social' },
+];
 ---
 
 <section class="studio" aria-labelledby="studio-title">
@@ -16,8 +30,12 @@ const tiles = ['Painting', 'Illustration', 'Motion', 'Social'];
     <ul class="studio__grid" role="list">
       {tiles.map((t, i) => (
         <li class="studio__tile" data-reveal style={`transition-delay:${i * 80}ms`}>
-          <div class="studio__art"><span class="mono-label">Your {t.toLowerCase()} here</span></div>
-          <p class="studio__cap">{t}</p>
+          {t.src ? (
+            <Image class="studio__img" src={t.src} alt={t.alt!} widths={[320, 480, 640]} sizes="(min-width: 64rem) 22vw, 45vw" loading="lazy" />
+          ) : (
+            <div class="studio__art"><span class="mono-label">Your {t.caption.toLowerCase()} here</span></div>
+          )}
+          <p class="studio__cap">{t.caption}</p>
         </li>
       ))}
     </ul>
@@ -49,6 +67,14 @@ const tiles = ['Painting', 'Illustration', 'Motion', 'Social'];
     place-items: center;
     text-align: center;
     padding: 1rem;
+  }
+  .studio__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 12px;
   }
   .studio__cap { margin-top: 0.6rem; font-style: italic; color: var(--color-text-muted); }
 </style>

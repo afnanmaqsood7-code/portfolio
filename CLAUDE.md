@@ -267,8 +267,9 @@ underneath the whole time (no LCP blocking).
 - `ProjectTable.astro`: "All *projects* ↙" rows (mono name · type · year ·
   View case →); hover = floating cover preview following the cursor with a
   velocity tilt (mouse + motion only).
-- `StudioStrip.astro`: "From the *studio*" 4 tiles (placeholders until her
-  paintings are in `src/assets/studio`), link to /studio.
+- `StudioStrip.astro`: "From the *studio*" 4 tiles, link to /studio. Tile 1
+  = Afnan's real painting `src/assets/studio/whirling-dervish.jpg`
+  ("Whirling dervish"); tiles 2–4 placeholders until more work arrives.
 - `Footer.astro` (#contact, all pages): "Let's get in touch!" + email,
   LinkedIn, resume; footer nav (Home + pages + Resume ↓); mono meta row
   (© · Ontario · sound toggle · Back to top).
