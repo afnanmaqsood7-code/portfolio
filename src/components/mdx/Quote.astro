@@ -1,0 +1,24 @@
+---
+/** Big centred pull quote. */
+interface Props { text: string; by?: string }
+const { text, by } = Astro.props;
+---
+
+<figure class="quote cs-wide" data-reveal>
+  <blockquote>{text}</blockquote>
+  {by && <figcaption class="mono-label">{by}</figcaption>}
+</figure>
+
+<style>
+  .quote { margin-block: var(--space-xl); text-align: center; }
+  blockquote {
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    max-width: 22ch;
+    font: italic 400 clamp(1.9rem, 1.2rem + 2.6vw, 3.4rem) / 1.15 var(--font-display) !important;
+    color: var(--color-accent);
+    text-wrap: balance;
+  }
+  figcaption { margin-top: var(--space-s); color: var(--color-text-muted); }
+</style>

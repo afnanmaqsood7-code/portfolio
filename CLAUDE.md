@@ -486,8 +486,13 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
       `.cs-full`; next-project link) and `components/mdx/` Figure (size
       text|wide|full, framed), FigurePair, Video (self-hosted, controls,
       preload none, poster), LoopGrid (muted loops, on-screen only, no
-      autoplay with reduced motion, 44px pause button). Still TODO: PhoneFrame, MetricRow, PullQuote,
-      showcase layout.
+      autoplay with reduced motion, 44px pause button), FigureRow (one
+      same-height lane of mixed-aspect images, all screen sizes), Split
+      (image beside text), Cards (kicker/title/body, optional image, 2 or 3
+      cols), Stats (number row), Quote (pull quote), Band (full-bleed dark
+      band, used for the trailer). Template numbers each h2 ("01"…) with a
+      hairline above, and shows facts as one 4-col row + outcomes as a
+      3-col row. Still TODO: PhoneFrame, showcase layout.
 - [ ] Phase 4 — Play, Studio (lightbox), About.
 - [ ] Phase 5 — immersive motion layer, expanded to the award-level brief
       (steps a–g above). Approved. Step (a) done. Desk scene built then removed.

@@ -1,0 +1,22 @@
+---
+/** Full-bleed dark band (cinema moment) holding wide content, e.g. a trailer. */
+interface Props { label?: string }
+const { label } = Astro.props;
+---
+
+<section class="band cs-full" aria-label={label}>
+  <div class="band__inner"><slot /></div>
+</section>
+
+<style>
+  .band {
+    margin-block: var(--space-xl);
+    padding: var(--space-xl) var(--container-pad);
+    background: #141210;
+    color: #f3ede0;
+    --color-text: #f3ede0;
+    --color-text-muted: #b3ad9f;
+  }
+  .band__inner { max-width: 72rem; margin-inline: auto; }
+  .band__inner :global(figure) { margin: 0 !important; }
+</style>

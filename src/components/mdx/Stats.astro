@@ -1,0 +1,27 @@
+---
+/** A row of key numbers with short labels. */
+interface Props { items: { value: string; label: string }[] }
+const { items } = Astro.props;
+---
+
+<dl class="stats cs-wide" data-reveal>
+  {items.map((s) => (
+    <div class="stat"><dt>{s.label}</dt><dd>{s.value}</dd></div>
+  ))}
+</dl>
+
+<style>
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-block: var(--space-l);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+  @media (min-width: 48rem) { .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .stat { display: flex; flex-direction: column-reverse; gap: 0.25rem; padding: var(--space-s) var(--space-s) var(--space-s) 0; }
+  .stat + .stat { padding-left: var(--space-s); border-left: 1px solid var(--color-border); }
+  @media (max-width: 47.99rem) { .stat:nth-child(3) { border-left: 0; padding-left: 0; } .stat:nth-child(n + 3) { border-top: 1px solid var(--color-border); } }
+  dd { margin: 0; font: 600 clamp(2rem, 1.4rem + 2vw, 3.2rem) / 1 var(--font-text); letter-spacing: -0.04em; }
+  dt { font: 400 0.75rem var(--font-mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>

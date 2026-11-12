@@ -1,0 +1,40 @@
+---
+/** Grid of short titled cards (e.g. learnings, characters). */
+import { Image } from 'astro:assets';
+
+interface Item { title: string; body: string; kicker?: string; src?: ImageMetadata; alt?: string }
+interface Props { items: Item[]; cols?: 2 | 3 }
+const { items, cols = 3 } = Astro.props;
+---
+
+<ul class="cards cs-wide" role="list" style={`--cols:${cols}`}>
+  {items.map((it) => (
+    <li class="card" data-reveal>
+      {it.src && <Image class="card__img" src={it.src} alt={it.alt ?? ''} widths={[480, 720, 960]} sizes="(min-width: 48rem) 36rem, 100vw" loading="lazy" />}
+      <div class="card__body">
+        {it.kicker && <p class="mono-label card__kicker">{it.kicker}</p>}
+        <h3 class="card__title">{it.title}</h3>
+        <p class="card__text">{it.body}</p>
+      </div>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .cards { display: grid; gap: var(--space-s); margin-block: var(--space-l); }
+  @media (min-width: 48rem) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .cards { grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); } }
+  .card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-m);
+    background: var(--color-card);
+  }
+  .card__img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; object-position: top; }
+  .card__body { display: grid; gap: 0.5rem; padding: var(--space-s) var(--space-s) var(--space-m); }
+  .card__kicker { color: var(--color-accent); }
+  .card__title { margin: 0 !important; font: 600 var(--step-1) / 1.2 var(--font-text) !important; letter-spacing: -0.02em; }
+  .card__text { margin: 0 !important; font-size: var(--step--1) !important; line-height: 1.6 !important; color: var(--color-text-muted); }
+</style>

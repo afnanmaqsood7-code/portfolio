@@ -55,7 +55,7 @@ const facts = [
         <div class="cs-outcomes">
           <h2 class="mono-label">Outcomes</h2>
           <ul role="list">
-            {d.outcomes.slice(0, 3).map((o) => <li>{o}</li>)}
+            {d.outcomes.slice(0, 3).map((o, i) => <li><span class="cs-outcomes__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>{o}</li>)}
           </ul>
         </div>
       </section>
@@ -95,23 +95,25 @@ const facts = [
   .cs-lede { font-size: var(--step-1); line-height: 1.45; color: var(--color-text-muted); max-width: 40rem; text-wrap: pretty; }
   .cs-hero__img { display: block; width: 100%; height: auto; margin-top: var(--space-l); border-radius: var(--radius-m); }
 
-  /* 30-second summary card */
+  /* 30-second summary card: facts in one even row, outcomes in another. */
   .cs-card {
-    display: grid;
-    gap: var(--space-m);
     margin-top: var(--space-m);
-    padding: var(--space-m);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-m);
     background: var(--color-card);
   }
-  @media (min-width: 56rem) { .cs-card { grid-template-columns: 3fr 2fr; gap: var(--space-l); } }
-  .cs-facts { display: grid; gap: var(--space-s) var(--space-m); grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
-  .cs-facts dt, .cs-outcomes h2 { color: var(--color-text-muted); margin-bottom: 0.3rem; }
-  .cs-facts dd { margin: 0; line-height: 1.4; }
-  .cs-outcomes ul { display: grid; gap: 0.5rem; }
-  .cs-outcomes li { padding-left: 1.1rem; position: relative; line-height: 1.4; }
-  .cs-outcomes li::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 0.45rem; height: 0.45rem; background: var(--clay-bright); }
+  .cs-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 56rem) { .cs-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .cs-facts > div { padding: var(--space-s) var(--space-m); border-bottom: 1px solid var(--color-border); }
+  .cs-facts > div:nth-child(2n) { border-left: 1px solid var(--color-border); }
+  @media (min-width: 56rem) { .cs-facts > div + div { border-left: 1px solid var(--color-border); } }
+  .cs-facts dt, .cs-outcomes h2 { color: var(--color-text-muted); margin-bottom: 0.35rem; }
+  .cs-facts dd { margin: 0; line-height: 1.45; }
+  .cs-outcomes { padding: var(--space-s) var(--space-m) var(--space-m); }
+  .cs-outcomes ul { display: grid; gap: var(--space-s); }
+  @media (min-width: 56rem) { .cs-outcomes ul { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-m); } }
+  .cs-outcomes li { display: grid; gap: 0.35rem; line-height: 1.45; }
+  .cs-outcomes__n { font: 400 0.75rem var(--font-mono); color: var(--color-accent); }
 
   /* ---- Body: breakout grid ---- */
   .cs-body {
@@ -123,15 +125,30 @@ const facts = [
       minmax(0, 15rem) [wide-end]
       minmax(var(--container-pad), 1fr) [full-end];
     padding-block: var(--space-2xl);
+    counter-reset: cs-section;
   }
   .cs-body > :global(*) { grid-column: text; }
   .cs-body > :global(.cs-wide) { grid-column: wide; }
   .cs-body > :global(.cs-full) { grid-column: full; }
   .cs-body :global(h2) {
-    margin-top: var(--space-xl);
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-s);
+    border-top: 1px solid var(--color-border);
     font: 500 clamp(1.7rem, 1.3rem + 1.4vw, 2.4rem) / 1.1 var(--font-display);
   }
+  /* "01", "02"… above each section heading. */
+  .cs-body :global(h2)::before {
+    counter-increment: cs-section;
+    content: counter(cs-section, decimal-leading-zero);
+    display: block;
+    margin-bottom: 0.6rem;
+    font: 400 0.75rem var(--font-mono);
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+  }
   .cs-body :global(h2:first-child) { margin-top: 0; }
+  /* Headings inside wide components (Split text) keep the reading rhythm. */
+  .cs-body :global(.split h2) { margin-top: 0; }
   .cs-body :global(h3) { margin-top: var(--space-m); font: 600 var(--step-1) / 1.25 var(--font-text); letter-spacing: -0.02em; }
   .cs-body :global(p),
   .cs-body :global(li) { font-size: var(--step-0); line-height: 1.7; }

@@ -23,16 +23,24 @@ order: 6
 
 import Figure from '../../components/mdx/Figure.astro';
 import FigurePair from '../../components/mdx/FigurePair.astro';
+import FigureRow from '../../components/mdx/FigureRow.astro';
 import Video from '../../components/mdx/Video.astro';
 import LoopGrid from '../../components/mdx/LoopGrid.astro';
+import Split from '../../components/mdx/Split.astro';
+import Cards from '../../components/mdx/Cards.astro';
+import Stats from '../../components/mdx/Stats.astro';
+import Quote from '../../components/mdx/Quote.astro';
+import Band from '../../components/mdx/Band.astro';
 
-import concept from '../../assets/projects/into-the-heart-of-mine/slide-concept.jpg';
-import elias from '../../assets/projects/into-the-heart-of-mine/slide-elias.jpg';
-import protagonist from '../../assets/projects/into-the-heart-of-mine/slide-protagonist.jpg';
+import tunnel from '../../assets/projects/into-the-heart-of-mine/art-tunnel.jpg';
+import elias from '../../assets/projects/into-the-heart-of-mine/art-elias.jpg';
+import protagonist from '../../assets/projects/into-the-heart-of-mine/art-protagonist.jpg';
 import moodboard from '../../assets/projects/into-the-heart-of-mine/slide-moodboard.jpg';
 import journey from '../../assets/projects/into-the-heart-of-mine/slide-user-journey.jpg';
-import story from '../../assets/projects/into-the-heart-of-mine/slide-story.jpg';
 import uxFlow from '../../assets/projects/into-the-heart-of-mine/slide-ux-flow.jpg';
+import story1 from '../../assets/projects/into-the-heart-of-mine/story-1.jpg';
+import story2 from '../../assets/projects/into-the-heart-of-mine/story-2.jpg';
+import story3 from '../../assets/projects/into-the-heart-of-mine/story-3.jpg';
 import finale from '../../assets/projects/into-the-heart-of-mine/slide-finale.jpg';
 import timeline from '../../assets/projects/into-the-heart-of-mine/premiere-timeline.jpg';
 import mixer from '../../assets/projects/into-the-heart-of-mine/audio-mixer.jpg';
@@ -41,83 +49,105 @@ import ingameBlue from '../../assets/projects/into-the-heart-of-mine/ingame-blue
 import blueprintDesk from '../../assets/projects/into-the-heart-of-mine/blueprint-desk.jpg';
 import blueprintGraph from '../../assets/projects/into-the-heart-of-mine/blueprint-graph.jpg';
 
-<Video
-  src="/work/into-the-heart-of-mine/trailer.mp4"
-  poster="/work/into-the-heart-of-mine/trailer-poster.jpg"
-  title="Into the Heart of Mine — VR experience trailer"
-  caption="Trailer · 1 min 30 s · sound on."
+<Band label="Trailer">
+  <Video
+    src="/work/into-the-heart-of-mine/trailer.mp4"
+    poster="/work/into-the-heart-of-mine/trailer-poster.jpg"
+    title="Into the Heart of Mine — VR experience trailer"
+    caption="Trailer · 1 min 30 s · sound on."
+  />
+</Band>
+
+<Stats
+  items={[
+    { value: '7', label: 'Journey stages' },
+    { value: '3', label: 'Crystal shards' },
+    { value: '12', label: 'Audio tracks' },
+    { value: '90s', label: 'Trailer' },
+  ]}
 />
+
+<Split src={tunnel} alt="Concept art: a mine tunnel with rail tracks lit in amber and purple crystal shards glowing along the ground.">
 
 ## The idea
 
-*First step in, last chance out.* Into the Heart of Mine is a VR journey through an ancient mine. You are a treasure hunter sent to retrieve a legendary crystal, and to complete it you have to collect shards scattered through the tunnels. Every shard brings you closer to the fortune — and deeper into a curse.
+Into the Heart of Mine is a VR journey through an ancient mine. You are a treasure hunter sent to retrieve a legendary crystal, and to complete it you have to collect shards scattered through the tunnels. Every shard brings you closer to the fortune — and deeper into a curse.
 
-We wanted an experience where **the environment itself is the interface**. There is no HUD to read. Spatial audio, reactive lighting and shifting textures guide the player and threaten them at the same time, and the player's body becomes the controller.
+We wanted **the environment itself to be the interface**. There is no HUD to read: spatial audio, reactive light and shifting textures guide the player and threaten them at the same time, and the player's body becomes the controller.
+
+</Split>
+
+<Quote text="First step in, last chance out." />
 
 ## My role
 
-I worked across the whole project, from the first idea to the final presentation:
+I worked across the project, from the first idea to the final presentation.
 
-- **Building the VR experience** in Unreal Engine — setting up the level so it ran and played in a headset.
-- **Designing the environments** — the mine tunnels, shafts and caverns, and how light and colour lead the player through them.
-- **3D assets** — helping create and set up the crystal shards and the pieces of the full crystal the player collects.
-- **Idea and aesthetics** — shaping the concept, the mood and the visual direction with the team.
-- **Presenting** — pitching the concept and showing the final experience.
-
-<Figure src={concept} alt="Concept slide: a mine tunnel with glowing purple crystals beside the text 'Step into the shadows, if you dare' and a short description of the experience." caption="Concept overview from our pitch deck." />
+<Cards
+  items={[
+    { kicker: 'Build', title: 'VR experience & environments', body: 'Built the experience in Unreal Engine and designed the mine — tunnels, shafts and caverns — using light and colour to lead the player.' },
+    { kicker: '3D', title: 'Crystal assets', body: 'Helped create and set up the crystal shards and the full crystal the player assembles, so they read clearly and glow in the dark.' },
+    { kicker: 'Direction', title: 'Idea, aesthetics & pitch', body: 'Shaped the concept, mood and visual direction with the team, then presented the pitch and the final experience.' },
+  ]}
+/>
 
 ## Characters
 
-Two characters carry the story. **Elias**, the ghost of a miner, is your guide and your conscience — his voice follows you through the dark, sometimes a whisper, sometimes a scream. **The protagonist** is you: a curious soul who has to choose, shard by shard, between fortune and danger.
+Two characters carry the story — a ghost who guides you, and you.
 
-<FigurePair
+<Cards
+  cols={2}
   items={[
-    { src: elias, alt: 'Character slide for Elias, the ghost of a miner: an old miner in a helmet holding a lantern, outlined in a ghostly glow.' },
-    { src: protagonist, alt: 'Character slide for the protagonist: a wide-eyed young explorer gripping an axe in a dark tunnel.' },
+    { src: elias, alt: 'Elias, an old miner in a helmet holding a lantern, outlined in a ghostly glow.', kicker: 'The guide', title: 'Elias, the ghost of a miner', body: 'Your conscience and maybe your only friend in the depths. His voice follows you — sometimes a whisper, sometimes a scream — warning you of a curse.' },
+    { src: protagonist, alt: 'The protagonist, a wide-eyed young explorer gripping an axe in a dark tunnel.', kicker: 'The player', title: 'The protagonist', body: 'A curious soul drawn into the mine. Every shard is a choice between fortune and danger: will you listen to the warnings, or risk everything?' },
   ]}
-  caption="Elias, the ghost of a miner, and the protagonist."
 />
 
 ## Look and feel
 
 *Dark, mysterious, and just a little cursed.* The moodboard set the palette before anything was built: amber lantern light against cold rock, and violet crystals that glow a little too brightly. Those two colours became a language — warm means safe-ish, violet means the curse is close.
 
-<Figure src={moodboard} alt="Moodboard: mine tunnels and rail tracks, glowing purple and clear crystals, a ghostly miner with a lantern, rock textures and a palette of browns, orange, cream and teal." caption="Moodboard and colour palette." size="full" />
+<Figure src={moodboard} alt="Moodboard: mine tunnels and rail tracks, glowing purple and clear crystals, a ghostly miner with a lantern, rock textures and a palette of browns, orange, cream and teal." caption="Moodboard and colour palette." />
 
 ## Designing the player's journey
 
-VR is physical, so the journey had to account for bodies as well as feelings. We mapped seven stages — from putting on the headset to living with the curse — and for each one wrote down what the player is trying to do, what they need from us, how they feel and what could get in their way.
-
-That surfaced the real design problems early: confusion with controls during onboarding, getting lost or missing shards in the descent, audio that could become overwhelming, and motion sickness in the mine-cart escape.
+VR is physical, so the journey had to account for bodies as well as feelings. We mapped seven stages — from putting on the headset to living with the curse — and for each wrote down what the player is trying to do, what they need, how they feel and what could get in their way.
 
 <Figure src={journey} alt="User journey table with seven stages — Onboarding and Entry, The Descent, Collecting Fragments, Curse Escalation, Heart of the Mine, Mine Cart Escape, Curse's Toll — each with objectives, needs, feelings and barriers." caption="Seven-stage player journey: objectives, needs, feelings and barriers." framed />
 
 Each barrier became a design response:
 
-- **Onboarding:** a letter and an axe give the player something to read and hold before anything scary happens, so they learn the controls with their hands.
-- **Getting lost:** shards glow and hum, and Elias's voice pulls the player in the right direction.
-- **Unclear curse mechanics:** every shard visibly changes the mine — walls distort, lights dim, shadows move — so cause and effect are impossible to miss.
-- **Motion sickness:** the escape is short and on rails, with clear obstacle cues.
+<Cards
+  cols={2}
+  items={[
+    { kicker: 'Barrier · controls', title: 'Learn by holding', body: 'A letter and an axe give players something to read and hold before anything scary happens, so they learn the controls with their hands.' },
+    { kicker: 'Barrier · getting lost', title: 'Light and voice lead', body: 'Shards glow and hum, and Elias’s voice pulls the player in the right direction.' },
+    { kicker: 'Barrier · unclear curse', title: 'Visible consequences', body: 'Every shard changes the mine — walls distort, lights dim, shadows move — so cause and effect are impossible to miss.' },
+    { kicker: 'Barrier · motion sickness', title: 'A short, steady escape', body: 'The mine-cart escape is short and on rails, with clear obstacle cues.' },
+  ]}
+/>
 
 <Figure src={uxFlow} alt="UX flow diagram from Start through onboarding, reading a letter, picking up an axe, exploring tunnels and collecting three shards, each causing the mine to change, to solving the crystal puzzle, the tunnel collapsing, and jumping onto the mine cart — escape leads to the curse's ending, missing the cart means the mine collapses." caption="UX flow: every shard escalates the curse until the final escape." framed />
 
 ## The story in three acts
 
-<Figure src={story} alt="Story slide 'Deeper into darkness' with images of rail tracks, violet crystals and a stormy sky, and three short story beats." caption="The descent, the first shard, and the escape." />
+<Cards
+  items={[
+    { src: story1, alt: 'Rail tracks curving down into a dark mine.', kicker: 'Act I', title: 'Deeper into darkness', body: 'You descend through the tunnels of Blackspire Mine, collecting shards that pulse with unnatural energy while Elias warns you to turn back.' },
+    { src: story2, alt: 'Violet crystal fragments glowing in the dark.', kicker: 'Act II', title: 'One shard down, one curse unleashed', body: 'The first major fragment changes everything. Whispers echo, the air ripples — the crystal is conscious, and it has marked you.' },
+    { src: story3, alt: 'A stormy purple sky split by lightning.', kicker: 'Act III', title: 'Ride or die', body: 'The mine collapses. A glowing cart is your only way out. You escape, crystal in hand — but the curse came with you.' },
+  ]}
+/>
 
 ## Sound: the guide in the dark
 
-In a dark mine, the player hears more than they see, so audio carried much of the design. The team built the soundscape in Premiere Pro across 12 layered tracks — cave ambience, dripping water and rock, crystal hums, footsteps, breathing and Elias's voice — and balanced them so the player always has a cue to follow, even when the mood gets tense.
-
-Elias's lines were processed to sound distant and unreal: a *make distant* preset, speech enhancement and de-essing, then levelled against the ambience so he cuts through without breaking the atmosphere.
+In a dark mine, the player hears more than they see, so audio carried much of the design. The team built the soundscape in Premiere Pro across 12 layered tracks — cave ambience, dripping water, crystal hums, footsteps, breathing and Elias's voice — balanced so the player always has a cue to follow, even when the mood gets tense.
 
 <Figure src={timeline} alt="Adobe Premiere Pro project 'VR_Cave_SFX' showing a timeline with twelve layered audio tracks and a library of cave, river, crystal and breathing sound effects." caption="The VR_Cave_SFX project: 12 layered tracks of ambience, effects and voice." framed />
 
-<Figure src={mixer} alt="Audio clip mixer showing levels for twelve tracks, A1 to A12." caption="Balancing the mix across all twelve tracks." size="text" />
-
 ## Building and playtesting
 
-I built the mine environments in Unreal Engine: tunnels framed in timber, rail tracks that pull the eye forward, and crystal shards that act as both light source and objective. We playtested in the lab, watching where people hesitated, where they got lost and what made them jump, and adjusted the spaces in response.
+I built the mine environments in Unreal Engine: tunnels framed in timber, rail tracks that pull the eye forward, and crystal shards that act as both light source and objective. We playtested in the lab, watched where people hesitated, got lost or jumped, and adjusted the spaces in response.
 
 <FigurePair
   items={[
@@ -135,28 +165,28 @@ I built the mine environments in Unreal Engine: tunnels framed in timber, rail t
   caption="Behind the scenes: the level in Unreal, and a playtest of the mine-cart ride."
 />
 
-<FigurePair
+<FigureRow
   items={[
+    { src: mixer, alt: 'Audio clip mixer showing levels for twelve tracks, A1 to A12.' },
     { src: blueprintDesk, alt: 'A lab workstation with Unreal Engine open on a large monitor and the game running on a laptop beside it.' },
     { src: blueprintGraph, alt: 'Close-up of an Unreal Engine Blueprint graph on a monitor.' },
   ]}
-  caption="Wiring interactions in Unreal Blueprints."
+  caption="In the tools: balancing the sound mix, the Unreal workstation, and wiring interactions in Blueprints."
 />
 
-<Figure src={finale} alt="Closing slide: a glowing purple crystal held in a hand, with the line 'The curse is yours… but the fortune awaits.'" caption="The curse is yours… but the fortune awaits." />
+<Figure src={finale} alt="Closing slide: a glowing purple crystal held in a hand, with the line 'The curse is yours… but the fortune awaits.'" />
 
 ## What I learned
 
-**Design for the body, not the screen.** In VR the player is *inside* the design. Scale, ceiling height and how close a wall feels matter more than any layout on a screen. Spaces that looked fine in the editor felt cramped or endless in a headset, so I learned to check every change in VR, not on a monitor.
-
-**Light is the interface.** With no HUD, the environment has to tell people where to go. Placing a glowing shard at the end of a tunnel, or warming the light near a safe path, guided players better than any sign. Lighting became my main wayfinding tool.
-
-**Comfort comes first.** Motion sickness can end an experience in seconds. Keeping movement steady, giving players something fixed to look at and keeping the mine-cart ride short made the difference between tense and unbearable.
-
-**Real-time 3D has a budget.** Detailed rocks, glowing crystals and dynamic light all cost performance, and VR needs a high, steady frame rate. I learned to balance how good an asset looks against how smoothly it runs, and to set assets up properly — scale, pivots, collision — so they behave in the world.
-
-**Prototype early, playtest often.** Our first playtests showed problems we never saw on paper: people missed shards, turned the wrong way and froze at the wrong moments. Testing early let us fix the spaces instead of defending them.
-
-**One vision, many hands.** A shared moodboard and user journey kept six people building the same world. Presenting the idea clearly — to the team and to the class — was as much a design skill as building it.
+<Cards
+  items={[
+    { kicker: '01', title: 'Design for the body, not the screen', body: 'In VR the player is inside the design. Scale and ceiling height matter more than any layout, so I checked every change in a headset, not on a monitor.' },
+    { kicker: '02', title: 'Light is the interface', body: 'With no HUD, the environment has to show the way. A glowing shard at the end of a tunnel guided players better than any sign.' },
+    { kicker: '03', title: 'Comfort comes first', body: 'Motion sickness ends an experience in seconds. Steady movement, fixed reference points and a short cart ride kept it tense, not unbearable.' },
+    { kicker: '04', title: 'Real-time 3D has a budget', body: 'Detailed rock, glowing crystals and dynamic light all cost frames. I learned to balance looks against performance and set assets up properly — scale, pivots, collision.' },
+    { kicker: '05', title: 'Prototype early, playtest often', body: 'Playtests showed what paper never did: missed shards, wrong turns, frozen players. Testing early let us fix the spaces instead of defending them.' },
+    { kicker: '06', title: 'One vision, many hands', body: 'A shared moodboard and journey map kept six people building the same world — and presenting the idea clearly was as much a design skill as building it.' },
+  ]}
+/>
 
 *Concept art and references: Midjourney, Canva AI, Pinterest, Pexels and Unsplash. Trailer resources: Fab, Pexels, Adobe Stock and Motion Array; generative voice and art: ElevenLabs and Canva AI.*
