@@ -205,8 +205,9 @@ Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover
    31 screens, 4 chapters, 6 puzzles). **Export Canva images with
    export_quality "pro"** — regular exports carry Canva watermarks (Afnan
    has a subscription; exported files stay clean if it lapses). Cover and
-   banner are custom key art (diagonal dark/lit split of the candle room,
-   glowing Lora title; the table spans the seam — painting in the dark half, lit candle in the warm half; NEXT button cropped out) rendered with Playwright.
+   banner: the clean lit candle room + dark Lora title on the sage wall
+   (Afnan rejected the dark/lit diagonal split — looked like added shadow;
+   do not darken her scenes), rendered with Playwright.
    Case study: Play button (Canva view link — Afnan must set the design to
    "anyone with the link") → stats → Overview → Problem (problem /
    opportunity / audience / goal) → My role → Concept: four chapter cards →
