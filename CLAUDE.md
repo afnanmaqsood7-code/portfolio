@@ -259,8 +259,9 @@ underneath the whole time (no LCP blocking).
   clay) → `site.home.intro` (5+ yrs, MDM TMU, BFA, "Off-screen, I paint") →
   View my work / Get in touch buttons. Painted grid is now a SMALL band
   hugging the name block (`scripts/paint-grid.ts`, shared with the footer).
-  Bottom row (mono): "Based in Canada" · ● "Open to work" · Scroll ↓.
-  No clock, no outlined wordmark.
+  Status chip at the TOP of the stack: ● "Open to work · Based in
+  Canada" (Afnan: no labels row at the bottom of the hero). No clock, no
+  outlined wordmark, no scroll label.
 - `ProjectGrid.astro` (#work): centred Lora "Featured Projects" + role lens;
   Amy-style 2-col cards (image on a soft panel, title + mono tag chips from
   optional `tags` frontmatter, else discipline + first tool).
