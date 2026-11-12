@@ -7,9 +7,11 @@
 import { allowsPointerMotion, getTier, hasFinePointer } from './capabilities';
 import { initSound } from './sound';
 import { initButtonFill } from './button-fill';
+import { initReveal } from './reveal';
 
 getTier(); // sets html[data-motion] early for CSS hooks
 initSound();
+initReveal();
 if (hasFinePointer()) initButtonFill();
 
 if (allowsPointerMotion()) {

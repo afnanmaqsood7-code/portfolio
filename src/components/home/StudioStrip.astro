@@ -1,0 +1,54 @@
+---
+/**
+ * "From the studio": Afnan's paintings & illustrations (Amy illustrates her
+ * services with her own art — Afnan's version shows her paintings).
+ * PLACEHOLDER tiles until her images are in src/assets/studio.
+ */
+const tiles = ['Painting', 'Illustration', 'Motion', 'Social'];
+---
+
+<section class="studio" aria-labelledby="studio-title">
+  <div class="studio__inner">
+    <div class="studio__head">
+      <h2 id="studio-title" class="studio__title">From the <em class="accent">studio</em></h2>
+      <a class="brush-link" href="/studio">See all paintings &amp; illustration →</a>
+    </div>
+    <ul class="studio__grid" role="list">
+      {tiles.map((t, i) => (
+        <li class="studio__tile" data-reveal style={`transition-delay:${i * 80}ms`}>
+          <div class="studio__art"><span class="mono-label">Your {t.toLowerCase()} here</span></div>
+          <p class="studio__cap">{t}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .studio__inner {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-2xl) var(--container-pad);
+  }
+  .studio__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-bottom: var(--space-m);
+  }
+  .studio__title { font: 400 clamp(1.9rem, 1.4rem + 1.8vw, 2.9rem) / 1.05 var(--font-text); letter-spacing: -0.04em; }
+  .studio__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--grid-gap); }
+  @media (min-width: 64rem) { .studio__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .studio__art {
+    aspect-ratio: 4 / 5;
+    border-radius: 12px;
+    background: var(--color-surface);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 1rem;
+  }
+  .studio__cap { margin-top: 0.6rem; font-style: italic; color: var(--color-text-muted); }
+</style>

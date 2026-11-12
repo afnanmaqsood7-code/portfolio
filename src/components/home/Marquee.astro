@@ -1,0 +1,58 @@
+---
+/**
+ * Scroll-reactive marquee (Amy's "Your friendly, neighborhood designer!" band
+ * × dverso's energy): drifts left on its own, speeds up with scroll speed
+ * and follows scroll direction. Decorative copies are aria-hidden; reduced
+ * motion → a still line.
+ */
+import { site } from '../../site.config';
+const text = site.home.marquee;
+---
+
+<section class="marquee" aria-label={text} data-marquee>
+  <div class="marquee__track" data-track aria-hidden="true">
+    {Array.from({ length: 6 }, () => <span class="marquee__item">✿ {text}</span>)}
+  </div>
+</section>
+
+<script>
+  import { getTier } from '../../scripts/motion/capabilities';
+
+  const root = document.querySelector<HTMLElement>('[data-marquee]');
+  if (root && getTier() !== 'none') {
+    const track = root.querySelector<HTMLElement>('[data-track]')!;
+    let x = 0, dir = 1, boost = 0, lastY = scrollY, last = performance.now(), visible = false, running = false;
+    const BASE = 50; // px per second
+    const half = () => track.scrollWidth / 2;
+    const loop = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      const dy = scrollY - lastY;
+      lastY = scrollY;
+      if (Math.abs(dy) > 0.5) dir = dy > 0 ? 1 : -1;
+      boost += (Math.min(Math.abs(dy) * 30, 900) - boost) * 0.1; // ease toward scroll speed
+      x -= dir * (BASE + boost) * dt;
+      const h = half();
+      if (x <= -h) x += h;
+      if (x > 0) x -= h;
+      track.style.transform = `translate3d(${x}px,0,0)`;
+      if (visible && !document.hidden) requestAnimationFrame(loop);
+      else running = false;
+    };
+    const wake = () => { if (!running && visible && !document.hidden) { running = true; last = performance.now(); requestAnimationFrame(loop); } };
+    new IntersectionObserver((e) => { visible = e.some((x) => x.isIntersecting); wake(); }).observe(root);
+    document.addEventListener('visibilitychange', wake);
+  }
+</script>
+
+<style>
+  .marquee { overflow: hidden; padding-block: var(--space-xl); border-block: 1px solid var(--color-border); }
+  .marquee__track { display: flex; width: max-content; will-change: transform; }
+  .marquee__item {
+    padding-right: 3rem;
+    font: italic 400 clamp(2rem, 1.4rem + 3vw, 4rem) / 1.1 var(--font-display);
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+</style>

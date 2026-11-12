@@ -1,214 +1,287 @@
 ---
 /**
- * Home hero — liquid-glass style from Afnan's hero prompt, with her intro in
- * the style of her reference ("Hi there, I'm Afnan! 👋" + a one-line mission).
- * Built in Astro + plain CSS/TS (no React/Tailwind/framer-motion: stack rule).
- *
- * - Full-viewport black section (no photo or video — removed at Afnan's
- *   request), intro LEFT-aligned.
- * - Liquid-glass email pill (opens the visitor's mail app, static site),
- *   a glass CTA, and three glass icon buttons.
+ * Home hero — the merged direction (dversostudio.io × itsamy.ca).
+ * - Cream page; a hairline GRID across the middle whose cells light up in
+ *   clay where the cursor passes and slowly fade (our "painted grid").
+ * - A huge OUTLINED "afnan" wordmark over the grid (dverso).
+ * - "I am ___" typing rotating words in Lora (Amy).
+ * - Bottom-left H1: "Hi, I'm Afnan Maqsood" eyebrow + a big sans headline
+ *   with italic serif accent words (dverso). Corner mono labels with a live
+ *   Ontario clock and "Scroll down to discover" + a clay square.
+ * Accessibility: the H1 is real text; the wordmark, grid and typing are
+ * decorative (the full "I am …" sentence is in visually-hidden text).
+ * Reduced motion: static grid with a few clay cells, first word, no caret.
  */
 import { site } from '../../site.config';
+import Accent from '../ui/Accent.astro';
+
+const words = site.home.words;
 ---
 
 <section class="hero" aria-labelledby="hero-title" data-hero>
+  <canvas class="hero__grid" data-hero-grid aria-hidden="true"></canvas>
 
-  <div class="hero__content">
-    <h1 id="hero-title" class="hero__title">
-      {site.heroTitle} <span class="hero__wave" aria-hidden="true">👋</span>
-    </h1>
-    <p class="hero__subtitle">{site.heroSubtitle}</p>
-
-    <form class="hero__form liquid-glass" data-hello-form action={`mailto:${site.email}`} method="get">
-      <label class="visually-hidden" for="hero-email">Your email</label>
-      <input id="hero-email" name="email" type="email" required autocomplete="email" placeholder="Enter your email" />
-      <button type="submit" class="hero__submit" aria-label="Send">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
-      </button>
-    </form>
-
-    <a href="#work" class="hero__cta liquid-glass">{site.heroCta}</a>
+  <div class="hero__center" aria-hidden="true">
+    <div class="hero__word">afnan</div>
+    <p class="hero__type">I am <span class="hero__typed" data-typed data-words={JSON.stringify(words)}>{words[0]}</span><span class="hero__caret" data-caret></span></p>
   </div>
+  <p class="visually-hidden">I am {words.join(', ')}.</p>
 
-  <ul class="hero__social" role="list">
-    <li>
-      <a class="hero__icon liquid-glass" href={site.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn (opens in a new tab)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
-        </svg>
-      </a>
-    </li>
-    <li>
-      <a class="hero__icon liquid-glass" href={`mailto:${site.email}`} aria-label={`Email ${site.email}`}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-10 6L2 7" />
-        </svg>
-      </a>
-    </li>
-    <li>
-      <a class="hero__icon liquid-glass" href={site.resume} download aria-label="Download resume (PDF)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3" />
-        </svg>
-      </a>
-    </li>
-  </ul>
+  <div class="hero__bottom">
+    <h1 id="hero-title" class="hero__title">
+      <span class="hero__hello mono-label"><i class="hero__square" aria-hidden="true"></i>{site.home.hello.replace('Afnan', site.name)}</span>
+      <span class="hero__headline"><Accent text={site.home.headline} /></span>
+    </h1>
+    <div class="hero__labels">
+      <p class="mono-label">Based in Ontario, Canada<br /><span data-clock>Open to relocating</span></p>
+      <a class="hero__scroll mono-label" href="#disciplines">Scroll down<br />to discover <i class="hero__square" aria-hidden="true"></i></a>
+    </div>
+  </div>
 </section>
 
 <script>
-  const root = document.querySelector<HTMLElement>('[data-hero]');
-  if (root) {
-    initHelloForm(root);
+  import { getTier, hasFinePointer } from '../../scripts/motion/capabilities';
+
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  if (hero) {
+    const calm = getTier() === 'none';
+    initClock(hero);
+    initGrid(hero, calm);
+    if (!calm) initTyping(hero);
   }
 
-  /** "Enter your email" → opens a pre-filled email to Afnan (no server). */
-  function initHelloForm(el: HTMLElement) {
-    const form = el.querySelector<HTMLFormElement>('[data-hello-form]');
-    if (!form) return;
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const from = (form.elements.namedItem('email') as HTMLInputElement).value.trim();
-      const to = form.action.replace(/^mailto:/, '');
-      const subject = encodeURIComponent('Hello from your portfolio');
-      const body = encodeURIComponent(`Hi Afnan,\n\nI'd like to talk. You can reach me at ${from}.\n`);
-      window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-    });
+  /** Live Ontario time in the corner label (dverso has a live clock too). */
+  function initClock(root: HTMLElement) {
+    const el = root.querySelector<HTMLElement>('[data-clock]');
+    if (!el) return;
+    const fmt = new Intl.DateTimeFormat('en-CA', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Toronto', timeZoneName: 'short' });
+    const set = () => (el.textContent = fmt.format(new Date()));
+    set();
+    setInterval(set, 30_000);
   }
 
+  /** "I am ___": type, hold, erase, next word. */
+  function initTyping(root: HTMLElement) {
+    const el = root.querySelector<HTMLElement>('[data-typed]');
+    const caret = root.querySelector<HTMLElement>('[data-caret]');
+    if (!el || !caret) return;
+    const words: string[] = JSON.parse(el.dataset.words || '[]');
+    caret.classList.add('is-on');
+    let w = 0;
+    let i = words[0].length;
+    let erasing = false;
+    const step = () => {
+      const word = words[w];
+      if (!erasing) {
+        i++;
+        el.textContent = word.slice(0, i);
+        if (i >= word.length) {
+          erasing = true;
+          return void setTimeout(step, 1700);
+        }
+        setTimeout(step, 75);
+      } else {
+        i--;
+        el.textContent = word.slice(0, i);
+        if (i <= 0) {
+          erasing = false;
+          w = (w + 1) % words.length;
+          return void setTimeout(step, 250);
+        }
+        setTimeout(step, 40);
+      }
+    };
+    erasing = true;
+    setTimeout(step, 2200);
+  }
+
+  /**
+   * Grid of hairline cells across the middle of the hero. Cells under the
+   * cursor light up in clay and fade over ~1.2 s; now and then a random cell
+   * lights up on its own so the hero breathes. Canvas 2D, DPR ≤ 2, pauses
+   * when the hero is off screen or nothing is fading.
+   */
+  function initGrid(root: HTMLElement, calm: boolean) {
+    const canvas = root.querySelector<HTMLCanvasElement>('[data-hero-grid]');
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) return;
+    const css = getComputedStyle(document.documentElement);
+    const ink = css.getPropertyValue('--ink').trim() || '#111';
+    const clay = css.getPropertyValue('--clay-bright').trim() || '#b4532f';
+
+    let w = 0, h = 0, cell = 64, cols = 0, rows = 0, x0 = 0, y0 = 0;
+    const heat = new Map<number, number>(); // cell index → 0..1
+    const resize = () => {
+      const r = root.getBoundingClientRect();
+      const dpr = Math.min(devicePixelRatio, 2);
+      w = r.width; h = r.height;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      cell = w < 700 ? 40 : 64;
+      // Grid band: ~70% of the width, ~56% of the height, centred.
+      cols = Math.floor((w * 0.72) / cell);
+      rows = Math.floor((h * 0.56) / cell);
+      x0 = Math.round((w - cols * cell) / 2);
+      y0 = Math.round(h * 0.16);
+      draw();
+    };
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+      for (const [k, v] of heat) {
+        const cx = k % cols, cy = Math.floor(k / cols);
+        ctx.globalAlpha = v;
+        ctx.fillStyle = clay;
+        ctx.fillRect(x0 + cx * cell, y0 + cy * cell, cell, cell);
+      }
+      ctx.globalAlpha = 0.16;
+      ctx.strokeStyle = ink;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let c = 0; c <= cols; c++) { const x = x0 + c * cell + 0.5; ctx.moveTo(x, y0); ctx.lineTo(x, y0 + rows * cell); }
+      for (let r = 0; r <= rows; r++) { const y = y0 + r * cell + 0.5; ctx.moveTo(x0, y); ctx.lineTo(x0 + cols * cell, y); }
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    };
+    resize();
+    new ResizeObserver(resize).observe(root);
+
+    if (calm) {
+      // Reduced motion: a few fixed clay cells, no animation.
+      [3, cols + 6, cols * 2 + 2].forEach((k) => heat.set(k % (cols * rows), 0.9));
+      return draw();
+    }
+
+    let running = false;
+    let visible = true;
+    let last = performance.now();
+    const loop = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      for (const [k, v] of heat) {
+        const nv = v - dt / 1.2;
+        if (nv <= 0) heat.delete(k); else heat.set(k, nv);
+      }
+      draw();
+      if (heat.size && visible) requestAnimationFrame(loop);
+      else running = false;
+    };
+    const kick = () => {
+      if (running || !visible) return;
+      running = true;
+      last = performance.now();
+      requestAnimationFrame(loop);
+    };
+    const light = (cx: number, cy: number, v = 1) => {
+      if (cx < 0 || cy < 0 || cx >= cols || cy >= rows) return;
+      const k = cy * cols + cx;
+      heat.set(k, Math.max(heat.get(k) ?? 0, v));
+      kick();
+    };
+    if (hasFinePointer()) {
+      root.addEventListener('pointermove', (e) => {
+        const r = root.getBoundingClientRect();
+        light(Math.floor((e.clientX - r.left - x0) / cell), Math.floor((e.clientY - r.top - y0) / cell));
+      });
+    } else {
+      root.addEventListener('touchmove', (e) => {
+        const t = e.touches[0], r = root.getBoundingClientRect();
+        light(Math.floor((t.clientX - r.left - x0) / cell), Math.floor((t.clientY - r.top - y0) / cell));
+      }, { passive: true });
+    }
+    // The grid breathes: a random cell every ~1.4 s.
+    setInterval(() => visible && light(Math.floor(Math.random() * cols), Math.floor(Math.random() * rows), 0.85), 1400);
+    new IntersectionObserver((en) => { visible = en.some((x) => x.isIntersecting); kick(); }).observe(root);
+  }
 </script>
 
 <style>
   .hero {
     position: relative;
-    min-height: 100svh;
+    min-height: calc(100svh - var(--header-h));
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    background: #000;
-    color: #fff;
+    justify-content: space-between;
   }
-  .hero__content {
-    position: relative;
-    z-index: 10;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 1.5rem;
-    width: 100%;
-    max-width: var(--container-max);
-    margin-inline: auto;
-    padding: 7rem var(--container-pad) 2rem; /* top room for the floating navbar */
-    text-align: left;
-  }
-  @media (min-width: 48rem) {
-    .hero__content > * { max-width: 34rem; }
-  }
+  .hero__grid { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-  /* Bold, wide headline in the style Afnan chose ("Hi there, I'm …! 👋"). */
-  .hero__title {
-    font-family: var(--font-hero);
-    font-weight: 800;
-    font-size: clamp(2rem, 1.2rem + 3vw, 3.75rem);
-    line-height: 1.08;
-    letter-spacing: -0.02em;
-    color: #fff;
+  .hero__center {
+    position: relative;
+    flex: 1;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.5rem;
+    padding-top: 2vh;
+    pointer-events: none;
+  }
+  /* Huge outlined wordmark (dverso). */
+  .hero__word {
+    font: 600 clamp(6rem, 3rem + 20vw, 22rem) / 0.8 var(--font-text);
+    letter-spacing: -0.06em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--color-text);
+    user-select: none;
+  }
+  /* "I am ___" (Amy). */
+  .hero__type {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1.1rem + 2.2vw, 3.6rem);
+    line-height: 1.1;
+    color: var(--color-text);
+    min-height: 1.2em;
+  }
+  .hero__typed { font-style: italic; }
+  .hero__caret {
+    display: none;
+    width: 2px;
+    height: 0.9em;
+    margin-left: 4px;
+    vertical-align: -0.08em;
+    background: currentColor;
+    animation: hero-blink 1s step-end infinite;
+  }
+  .hero__caret:global(.is-on) { display: inline-block; }
+  @keyframes hero-blink { 50% { opacity: 0; } }
+
+  .hero__bottom {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+    padding: 0 var(--container-pad) 1.75rem;
+    max-width: var(--container-max);
+    width: 100%;
+    margin-inline: auto;
+  }
+  .hero__title { display: grid; gap: 0.75rem; max-width: 34rem; font: inherit; letter-spacing: normal; }
+  .hero__hello { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-text); }
+  /* Big sans headline with italic serif accents (dverso). */
+  .hero__headline {
+    font: 400 clamp(1.9rem, 1.3rem + 1.9vw, 2.9rem) / 1.06 var(--font-text);
+    letter-spacing: -0.04em;
+    color: var(--color-text);
     text-wrap: balance;
   }
-  .hero__wave {
+  .hero__square {
     display: inline-block;
-    transform-origin: 70% 75%;
-    animation: hero-wave 2.4s ease-in-out 0.6s infinite;
+    width: 0.7rem;
+    height: 0.7rem;
+    background: var(--clay-bright);
   }
-  @keyframes hero-wave {
-    0%, 60%, 100% { transform: rotate(0deg); }
-    10%, 30% { transform: rotate(14deg); }
-    20% { transform: rotate(-8deg); }
-    40% { transform: rotate(-4deg); }
-    50% { transform: rotate(10deg); }
-  }
-
-  .hero__form {
-    width: 100%;
-    max-width: 36rem;
+  .hero__labels {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 0.5rem 0.5rem 1.5rem;
-    border-radius: 999px;
+    gap: 2.5rem;
+    align-items: flex-end;
   }
-  .hero__form input {
-    flex: 1;
-    min-width: 0;
-    min-height: 44px;
-    border: 0;
-    background: transparent;
-    color: #fff;
-    font-size: 1rem;
-    outline: none;
-  }
-  .hero__form input::placeholder { color: rgb(255 255 255 / 0.55); }
-  .hero__form:focus-within { box-shadow: inset 0 1px 1px rgb(255 255 255 / 0.1), 0 0 0 2px rgb(255 255 255 / 0.7); }
-  .hero__submit {
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    border: 0;
-    border-radius: 50%;
-    background: #fff;
-    color: #000;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .hero__submit:hover { transform: translateX(2px); }
-
-  .hero__subtitle {
-    max-width: 36rem;
-    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem);
-    line-height: 1.55;
-    color: #fff;
-  }
-
-  .hero__cta {
+  .hero__scroll {
     display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    padding: 0.75rem 2rem;
-    border-radius: 999px;
-    color: #fff;
-    font-size: 0.875rem;
-    font-weight: 500;
+    align-items: flex-end;
+    gap: 0.6rem;
     text-decoration: none;
-    transition: background-color 0.2s;
+    text-align: right;
   }
-  .hero__cta:hover { color: #fff; background: rgb(255 255 255 / 0.05); }
-
-  .hero__social {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    gap: 1rem;
-    width: 100%;
-    max-width: var(--container-max);
-    margin-inline: auto;
-    padding: 0 var(--container-pad) 3rem;
-  }
-  .hero__icon {
-    display: grid;
-    place-items: center;
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    color: rgb(255 255 255 / 0.8);
-    transition: color 0.2s, background-color 0.2s;
-  }
-  .hero__icon:hover { color: #fff; background: rgb(255 255 255 / 0.05); }
-
-  /* White focus rings on the dark hero. */
-  .hero :global(:focus-visible) { outline-color: #fff; }
+  .hero__scroll:hover { color: var(--color-text); }
 </style>

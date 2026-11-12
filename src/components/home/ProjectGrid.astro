@@ -18,8 +18,7 @@ const sizes = cardSizes(projects.length);
   <div class="container stack">
     <div class="work__head">
       <div class="work__titles">
-        <p class="eyebrow">Selected work</p>
-        <h2 id="work-title">Case studies</h2>
+        <h2 id="work-title">Featured Projects</h2>
       </div>
       <RoleLens />
     </div>
@@ -113,26 +112,23 @@ const sizes = cardSizes(projects.length);
 </script>
 
 <style>
+  /* Amy-style centred heading with the role lens under it. */
   .work__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: end;
-    justify-content: space-between;
-    gap: var(--space-s) var(--space-m);
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: var(--space-s);
+    margin-bottom: var(--space-l);
   }
+  .work__head h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.9rem, 1.5rem + 1.6vw, 2.6rem); letter-spacing: 0.01em; }
   .work__titles { display: grid; gap: var(--space-3xs); }
   .work__grid { row-gap: var(--space-xl); }
-
-  /* Card spans by size (mobile: always full width via .grid > *). */
+  /* Amy-style: two equal columns from tablets up (one on phones). */
   @media (min-width: 48rem) {
-    .work__grid > :global([data-size='wide']) { grid-column: span 8; }
-    .work__grid > :global([data-size='half']),
-    .work__grid > :global([data-size='third']) { grid-column: span 4; }
+    .work__grid > :global(.project-card) { grid-column: span 4; }
   }
   @media (min-width: 64rem) {
-    .work__grid > :global([data-size='wide']) { grid-column: span 12; }
-    .work__grid > :global([data-size='half']) { grid-column: span 6; }
-    .work__grid > :global([data-size='third']) { grid-column: span 4; }
+    .work__grid > :global(.project-card) { grid-column: span 6; }
   }
   .work__grid > :global([hidden]) { display: none; }
 </style>

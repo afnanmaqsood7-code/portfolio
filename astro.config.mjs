@@ -15,36 +15,27 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Instrument Serif', // ← display font (hero headline, headings)
+      name: 'Lora', // ← display: headings + italic accent words
       cssVariable: '--font-display-src',
-      weights: [400],
+      weights: [400, 500],
       styles: ['normal', 'italic'],
       subsets: ['latin'],
       fallbacks: ['Georgia', 'serif'],
     },
     {
       provider: fontProviders.google(),
-      name: 'Inter', // ← text font placeholder
+      name: 'Geist', // ← text + big sans headlines
       cssVariable: '--font-text-src',
-      weights: ['300 700'],
+      weights: ['300 600'],
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['system-ui', 'sans-serif'],
     },
     {
       provider: fontProviders.google(),
-      name: 'Unbounded', // ← bold, wide hero headline ("Hi there, I'm Afnan!")
-      cssVariable: '--font-hero-src',
-      weights: ['600 800'],
-      styles: ['normal'],
-      subsets: ['latin'],
-      fallbacks: ['Arial Black', 'sans-serif'],
-    },
-    {
-      provider: fontProviders.google(),
-      name: 'IBM Plex Mono', // ← monospace (project list, labels)
+      name: 'Geist Mono', // ← small technical labels
       cssVariable: '--font-mono-src',
-      weights: [400, 500],
+      weights: [400],
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['ui-monospace', 'monospace'],

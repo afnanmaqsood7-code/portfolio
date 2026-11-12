@@ -1,0 +1,189 @@
+---
+/**
+ * The bold colour block (dverso's blue moment, in deep sage).
+ * A closed sketchbook opens as you scroll and four discipline cards fly out
+ * of it into a fanned row (original take on dverso's cube + service cards).
+ * Desktop/tablet with motion: the stage pins (CSS sticky) while scroll
+ * progress (GSAP ScrollTrigger scrub) opens the book and places the cards.
+ * Phones / reduced motion / no JS: a simple grid of the same cards.
+ */
+import { site } from '../../site.config';
+import Accent from '../ui/Accent.astro';
+
+const items = site.home.disciplines;
+---
+
+<section id="disciplines" class="disc" aria-labelledby="disc-title" data-disc>
+  <div class="disc__pin">
+    <div class="disc__head">
+      <p class="mono-label disc__eyebrow">What I do</p>
+      <h2 id="disc-title" class="disc__title"><Accent text={site.home.disciplinesTitle} /></h2>
+    </div>
+
+    <div class="disc__scene">
+      <div class="book" aria-hidden="true" data-book>
+        <div class="book__back"></div>
+        <div class="book__pages"></div>
+        <div class="book__cover" data-cover>
+          <span class="book__label">Sketchbook</span>
+          <span class="book__name">afnan</span>
+          <i class="book__square"></i>
+        </div>
+      </div>
+
+      <ul class="cards" role="list">
+        {items.map((d, i) => (
+          <li class="card" data-card style={`--i:${i}`}>
+            <h3 class="card__title">{d.title}</h3>
+            <ul class="card__list" role="list">
+              {d.items.map((x) => <li>{x}</li>)}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { getTier } from '../../scripts/motion/capabilities';
+
+  const root = document.querySelector<HTMLElement>('[data-disc]');
+  // Only where there's room for the fan and motion is welcome.
+  if (root && getTier() !== 'none' && matchMedia('(min-width: 48rem)').matches) void init(root);
+
+  async function init(el: HTMLElement) {
+    const [{ gsap }, { ScrollTrigger }] = await Promise.all([import('gsap'), import('gsap/ScrollTrigger')]);
+    gsap.registerPlugin(ScrollTrigger);
+    el.classList.add('disc--live');
+    const cover = el.querySelector<HTMLElement>('[data-cover]')!;
+    const book = el.querySelector<HTMLElement>('[data-book]')!;
+    const cards = [...el.querySelectorAll<HTMLElement>('[data-card]')];
+    const n = cards.length;
+
+    // Final fanned positions (in % of the card width) and tilts.
+    const spread = (i: number) => (i - (n - 1) / 2) * 108;
+    const tilt = (i: number) => (i - (n - 1) / 2) * 4;
+
+    gsap.set(cards, { xPercent: 0, yPercent: 10, scale: 0.55, rotate: 0, opacity: 0 });
+    const tl = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: { trigger: el, start: 'top top', end: 'bottom bottom', scrub: 0.6 },
+    });
+    tl.to(cover, { rotateY: -165, duration: 0.3, ease: 'power2.inOut' }, 0.05)
+      .to(book, { scale: 0.82, yPercent: 18, duration: 0.5, ease: 'power2.inOut' }, 0.3)
+      .to(book, { opacity: 0.25, duration: 0.2 }, 0.75);
+    cards.forEach((c, i) => {
+      tl.to(c, { opacity: 1, duration: 0.08 }, 0.3 + i * 0.07)
+        .to(c, { xPercent: spread(i), yPercent: -18, scale: 1, rotate: tilt(i), duration: 0.42, ease: 'power3.out' }, 0.3 + i * 0.07);
+    });
+  }
+</script>
+
+<style>
+  .disc {
+    background: var(--sage);
+    color: var(--on-sage);
+    --color-text: var(--on-sage);
+    --color-text-muted: var(--on-sage-soft);
+    --color-focus: var(--on-sage);
+  }
+  .disc__pin {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-2xl) var(--container-pad);
+  }
+  .disc__head { display: grid; gap: 0.75rem; max-width: 40rem; }
+  .disc__title {
+    font: 400 clamp(2rem, 1.3rem + 2.6vw, 3.6rem) / 1.04 var(--font-text);
+    letter-spacing: -0.04em;
+    color: var(--on-sage);
+    text-wrap: balance;
+  }
+
+  /* ---- Static layout (phones, reduced motion, no JS) ---- */
+  .disc__scene { margin-top: var(--space-xl); }
+  .book { display: none; }
+  .cards {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+  .card {
+    background: #fff;
+    color: #111;
+    border-radius: 10px;
+    padding: 1.25rem 1.25rem 1.5rem;
+    box-shadow: 0 18px 40px rgb(0 0 0 / 0.18);
+  }
+  .card__title { font: 400 1.5rem/1.1 var(--font-text); letter-spacing: -0.03em; color: #111; }
+  .card__list { margin-top: 2.25rem; }
+  .card__list li {
+    padding: 0.45rem 0;
+    border-bottom: 1px solid #d9d2c2;
+    font: 400 0.8rem var(--font-mono);
+    color: #111;
+  }
+
+  /* ---- Live layout: pinned stage, book opens, cards fan out ---- */
+  .disc:global(.disc--live) { height: 260vh; }
+  .disc:global(.disc--live) .disc__pin {
+    position: sticky;
+    top: var(--header-h);
+    height: calc(100svh - var(--header-h));
+    display: grid;
+    grid-template-rows: auto 1fr;
+    padding-block: var(--space-xl) var(--space-l);
+    overflow: hidden;
+  }
+  .disc:global(.disc--live) .disc__scene {
+    position: relative;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    perspective: 1400px;
+  }
+  .disc:global(.disc--live) .book {
+    display: block;
+    position: absolute;
+    width: min(26vw, 21rem);
+    aspect-ratio: 3 / 4;
+    transform-style: preserve-3d;
+  }
+  .book__back,
+  .book__pages,
+  .book__cover {
+    position: absolute;
+    inset: 0;
+    border-radius: 6px 12px 12px 6px;
+  }
+  .book__back { background: #1d3127; }
+  .book__pages {
+    inset: 6px 8px 6px 4px;
+    background: repeating-linear-gradient(to right, #fcf6e7 0 3px, #ece3cd 3px 4px);
+    border-radius: 3px 8px 8px 3px;
+  }
+  .book__cover {
+    background: #22382d;
+    transform-origin: left center;
+    backface-visibility: hidden;
+    box-shadow: inset 10px 0 0 rgb(0 0 0 / 0.18);
+    display: grid;
+    align-content: space-between;
+    padding: 1.5rem;
+  }
+  .book__label { font: 400 0.75rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--on-sage-soft); }
+  .book__name { font: 600 3.5rem/0.8 var(--font-text); letter-spacing: -0.06em; color: transparent; -webkit-text-stroke: 1px var(--on-sage); }
+  .book__square { width: 0.9rem; height: 0.9rem; background: var(--clay-bright); justify-self: end; }
+  .disc:global(.disc--live) .cards {
+    position: relative;
+    display: block;
+    width: min(17vw, 15rem);
+    aspect-ratio: 4 / 5;
+  }
+  .disc:global(.disc--live) .card {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+  }
+</style>

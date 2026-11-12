@@ -27,6 +27,8 @@ const projects = defineCollection({
       // Short metric statements. The summary card shows the first 3.
       outcomes: z.array(z.string()).min(1),
       lens: z.enum(LENSES),
+      // Optional small tag chips on project cards (e.g. 'Mobile design', 'Hackathon winner').
+      tags: z.array(z.string()).max(3).optional(),
 
       cover: image(),
       coverAlt: z.string().min(1, 'coverAlt is required (describe the cover image)'),

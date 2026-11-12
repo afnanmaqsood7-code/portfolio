@@ -1,56 +1,67 @@
 ---
 /**
- * Footer doubles as the site-wide contact block (#contact), so
- * "Contact" in the header works from every page.
+ * Contact + footer (all pages, #contact). Amy-style "Let's get in touch!"
+ * block with a dverso-style row of small mono labels underneath.
  */
 import { site } from '../../site.config';
-import Button from '../ui/Button.astro';
 
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer" id="contact">
-  <div class="container grid">
-    <div class="md:span-5 lg:span-7 stack">
-      <p class="eyebrow">Contact</p>
-      <h2 class="footer-title">Let&rsquo;s make something people remember.</h2>
-      <p class="muted">{site.location}.</p>
+  <div class="site-footer__inner">
+    <div class="contact">
+      <h2 class="contact__title">Let&rsquo;s get in touch!</h2>
+      <p class="contact__sub">Open to new opportunities in product, brand and web design.</p>
+      <ul role="list" class="contact__links">
+        <li><a class="brush-link" href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li><a class="brush-link" href={site.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+        <li><a class="brush-link" href={site.resume} download>Resume (PDF)</a></li>
+      </ul>
     </div>
-    <div class="md:span-3 lg:span-5 footer-links">
-      <a class="footer-email brush-link" href={`mailto:${site.email}`}>{site.email}</a>
-      <div class="cluster">
-        <Button href={site.linkedin} variant="ghost" external>LinkedIn</Button>
-        <Button href={site.resume} variant="ghost" download>Resume (PDF)</Button>
-      </div>
+    <div class="meta" aria-label="Site details">
+      <span>&copy; {year} {site.name}</span>
+      <span>Based in Ontario, Canada</span>
+      <a href="#main">Back to top ↑</a>
     </div>
-    <p class="footer-meta muted">&copy; {year} {site.name}. Designed and painted by hand.</p>
   </div>
 </footer>
 
 <style>
-  .site-footer {
-    padding-block: var(--space-2xl) var(--space-l);
-    border-top: var(--border-w) solid var(--color-border);
-    background: var(--color-surface);
+  .site-footer { border-top: 1px solid var(--color-border); }
+  .site-footer__inner {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-2xl) var(--container-pad) var(--space-m);
   }
-  .footer-title { font-size: var(--step-3); max-width: 18ch; }
-  .footer-links {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-s);
-    align-self: end;
-  }
-  .footer-email {
+  .contact { display: grid; gap: 0.5rem; justify-items: start; }
+  .contact__title {
     font-family: var(--font-display);
-    font-size: var(--step-2);
-    word-break: break-word;
+    font-weight: 500;
+    font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.6rem);
+    letter-spacing: 0;
   }
-  .footer-meta {
-    margin-top: var(--space-xl);
-    font-size: var(--step--1);
+  .contact__sub { font-style: italic; color: var(--color-text-muted); }
+  .contact__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 2rem;
+    margin-top: var(--space-s);
+  }
+  .contact__links a { display: inline-flex; align-items: center; min-height: 44px; }
+  .meta {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: var(--space-2xs) var(--space-m);
+    gap: 0.5rem 1.5rem;
+    margin-top: var(--space-xl);
+    padding-top: var(--space-s);
+    border-top: 1px solid var(--color-border);
+    font: 400 0.75rem var(--font-mono);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
   }
+  .meta a { color: inherit; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; margin-block: -12px; }
+  .meta a:hover { color: var(--color-text); }
 </style>

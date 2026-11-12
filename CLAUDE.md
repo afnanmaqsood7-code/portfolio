@@ -17,6 +17,27 @@ Everything else stays quiet so the work is the hero.
 reach the best work in one click. One site serves four job types via the
 role lens.
 
+## DESIGN DIRECTION — single source of truth (Afnan, merged)
+Afnan asked to follow TWO reference sites and merge them into one best
+version: **dversostudio.io** (bold studio: cream bg, Geist + Geist Mono labels,
+italic serif accent words, outlined wordmark over a grid with lit squares,
+bold colour block with flying service cards, project table) × **itsamy.ca**
+(calm, recruiter-friendly: Lora headings, "Hi, I'm …", typed "I am ___",
+2-col project cards with device-style images + tag chips, testimonial card,
+own-art services, italic marquee, simple "Let's get in touch!").
+Studied directly in a browser (screens, fonts, colours). Follow THIS system
+everywhere; do not mix in other references. Never copy their logos, 3D
+characters, illustrations, testimonials or text.
+- Colours (Afnan chose): cream #fcf6e7 bg, near-black #111 text, deep sage
+  #2f4a3c bold block, clay #b4532f decorative / #a24826 text accent, white cards.
+- Fonts: Geist (text + big sans headlines, tight -0.04em), Geist Mono (small
+  uppercase labels), Lora (section headings, italic accent words via *word*).
+- Home: Loader → Hero → Disciplines (sage) → Featured Projects → All projects
+  table → Kind words → From the studio → Marquee → Contact/footer.
+- Nav: simple text links (Afnan's preference), no pills.
+- Removed in the merge: black hero, liquid glass, Unbounded/Instrument
+  Serif/Inter, laptop badge, sage-paper palette.
+
 ## Working agreement
 - Build in phases; **stop after each phase** for review with: short summary,
   how to run locally, what to check.
@@ -93,28 +114,25 @@ src/
 ```
 
 ## Design tokens (`src/styles/tokens.css`)
-- **Colours: "Sage & clay" — chosen by Afnan** (she disliked the earlier warm
-  paper/terracotta and the electric blue). Fonts are still placeholders.
-- **Swap in one place:** colours → `tokens.css` palette blocks; fonts →
-  `name` in `astro.config.mjs`. Components use **semantic** tokens only
-  (`--color-bg`, `--color-surface`, `--color-text`, `--color-text-muted`,
-  `--color-border`, `--color-accent`, `--color-on-accent`, `--color-focus`).
-- Fonts: display **Instrument Serif** (`--font-display`), text **Inter**
-  (`--font-text`), hero headline **Unbounded** (`--font-hero`), mono
-  **IBM Plex Mono** (`--font-mono`) — placeholders.
-- Light: paper `#e9ece4`, paper-deep `#dde2d6`, ink `#1f2a24`, ink-soft
-  `#4c5a51`, line `#c5ccbe`, accent (text-safe clay) `#a24826`, accent-ink
-  `#fbf8f2`, clay-bright `#b4532f` (decorative only, never text).
-- Dark (prefers-color-scheme): paper `#131815`, paper-deep `#1c231f`, ink
-  `#e6ebe2`, ink-soft `#a9b5aa`, line `#2c3630`, accent `#e08a63`.
-- Verified AA: light ink 12.4/11.3, ink-soft 6.1/5.5, accent 5.0/4.6 on
-  paper/paper-deep, accent-ink on accent 5.7; dark ink 14.8, ink-soft 8.5,
-  accent 6.8. Re-verify after any colour change.
-- Fluid scales: type `--step--1 … --step-6`, space `--space-3xs … --space-3xl`.
-- Layout: `--container-max` 90rem, `--container-pad`, `--grid-gap`.
-- Motion: `--ease-out`, `--ease-in-out`, `--dur-fast|base|slow` (zeroed under
-  reduced motion).
-- Light/dark is **system-driven** (`prefers-color-scheme`), no manual toggle.
+- **Colours "Cream, sage & clay"** (merged direction). Swap in one place:
+  palette blocks in `tokens.css`; fonts by `name` in `astro.config.mjs`.
+  Components use semantic tokens (`--color-bg/surface/card/text/text-muted/
+  border/accent/on-accent/focus`) plus `--sage`, `--on-sage`, `--on-sage-soft`,
+  `--clay-bright` (decorative only).
+- Light: paper `#fcf6e7`, paper-deep `#f3ecdb`, card `#fff`, ink `#111`,
+  ink-soft `#57524a`, line `#e2d9c4`, accent `#a24826`, clay-bright `#b4532f`,
+  sage `#2f4a3c`, on-sage `#fcf6e7`, on-sage-soft `#c9d3c6`.
+- Dark (prefers-color-scheme): paper `#121411`, paper-deep `#1b1e1a`, card
+  `#1f231e`, ink `#f3ede0`, ink-soft `#b3ad9f`, line `#2d322b`, accent `#e08a63`.
+- Verified AA: ink/cream 17.5, ink-soft/cream 7.2, clay text/cream 5.6,
+  cream/sage 9.0, on-sage-soft/sage 6.3; dark ink 15.9, ink-soft 8.3, accent
+  7.0. Clay on sage = decorative only (1.95).
+- Fonts: **Lora** (`--font-display`, 400/500 + italic), **Geist**
+  (`--font-text`, 300–600), **Geist Mono** (`--font-mono`, 400). Helpers:
+  `.accent` (italic Lora), `.mono-label` (uppercase mono), `[data-reveal]`.
+- Fluid scales, layout and motion tokens unchanged.
+- Network: the "portfolio" cloud environment allows fonts.google(apis).com /
+  gstatic.com, so sandbox builds now use the real fonts.
 
 ## Layout system (`grid.css`)
 Mobile first. `.container`; `.grid` = 4 cols → 8 at ≥48rem → 12 at ≥64rem.
@@ -210,49 +228,39 @@ image) but time-capped at ~1.1s, then the stroke wipes off to reveal the page.
 `aria-hidden`, pointer-transparent; any key/click skips it. Page renders
 underneath the whole time (no LCP blocking).
 
-### 2. Hero — liquid-glass hero (from Afnan's "recreation prompt", HERO ONLY)
-Afnan supplied a full landing-page prompt (React/Vite/Tailwind/framer-motion,
-an agency called "Asme") and asked to use ONLY its hero section, with her
-data. Built in Astro + plain CSS/TS (stack rule), `src/components/home/Hero.astro`
-+ the `glass` variant of `src/components/layout/Header.astro`
-(`<BaseLayout headerVariant="glass">` on the home page only):
-- `.liquid-glass` utility in `global.css` (rgba 0.01 bg, blur 4px, inset
-  highlight, 1.4px gradient rim via masked ::before) — for dark/video bgs.
-- Display font switched site-wide to **Instrument Serif** (astro.config.mjs,
-  Google via Astro Fonts; Fraunces removed).
-- Section: min-height 100svh, plain BLACK, flex column. **No photo or video**
-  — Afnan asked to remove her photo; the hero video, its fade-loop script,
-  `site.heroVideo` and `/public/hero/afnan.mp4` were deleted. Do not add a
-  photo/video of her unless she asks.
-- Home navigation (`Header` variant `glass`, kept name for the prop): **simple
-  white TEXT links, no pills/circles** (Afnan's reference): name left; Home ·
-  Work · Play · Studio · About · Resume on the right (gap clamp 1.5–3.5rem,
-  1.05rem, hover opacity 0.65, current page underlined); sound toggle as
-  text. < 56rem: plain-text "Menu" `<details>` (JS-free) with the same links.
-- INTRO in the style of Afnan's reference ("Hi there, I'm Gloria! 👋" + a
-  one-line mission): H1 `site.heroTitle` ("Hi there, I'm Afnan!") in
-  **Unbounded 800** (`--font-hero`, hero only), size clamp(2rem…3.75rem)
-  (reduced at Afnan's request), + a waving 👋 (CSS keyframes,
-  aria-hidden; stops under reduced motion), then `site.heroSubtitle`
-  (lowercase "a product, brand and web designer with a painter's hand, …",
-  clamp(1rem…1.2rem)). LEFT-aligned, max 34rem.
-- Then the glass email pill (opens the visitor's mail app pre-filled to
-  Afnan — static site, no backend) and the glass CTA `site.heroCta` → `#work`.
-- Social row: three glass round buttons — LinkedIn, email, resume download.
-- Replaced: the earlier typewriter + mouse-scrub hero and the third-party
-  "Mainframe" clip.
-
-### 2b. Laptop badge (Afnan's request, revised)
-`src/components/home/LaptopLoop.astro` (home, after the hero). Source: her
-"Laptop Computer" clip; `/public/loop/laptop-loop.mp4` = typing section,
-cropped to the badge, tail cross-faded into head (seamless), keyframe every 2.
-- PLAYS continuously (`loop`, muted) — NOT scroll-scrubbed (Afnan changed her
-  mind: "don't rotate when scrolling, keep it playing").
-- Desktop: large on the right of the black hero; while scrolling out of the
-  hero it shrinks to an 84 px badge docked bottom-right and ROTATES ONCE
-  (angle = 360° × smoothstep(dock progress)); docked it stays upright.
-  Phones: docked (64 px) from the start, no rotation.
-- Reduced motion / no JS: still badge in the hero.
+### 2. Home sections (merged direction — BUILT)
+- `Preloader.astro`: dark blurred screen, "afnan" sharpening from blur,
+  "Loading" + counter + hairline bar, ≤ 1.1 s, home only, first visit per
+  session (`sessionStorage['am-intro']`, inline head-time check), skipped by
+  click/key, never with reduced motion or no JS.
+- `Hero.astro`: cream; canvas hairline GRID (64 px cells, 40 on phones,
+  ~72% × 56% band) whose cells light clay under the cursor/touch and fade
+  over 1.2 s, plus a random cell every 1.4 s; huge outlined "afnan" (Geist
+  600, text-stroke); "I am ___" typing `site.home.words` in Lora italic;
+  bottom-left H1 = mono "Hi, I'm Afnan Maqsood." + Geist headline with italic
+  accents (`site.home.headline`); corner mono labels (Ontario + live Toronto
+  clock; "Scroll down to discover" + clay square → #disciplines).
+- `Disciplines.astro` (#disciplines): sage block, title with accents; a CSS
+  3D sketchbook (cover rotates open) and 4 white cards (Geist title + mono
+  hairline lists, `site.home.disciplines`) fly out into a tilted fan — GSAP
+  ScrollTrigger scrub, sticky stage, ≥ 48rem with motion. Else a card grid.
+- `ProjectGrid.astro` (#work): centred Lora "Featured Projects" + role lens;
+  Amy-style 2-col cards (image on a soft panel, title + mono tag chips from
+  optional `tags` frontmatter, else discipline + first tool).
+- `ProjectTable.astro`: "All *projects* ↙" rows (mono name · type · year ·
+  View case →); hover = floating cover preview following the cursor with a
+  velocity tilt (mouse + motion only).
+- `Testimonials.astro`: Lora "Kind words", bordered card; entries from
+  `site.home.testimonials` (PLACEHOLDER flagged visibly until real quotes).
+- `StudioStrip.astro`: "From the *studio*" 4 tiles (placeholders until her
+  paintings are in `src/assets/studio`), link to /studio.
+- `Marquee.astro`: "✿ Product designer with a painter's hand" in Lora
+  italic; drifts, speeds up with scroll, follows scroll direction; static
+  for reduced motion.
+- `Footer.astro` (#contact, all pages): "Let's get in touch!" + email,
+  LinkedIn, resume; mono meta row (© · Ontario · Back to top).
+- `Header.astro`: sticky cream, name + simple text links + mono sound toggle;
+  `<details>` Menu on phones.
 
 ### 2c. Video ribbon — REMOVED (Afnan's decision)
 The 3D "Vante" ribbon section (cards sweeping along a 3D rail into a grid)
@@ -375,8 +383,8 @@ About → (g) performance + accessibility pass.
   scenes override with `document.dispatchEvent(new CustomEvent('cursor:state',
   { detail: 'view' | null }))`.
 - Lenis instance exposed as `window.__lenis` for lazily loaded modules.
-- Home order: hero (+ fixed laptop badge) → Selected work grid + role lens
-  `#work` → Play → Studio → About → footer `#contact`.
+- Home order: see DESIGN DIRECTION (Loader → Hero → Disciplines → Featured
+  Projects `#work` → All projects → Kind words → Studio → Marquee → #contact).
 
 ### Painted assets needed from Afnan (placeholders until then)
 Brush-stroke scans (PNG, transparent), a bristle/brush stamp texture, a
@@ -423,5 +431,6 @@ photo, 6–10 paintings/illustrations for the Studio strip. Specs in
 - [ ] Phase 4 — Play, Studio (lightbox), About.
 - [ ] Phase 5 — immersive motion layer, expanded to the award-level brief
       (steps a–g above). Approved. Step (a) done. Desk scene built then removed.
-   Sage & clay palette applied. Liquid-glass video hero (hero-only prompt) done.
+   Home rebuilt to the merged dverso × itsamy direction (cream/sage/clay,
+   Geist/Lora).
 - [ ] Phase 6 — perf / a11y / SEO pass, Vercel deploy steps.

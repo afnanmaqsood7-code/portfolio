@@ -19,13 +19,11 @@ import '../styles/global.css';
 
 interface Props {
   title?: string;
-  /** 'glass' = floating liquid-glass navbar over a full-bleed hero (home). */
-  headerVariant?: 'default' | 'glass';
   description?: string;
   ogImage?: string;
 }
 
-const { title, description = site.description, ogImage = '/og/default.png', headerVariant = 'default' } = Astro.props;
+const { title, description = site.description, ogImage = '/og/default.png' } = Astro.props;
 const fullTitle = title ? `${title} — ${site.name}` : `${site.name} — Product, Brand & Web Designer`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogUrl = new URL(ogImage, Astro.site);
@@ -40,8 +38,8 @@ const ogUrl = new URL(ogImage, Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#e9ece4" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#131815" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#fcf6e7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121411" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
     <!-- Open Graph / social (expanded in Phase 6) -->
@@ -58,11 +56,10 @@ const ogUrl = new URL(ogImage, Astro.site);
     <Font cssVariable="--font-display-src" />
     <Font cssVariable="--font-text-src" preload />
     <Font cssVariable="--font-mono-src" />
-    <Font cssVariable="--font-hero-src" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Header variant={headerVariant} />
+    <Header />
     <main id="main" tabindex="-1">
       <slot />
     </main>

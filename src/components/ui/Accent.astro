@@ -1,0 +1,7 @@
+---
+/** Renders text with *starred* words as italic serif accents. */
+import { accentParts } from '../../utils/accent';
+interface Props { text: string }
+const parts = accentParts(Astro.props.text);
+---
+{parts.map((p) => (p.accent ? <em class="accent">{p.text}</em> : p.text))}

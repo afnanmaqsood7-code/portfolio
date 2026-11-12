@@ -1,84 +1,29 @@
 ---
 /**
- * Home. Hero → selected work (role lens) → Play → Studio → About.
- * Play/Studio previews are placeholders until Phase 4.
- * Phase 5 places the living-paint WebGL scene behind the hero.
+ * Home — merged direction (dversostudio.io × itsamy.ca), see CLAUDE.md.
+ * Loader → hero (outlined name over the painted grid, "I am ___", accent
+ * headline) → sage disciplines (sketchbook opens, cards fly out) → featured
+ * projects (Amy cards + role lens) → all-projects table (hover previews) →
+ * testimonials → from the studio → marquee → contact (footer).
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Preloader from '../components/home/Preloader.astro';
 import Hero from '../components/home/Hero.astro';
-import LaptopLoop from '../components/home/LaptopLoop.astro';
+import Disciplines from '../components/home/Disciplines.astro';
 import ProjectGrid from '../components/home/ProjectGrid.astro';
-
+import ProjectTable from '../components/home/ProjectTable.astro';
+import Testimonials from '../components/home/Testimonials.astro';
+import StudioStrip from '../components/home/StudioStrip.astro';
+import Marquee from '../components/home/Marquee.astro';
 ---
 
-<BaseLayout headerVariant="glass">
-  <!-- HERO: liquid-glass hero over Afnan's video (glass navbar comes from the header) -->
+<BaseLayout>
+  <Preloader />
   <Hero />
-  <!-- Scroll-driven infinite rotating laptop badge (fixed; docks bottom-right) -->
-  <LaptopLoop />
-
-  <!-- SELECTED WORK + ROLE LENS -->
+  <Disciplines />
   <ProjectGrid />
-
-  <!-- PLAY + STUDIO PREVIEWS (placeholders) -->
-  <section class="section" aria-labelledby="play-title">
-    <div class="container grid">
-      <div class="md:span-3 lg:span-4 stack">
-        <p class="eyebrow">Play</p>
-        <h2 id="play-title">Games &amp; experiments</h2>
-        <p class="muted">Life Goes On tribute game, an AR/VR game and Glitchard clips.</p>
-        <a class="brush-link" href="/play">Enter Play →</a>
-      </div>
-      <div class="md:span-5 lg:span-8 tile__media tile__media--wide" />
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="studio-title">
-    <div class="container grid">
-      <div class="md:span-3 lg:span-4 stack">
-        <p class="eyebrow">Studio</p>
-        <h2 id="studio-title">Paintings, illustration &amp; motion</h2>
-        <p class="muted">The hand behind the pixels.</p>
-        <a class="brush-link" href="/studio">Visit the Studio →</a>
-      </div>
-      <ul role="list" class="md:span-5 lg:span-8 studio-strip">
-        {[1, 2, 3, 4].map(() => <li class="tile__media tile__media--square" />)}
-      </ul>
-    </div>
-  </section>
-
-  <!-- ABOUT BLURB -->
-  <section class="section" aria-labelledby="about-title">
-    <div class="container grid">
-      <p class="eyebrow md:span-2 lg:span-3">About</p>
-      <div class="md:span-6 lg:span-7 stack">
-        <h2 id="about-title" class="about-lead">
-          5+ years designing products, brands and campaigns. MDM, Toronto Metropolitan University. BFA, Graphic Design. Painter and illustrator.
-        </h2>
-        <a class="brush-link" href="/about">More about me →</a>
-      </div>
-    </div>
-  </section>
+  <ProjectTable />
+  <Testimonials />
+  <StudioStrip />
+  <Marquee />
 </BaseLayout>
-
-<style>
-  .tile__media {
-    aspect-ratio: 4 / 3;
-    background: var(--color-surface);
-    border: var(--border-w) solid var(--color-border);
-    border-radius: var(--radius-m);
-  }
-  .tile__media--wide { aspect-ratio: 16 / 9; }
-  .tile__media--square { aspect-ratio: 1; }
-
-  .studio-strip {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--grid-gap);
-  }
-  @media (min-width: 64rem) {
-    .studio-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  }
-
-  .about-lead { font-size: var(--step-2); }
-</style>
