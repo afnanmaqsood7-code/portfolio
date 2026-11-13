@@ -28,8 +28,10 @@ own-art services, italic marquee, simple "Let's get in touch!").
 Studied directly in a browser (screens, fonts, colours). Follow THIS system
 everywhere; do not mix in other references. Never copy their logos, 3D
 characters, illustrations, testimonials or text.
-- Colours (Afnan chose): cream #fcf6e7 bg, near-black #111 text, deep sage
-  #2f4a3c bold block, clay #b4532f decorative / #a24826 text accent, white cards.
+- Colours (Afnan, Nov 2026, ref. brandlic.studio/spark-beauty): WHITE base
+  #fff, BLACK #0a0a0a text and bold blocks (footer), ONE accent only — clay
+  #a24826 text / #b4532f decorative (#e9a07e on black). No dark mode; site is
+  always light. Token names (--sage etc.) kept; --sage is now black.
 - Fonts: Geist (text + big sans headlines, tight -0.04em), Geist Mono (small
   uppercase labels), Lora (section headings, italic accent words via *word*).
 - Home: Loader → Hero → Featured Projects → From the studio → Contact/footer.
