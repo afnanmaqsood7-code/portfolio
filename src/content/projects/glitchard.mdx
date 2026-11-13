@@ -24,9 +24,10 @@ import Figure from '../../components/mdx/Figure.astro';
 import FigurePair from '../../components/mdx/FigurePair.astro';
 import Feature from '../../components/mdx/Feature.astro';
 import Points from '../../components/mdx/Points.astro';
+import Band from '../../components/mdx/Band.astro';
+import Video from '../../components/mdx/Video.astro';
 import Quote from '../../components/mdx/Quote.astro';
 
-import message from '../../assets/projects/glitchard/message.jpg';
 import bergson from '../../assets/projects/glitchard/bergson.jpg';
 import question from '../../assets/projects/glitchard/question.jpg';
 import avatars from '../../assets/projects/glitchard/avatars.jpg';
@@ -41,13 +42,20 @@ import training from '../../assets/projects/glitchard/training.jpg';
 import evolution from '../../assets/projects/glitchard/evolution.jpg';
 import future from '../../assets/projects/glitchard/future.jpg';
 
+<Band label="Glitchard speaks">
+  <Video
+    src="/work/glitchard/message.mp4"
+    poster="/work/glitchard/message.jpg"
+    title="A message from Glitchard, the AI MetaHuman comedian"
+    caption="A message from Glitchard, live from his studio. Turn the sound on."
+  />
+</Band>
+
 ## Overview
 
 Glitchard Bugson is an AI powered MetaHuman comedian, "arrested for public lagging". He talks with an audience in real time, improvises and tells jokes in his own voice.
 
 I made him from scratch over nine months. I developed his character and comedy style, built his body as a MetaHuman in Unreal Engine, gave him a mind and a voice in Convai, connected the two, and trained him session after session until his jokes landed.
-
-<Figure src={message} alt="Glitchard standing in a bright virtual studio, delivering a message to the audience." caption="Glitchard in his studio." framed />
 
 ## The question
 
