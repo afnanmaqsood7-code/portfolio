@@ -1,0 +1,51 @@
+---
+/**
+ * "● What I do" — big service rows with an image beside each (brandlic-
+ * style). Rows rise in on scroll; on hover the image lifts. Images are
+ * Afnan's own work.
+ */
+import { Image } from 'astro:assets';
+import axivus from '../../assets/projects/axivus/cover.jpg';
+import brand from '../../assets/studio/portrait-glasses.png';
+import web from '../../assets/projects/axivus/banner.jpg';
+import vr from '../../assets/projects/into-the-heart-of-mine/cover.jpg';
+import paint from '../../assets/studio/whirling-dervish.jpg';
+
+const rows = [
+  { title: 'Product Design', note: 'UX research · flows · prototyping · design systems', img: axivus, alt: 'Axivus app screens.', href: '/work/axivus/' },
+  { title: 'Brand Identity', note: 'Identity · logo & type · packaging · art direction', img: brand, alt: 'A vector portrait illustration by Afnan.', href: '/work/brand-identity/' },
+  { title: 'Web & Digital', note: 'Landing pages · SaaS dashboards · e-commerce', img: web, alt: 'Axivus product screens.', href: '/work/web-saas-design/' },
+  { title: 'Immersive & Games', note: 'VR environments · narrative games · interaction', img: vr, alt: 'A glowing mine tunnel from Into the Heart of Mine.', href: '/work/into-the-heart-of-mine/' },
+  { title: 'Painting & Illustration', note: 'Acrylic & oil · vector portraits · animation', img: paint, alt: 'Painting of a whirling dervish.', href: '/#studio' },
+];
+---
+
+<section class="svc" aria-labelledby="svc-title">
+  <h2 id="svc-title" class="dot-label svc__eyebrow">What I do</h2>
+  <ul role="list" class="svc__list">
+    {rows.map((r) => (
+      <li class="svc__row" data-reveal>
+        <a href={r.href} class="svc__link">
+          <span class="svc__text"><span class="svc__title">{r.title}</span><span class="svc__note">{r.note}</span></span>
+          <span class="svc__img"><Image src={r.img} alt={r.alt} widths={[480, 800]} sizes="(min-width: 56rem) 45vw, 92vw" loading="lazy" /></span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .svc { padding: var(--space-xl) var(--container-pad) var(--space-2xl); border-top: 1px solid var(--color-border); }
+  .svc__eyebrow { margin-bottom: var(--space-l); }
+  .svc__row { border-bottom: 1px solid var(--color-border); }
+  .svc__link { display: grid; gap: 1rem; align-items: end; padding-block: var(--space-s); text-decoration: none; color: var(--color-text); }
+  @media (min-width: 56rem) { .svc__link { grid-template-columns: 1fr 1fr; gap: var(--space-l); } }
+  .svc__text { display: grid; gap: 0.4rem; }
+  .svc__title { font: 600 clamp(2rem, 1.2rem + 2.6vw, 3.4rem) / 1 var(--font-text); letter-spacing: -0.035em; transition: transform 0.4s var(--ease-out); }
+  .svc__note { color: var(--color-text-muted); font-size: 0.95rem; }
+  .svc__img { display: block; overflow: hidden; border-radius: 10px; aspect-ratio: 16 / 7; }
+  .svc__img :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s var(--ease-out); }
+  .svc__link:hover .svc__img :global(img), .svc__link:focus-visible .svc__img :global(img) { transform: scale(1.05); }
+  .svc__link:hover .svc__title { transform: translateX(0.4rem); }
+  @media (prefers-reduced-motion: reduce) { .svc__title, .svc__img :global(img) { transition: none; } }
+</style>

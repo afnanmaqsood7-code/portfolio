@@ -18,7 +18,8 @@ const sizes = cardSizes(projects.length);
   <div class="container stack">
     <div class="work__head">
       <div class="work__titles">
-        <h2 id="work-title">Featured Projects</h2>
+        <p class="dot-label">Portfolio</p>
+        <h2 id="work-title" class="work__h">I design products and brands that are clear, useful and considered.</h2>
       </div>
       <RoleLens />
     </div>
@@ -115,12 +116,15 @@ const sizes = cardSizes(projects.length);
   /* Amy-style centred heading with the role lens under it. */
   .work__head {
     display: grid;
-    justify-items: center;
-    text-align: center;
+    grid-template-columns: 1fr;
+    align-items: end;
     gap: var(--space-s);
+    padding-top: var(--space-s);
+    border-top: 1px solid var(--color-border);
     margin-bottom: var(--space-l);
   }
-  .work__head h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.9rem, 1.5rem + 1.6vw, 2.6rem); letter-spacing: 0.01em; }
+  .work__h { max-width: 22ch; font: 600 clamp(1.6rem, 1.1rem + 1.6vw, 2.4rem) / 1.12 var(--font-text); letter-spacing: -0.03em; }
+  @media (min-width: 56rem) { .work__head { grid-template-columns: 1fr auto; } }
   .work__titles { display: grid; gap: var(--space-3xs); }
   .work__grid { row-gap: var(--space-xl); }
   /* Amy-style: two equal columns from tablets up (one on phones). */

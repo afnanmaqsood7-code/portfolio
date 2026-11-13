@@ -1,210 +1,144 @@
 ---
 /**
- * Home hero — name first, profession second, painting last.
- * - Centred stack: mono "Hi, I'm" → big solid "Afnan Maqsood" (H1) → role
- *   line "<Product> designer" whose first word rotates (Lora italic) →
- *   short professional intro → two buttons.
- * - The painted grid is a SMALL band hugging the name (not the whole hero):
- *   cells light clay under the cursor and fade; one breathes every ~1.6 s.
- * - Status chip above the name: ● "Open to work · Based in Canada".
- * Accessibility: H1 = name + role (visually-hidden role text); the rotating
- * word is aria-hidden with the full list in visually-hidden text.
- * Reduced motion: static grid with a few cells, first role word, no caret.
+ * Home hero — brandlic-style editorial layout (Afnan's reference), original
+ * build with her content.
+ * - Top left: huge bold name + a typed second line with a blinking caret
+ *   ("_Product designer" → Brand / Web / UX…).
+ * - Centre: an image card (her Axivus work) that grows to full width as the
+ *   page scrolls (GSAP ScrollTrigger scrub; sticky stage). No motion → static.
+ * - Bottom: orange name mark left, short intro + "● scroll down" right.
+ * Accessibility: H1 is real text; rotating word is aria-hidden with the full
+ * role list in visually-hidden text.
  */
+import { Image } from 'astro:assets';
 import { site } from '../../site.config';
-import Button from '../ui/Button.astro';
+import heroImg from '../../assets/projects/axivus/banner.jpg';
 
-const { roles, intro, location, status } = site.home;
+const { roles, intro, status, location } = site.home;
 const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`;
 ---
 
 <section class="hero" aria-labelledby="hero-title" data-hero>
-  <canvas class="hero__grid" data-hero-grid aria-hidden="true"></canvas>
-
-  <div class="hero__inner">
-    <p class="hero__status"><i class="hero__dot" aria-hidden="true"></i>{status}<span class="hero__sep" aria-hidden="true">·</span>{location}</p>
-
-    <div class="hero__id" data-hero-name>
-      <p class="hero__hello mono-label"><i class="hero__square" aria-hidden="true"></i>Hi, I&rsquo;m</p>
-      <h1 id="hero-title" class="hero__name">
-        {site.name}<span class="visually-hidden">, {roleList.toLowerCase()}</span>
+  <div class="hero__stage">
+    <div class="hero__top">
+      <h1 id="hero-title" class="hero__title">
+        <span class="hero__name">{site.name}</span>
+        <span class="hero__role" aria-hidden="true">_<span data-typed data-words={JSON.stringify(roles)}>{roles[0]}</span><span class="hero__caret"></span> designer</span>
+        <span class="visually-hidden">, {roleList.toLowerCase()}</span>
       </h1>
+      <p class="dot-label hero__status">{status} · {location}</p>
     </div>
 
-    <p class="hero__role" aria-hidden="true">
-      <span class="hero__typed" data-typed data-words={JSON.stringify(roles)}>{roles[0]}</span><span class="hero__caret" data-caret></span>{' '}designer
-    </p>
+    <div class="hero__media" data-hero-media>
+      <Image src={heroImg} alt="Axivus — mechanic app screens designed by Afnan, on deep navy." widths={[800, 1200, 1600, 1920]} sizes="100vw" loading="eager" fetchpriority="high" />
+    </div>
 
-    <p class="hero__intro">{intro}</p>
-
-    <div class="hero__ctas">
-      <Button href="#work">View my work</Button>
-      <Button href="#contact" variant="ghost">Get in touch</Button>
+    <div class="hero__bottom">
+      <a href="/" class="hero__mark" aria-hidden="true" tabindex="-1">Afnan</a>
+      <div class="hero__intro">
+        <p>{intro}</p>
+        <a class="dot-label hero__scroll" href="#facts">scroll down</a>
+      </div>
     </div>
   </div>
-
 </section>
 
 <script>
   import { getTier } from '../../scripts/motion/capabilities';
-  import { paintGrid } from '../../scripts/paint-grid';
 
   const hero = document.querySelector<HTMLElement>('[data-hero]');
   if (hero) {
-    const canvas = hero.querySelector<HTMLCanvasElement>('[data-hero-grid]')!;
-    const name = hero.querySelector<HTMLElement>('[data-hero-name]')!;
-    const css = getComputedStyle(document.documentElement);
-    paintGrid(hero, canvas, {
-      // A band that hugs the name block: one cell of air left/right, centred.
-      band: (_w, _h, cell) => {
-        const r = name.getBoundingClientRect();
-        const root = hero.getBoundingClientRect();
-        // Never wider than the screen (phones): whole cells only.
-        const cols = Math.min(Math.ceil(r.width / cell) + 2, Math.floor((root.width - 16) / cell));
-        const rows = Math.max(2, Math.ceil(r.height / cell) + 1);
-        const cx = r.left - root.left + r.width / 2;
-        const cy = r.top - root.top + r.height / 2;
-        return { cols, rows, x0: Math.round(cx - (cols * cell) / 2), y0: Math.round(cy - (rows * cell) / 2) };
-      },
-      cell: (w) => (w < 700 ? 36 : 56),
-      line: css.getPropertyValue('--ink').trim() || '#111',
-      lineAlpha: 0.14,
-      fill: css.getPropertyValue('--clay-bright').trim() || '#b4532f',
-      maxAlpha: 0.55, // the name stays readable over lit cells
-      breathe: 1.6,
-      observe: [name],
-    });
-    if (getTier() !== 'none') initTyping(hero);
+    const tier = getTier();
+    if (tier !== 'none') typeRoles(hero);
+    if (tier !== 'none' && matchMedia('(min-width: 48rem)').matches) void grow(hero);
   }
 
-  /** "<word> designer": type, hold, erase, next word. */
-  function initTyping(root: HTMLElement) {
+  /** Type, hold, erase, next word. */
+  function typeRoles(root: HTMLElement) {
     const el = root.querySelector<HTMLElement>('[data-typed]');
-    const caret = root.querySelector<HTMLElement>('[data-caret]');
-    if (!el || !caret) return;
+    if (!el) return;
     const words: string[] = JSON.parse(el.dataset.words || '[]');
-    caret.classList.add('is-on');
-    let w = 0;
-    let i = words[0].length;
-    let erasing = true;
+    let w = 0, i = words[0].length, erasing = true;
     const step = () => {
       const word = words[w];
       if (!erasing) {
         el.textContent = word.slice(0, ++i);
-        if (i >= word.length) {
-          erasing = true;
-          return void setTimeout(step, 1800);
-        }
-        setTimeout(step, 80);
+        if (i >= word.length) { erasing = true; return void setTimeout(step, 1800); }
+        setTimeout(step, 85);
       } else {
         el.textContent = word.slice(0, --i);
-        if (i <= 0) {
-          erasing = false;
-          w = (w + 1) % words.length;
-          return void setTimeout(step, 250);
-        }
+        if (i <= 0) { erasing = false; w = (w + 1) % words.length; return void setTimeout(step, 260); }
         setTimeout(step, 45);
       }
     };
-    setTimeout(step, 2400);
+    setTimeout(step, 2200);
+  }
+
+  /** The image card grows from a small centred card to full-bleed. */
+  async function grow(root: HTMLElement) {
+    const [{ gsap }, { ScrollTrigger }] = await Promise.all([import('gsap'), import('gsap/ScrollTrigger')]);
+    gsap.registerPlugin(ScrollTrigger);
+    root.classList.add('hero--live');
+    const media = root.querySelector<HTMLElement>('[data-hero-media]')!;
+    gsap.fromTo(media,
+      { clipPath: 'inset(36% 36% 19% 22% round 14px)' },
+      { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none',
+        scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.5 } });
+    gsap.to(root.querySelectorAll('.hero__top, .hero__bottom'), {
+      opacity: 0, ease: 'none',
+      scrollTrigger: { trigger: root, start: '15% top', end: '45% top', scrub: true },
+    });
   }
 </script>
 
 <style>
-  /* Sized by its content (no forced full screen), so there's no empty band
-     before Featured Projects — which now peeks in, inviting the scroll. */
-  .hero {
+  .hero { position: relative; }
+  .hero__stage {
     position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: var(--space-l);
+    min-height: calc(100svh - var(--header-h));
+    padding: var(--space-m) var(--container-pad) var(--space-m);
   }
-  .hero__grid { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-
-  .hero__inner {
-    position: relative;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-s);
-    max-width: var(--container-max);
-    width: 100%;
-    margin-inline: auto;
-    padding: var(--space-3xl) var(--container-pad) var(--space-xl);
-    text-align: center;
-  }
-  .hero__id { display: grid; justify-items: center; gap: 0.6rem; }
-  .hero__hello { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-text); }
-  .hero__square { display: inline-block; width: 0.65rem; height: 0.65rem; background: var(--clay-bright); }
-
-  /* The name: big, solid, confident. Wraps to two lines on small phones. */
+  .hero__top { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 1rem; position: relative; z-index: 2; }
+  .hero__title { display: grid; font: inherit; }
   .hero__name {
-    font: 600 clamp(3rem, 0.9rem + 9.2vw, 9.5rem) / 0.92 var(--font-text);
-    letter-spacing: -0.055em;
+    font: 700 clamp(3rem, 1.2rem + 7.4vw, 8.5rem) / 0.92 var(--font-text);
+    letter-spacing: -0.045em;
     color: var(--color-text);
-    text-wrap: balance;
-    padding-inline: 0.05em; /* tight tracking clips the last glyph otherwise */
   }
-
-  /* "<Product> designer" — the profession, right under the name. */
   .hero__role {
-    font: 400 clamp(1.5rem, 1.1rem + 1.8vw, 2.6rem) / 1.15 var(--font-text);
-    letter-spacing: -0.03em;
-    color: var(--color-text);
-    min-height: 1.15em;
-    margin-top: var(--space-xs); /* clear of the grid band */
+    font: 700 clamp(3rem, 1.2rem + 7.4vw, 8.5rem) / 0.92 var(--font-text);
+    letter-spacing: -0.045em;
+    color: #9a9a9a;
   }
-  .hero__typed { font-family: var(--font-display); font-style: italic; letter-spacing: 0; color: var(--color-accent); }
   .hero__caret {
-    display: none;
-    width: 2px;
-    height: 0.85em;
-    margin-left: 3px;
-    vertical-align: -0.08em;
-    background: var(--color-accent);
-    animation: hero-blink 1s step-end infinite;
+    display: inline-block; width: 0.06em; height: 0.8em; margin-left: 0.04em;
+    vertical-align: -0.05em; background: var(--clay-bright);
+    animation: blink 1s step-end infinite;
   }
-  .hero__caret:global(.is-on) { display: inline-block; }
-  @keyframes hero-blink { 50% { opacity: 0; } }
+  @keyframes blink { 50% { opacity: 0; } }
+  .hero__status { margin-top: 0.6rem; }
 
-  .hero__intro {
-    max-width: 36rem;
-    font-size: var(--step-0);
-    line-height: 1.55;
-    color: var(--color-text-muted);
-    text-wrap: pretty;
-  }
-  .hero__ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: var(--space-2xs); }
+  /* Static layout: image card under the name. */
+  .hero__media { border-radius: 14px; overflow: hidden; }
+  .hero__media :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
 
-  /* Status chip at the top of the stack. */
-  .hero__status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: var(--space-s);
-    padding: 0.45rem 0.9rem;
-    border: 1px solid var(--color-border);
-    border-radius: 999px;
-    background: var(--color-card);
-    font: 400 0.75rem var(--font-mono);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-text);
-  }
-  .hero__sep { color: var(--color-text-muted); }
-  .hero__dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: #3f8a5c;
-    box-shadow: 0 0 0 0 rgb(63 138 92 / 0.5);
-    animation: hero-pulse 2.2s ease-out infinite;
-  }
-  @keyframes hero-pulse { 70%, 100% { box-shadow: 0 0 0 0.5rem rgb(63 138 92 / 0); } }
+  .hero__bottom { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; position: relative; z-index: 2; }
+  .hero__mark { font: 700 clamp(1.6rem, 1rem + 2vw, 2.6rem) var(--font-text); letter-spacing: -0.04em; color: var(--clay-bright); text-decoration: none; }
+  .hero__intro { display: grid; gap: 0.8rem; max-width: 26rem; }
+  .hero__intro p { color: var(--color-text); line-height: 1.5; }
+  .hero__scroll { font-size: 0.8rem; color: var(--color-text-muted); text-decoration: none; }
 
-  @media (prefers-reduced-motion: reduce) {
-    .hero__dot { animation: none; }
+  /* Live (motion, ≥48rem): sticky stage; the card is clipped and grows. */
+  .hero:global(.hero--live) { height: 230vh; }
+  .hero:global(.hero--live) .hero__stage { position: sticky; top: 0; height: 100svh; min-height: 0; }
+  .hero:global(.hero--live) .hero__media {
+    position: absolute; inset: 0; border-radius: 0; z-index: 1;
+    clip-path: inset(36% 36% 19% 22% round 14px);
+    will-change: clip-path;
   }
+
+  @media (prefers-reduced-motion: reduce) { .hero__caret { animation: none; } }
 </style>

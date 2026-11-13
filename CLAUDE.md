@@ -39,7 +39,15 @@ characters, illustrations, testimonials or text.
   label (case-study eyebrow). Lora kept for section headings/accents.
 - Fonts: Geist (text + big sans headlines, tight -0.04em), Geist Mono (small
   uppercase labels), Lora (section headings, italic accent words via *word*).
-- Home: Loader → Hero → Featured Projects → From the studio → Contact/footer.
+- Home (Nov 2026, brandlic.studio layout + motion, ORIGINAL build, her
+  content): Loader → Hero (huge Archivo name + grey typed "_<Role>
+  designer" with orange caret; Axivus banner card clipped centre-left that
+  grows to full-bleed on scroll — sticky 230vh stage, GSAP clip-path scrub,
+  ≥48rem + motion only; orange "Afnan" mark bottom-left, intro + "● scroll
+  down" bottom-right) → Facts (black "● Numbers & Facts" card + grey stat
+  cards, count-up) → Services ("● What I do", 5 big rows with her images,
+  hover lift) → Portfolio (ProjectGrid, "● Portfolio" + sentence heading,
+  left-aligned) → From the studio → Contact/footer.
 - **"What I do" Disciplines (sage sketchbook + flying cards) and the "All
   projects" table REMOVED** (Afnan's decision). Do not re-add unless she asks.
 - **Marquee ("✿ Product designer with a painter's hand") REMOVED** (Afnan's
