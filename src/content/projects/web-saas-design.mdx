@@ -1,46 +1,177 @@
 ---
-title: Web & SaaS Design
+title: Website Design
 slug: web-saas-design
-summary: A curated collection of web and product UI from Figma, including SaaS landing pages, dashboards, e-commerce platforms and mobile app screens.
-role: Product & Web Designer
-timeline: TODO
-team: Solo and team projects
-tools: [Figma, FigJam, Webflow]
+summary: Five websites for freelance clients in e-commerce, payments, finance, SaaS and construction, designed in Figma from first layout to final pages.
+role: Web Designer (freelance)
+timeline: Freelance projects
+year: '2024'
+team: Solo, working directly with each client
+tools: [Figma, Shopify, Responsive design, Style guides]
 outcomes:
-  - TODO (e.g. 12 SaaS landing page templates)
-  - TODO (e.g. 4 dashboards from data model to UI)
-  - TODO
+  - 5 client websites across 5 industries
+  - 30+ desktop pages, plus mobile layouts
+  - A Shopify store with its own logo and style guide
 lens: both
+tags: [Web design, Freelance]
 cover: ../../assets/projects/web-saas-design/cover.jpg
-coverAlt: Placeholder cover for Web and SaaS Design, a deep green paint mark crossed by a terracotta brush stroke.
+coverAlt: Three client websites shown in browser windows on a dark background.
+banner: ../../assets/projects/web-saas-design/banner.jpg
+bannerAlt: Homepages of the Again, Paymi and finance wallet websites side by side.
 featured: true
 order: 5
 lensOrder:
   product: 4
   brand: 2
-format: showcase
 ---
 
-{/* SHOWCASE FORMAT. Large images grouped by type plus a short process note.
-    The gallery components arrive in Phase 3; for now each group is a heading
-    with placeholder text. Export frames from Figma at 2x as PNG or WebP. */}
+import Site from '../../components/mdx/Site.astro';
+import Points from '../../components/mdx/Points.astro';
+import Figure from '../../components/mdx/Figure.astro';
 
-## Process
+import againHome from '../../assets/projects/web-saas-design/again-home.jpg';
+import againProduct from '../../assets/projects/web-saas-design/again-product.jpg';
+import againAbout from '../../assets/projects/web-saas-design/again-about.jpg';
+import againContact from '../../assets/projects/web-saas-design/again-contact.jpg';
+import againLogo from '../../assets/projects/web-saas-design/again-logo.jpg';
+import againMHome from '../../assets/projects/web-saas-design/again-m-home.jpg';
+import againMProduct from '../../assets/projects/web-saas-design/again-m-product.jpg';
+import againMAbout from '../../assets/projects/web-saas-design/again-m-about.jpg';
+import againMContact from '../../assets/projects/web-saas-design/again-m-contact.jpg';
+import paymiHome from '../../assets/projects/web-saas-design/paymi-home.jpg';
+import paymiProducts from '../../assets/projects/web-saas-design/paymi-products.jpg';
+import paymiFeatures from '../../assets/projects/web-saas-design/paymi-features.jpg';
+import paymiPricing from '../../assets/projects/web-saas-design/paymi-pricing.jpg';
+import paymiAbout from '../../assets/projects/web-saas-design/paymi-about.jpg';
+import paymiTeam from '../../assets/projects/web-saas-design/paymi-team.jpg';
+import financeHome from '../../assets/projects/web-saas-design/finance-home.jpg';
+import financeAbout from '../../assets/projects/web-saas-design/finance-about.jpg';
+import financeProduct from '../../assets/projects/web-saas-design/finance-product.jpg';
+import financeCase from '../../assets/projects/web-saas-design/finance-casestudy.jpg';
+import financeBlogs from '../../assets/projects/web-saas-design/finance-blogs.jpg';
+import bolaHome from '../../assets/projects/web-saas-design/bola-home.jpg';
+import bolaAbout from '../../assets/projects/web-saas-design/bola-about.jpg';
+import bolaPricing from '../../assets/projects/web-saas-design/bola-pricing.jpg';
+import bolaResources from '../../assets/projects/web-saas-design/bola-resources.jpg';
+import bolaCustomers from '../../assets/projects/web-saas-design/bola-customers.jpg';
+import buildHome from '../../assets/projects/web-saas-design/build-home.jpg';
+import buildAbout from '../../assets/projects/web-saas-design/build-about.jpg';
+import buildServices from '../../assets/projects/web-saas-design/build-services.jpg';
+import buildWork from '../../assets/projects/web-saas-design/build-work.jpg';
+import buildContact from '../../assets/projects/web-saas-design/build-contact.jpg';
 
-TODO: A short note, three to five sentences, on how you work: research → wireframes → high-fidelity design → handoff.
+## Overview
 
-## SaaS landing pages
+Five websites for freelance clients, each in a different industry. For every one I worked directly with the client, planned the pages, and designed the full site in Figma, ready to build. Hover over any page to scroll through the whole design.
 
-TODO: Large images of landing page templates.
+<Points
+  items={[
+    { title: 'Understand the business', body: 'Start with what the client sells, who buys it and what the site must make people do.' },
+    { title: 'Plan the pages', body: 'Map the pages and the order of sections before any visual design.' },
+    { title: 'Design the system', body: 'Pick type, colour and components once, then use them on every page.' },
+    { title: 'Desktop and mobile', body: 'Design the key pages for both, so the build matches the design on any screen.' },
+  ]}
+/>
 
-## SaaS dashboards
+## Again, an e-commerce store
 
-TODO: Large images of dashboards.
+An online electronics store built on Shopify. I designed the brand mark, a style guide and the full shop: a homepage full of deals, product pages that put price and options first, and simple about and contact pages, all on desktop and mobile.
 
-## E-commerce platforms
+<Site
+  site="Again"
+  url="again.store"
+  home={againHome}
+  homeAlt="Again homepage with an iPhone deals banner, shop by category, featured products and promotions."
+  pages={[
+    { src: againProduct, label: 'Product' },
+    { src: againAbout, label: 'About' },
+    { src: againContact, label: 'Contact' },
+  ]}
+  mobile={[
+    { src: againMHome, label: 'Home' },
+    { src: againMProduct, label: 'Product' },
+    { src: againMAbout, label: 'About' },
+    { src: againMContact, label: 'Contact' },
+  ]}
+/>
 
-TODO: Large images of e-commerce work.
+<Figure src={againLogo} alt="The Again logo in blue, with versions in black, navy, green and grey." caption="The Again logo and its colour versions." framed />
 
-## Mobile app screens
+## Paymi, a payment platform
 
-TODO: Large images of mobile screens.
+A marketing site for a payments company. The pages explain a technical product in plain words, with clear sections for products, features and pricing so a business can decide quickly.
+
+<Site
+  site="Paymi"
+  url="paymi.com"
+  home={paymiHome}
+  homeAlt="Paymi homepage: payments built for security on the internet, with a person holding a tablet and product highlights."
+  pages={[
+    { src: paymiProducts, label: 'Products' },
+    { src: paymiFeatures, label: 'Features' },
+    { src: paymiPricing, label: 'Pricing' },
+    { src: paymiAbout, label: 'About' },
+    { src: paymiTeam, label: 'Team' },
+  ]}
+/>
+
+## A finance wallet, France
+
+A modern dark theme website for a finance company based in France. Deep purple, bright accents and big numbers make the product feel secure and premium.
+
+<Site
+  site="Finance wallet"
+  url="wallet.fr"
+  home={financeHome}
+  homeAlt="Dark finance wallet homepage with a phone showing the app, key numbers and a FAQ."
+  pages={[
+    { src: financeAbout, label: 'About' },
+    { src: financeProduct, label: 'Featured product' },
+    { src: financeCase, label: 'Case study' },
+    { src: financeBlogs, label: 'Blog' },
+  ]}
+/>
+
+## Bola, a SaaS website, Germany
+
+A SaaS website for a client in Germany, selling analytics tools. Clean layouts, product charts and clear pricing help visitors understand the tool and sign up.
+
+<Site
+  site="Bola"
+  url="bola.io"
+  home={bolaHome}
+  homeAlt="Bola homepage: powerful analytics tools for your business, with charts and feature highlights."
+  pages={[
+    { src: bolaAbout, label: 'About' },
+    { src: bolaPricing, label: 'Pricing' },
+    { src: bolaResources, label: 'Resources' },
+    { src: bolaCustomers, label: 'Customers' },
+  ]}
+/>
+
+## A construction company
+
+A simple, clean site for a construction company. Strong photos of real work, clear services and an easy contact page build trust with people planning a project.
+
+<Site
+  site="Construction company"
+  url="construction.com"
+  home={buildHome}
+  homeAlt="Construction company homepage with workers on site, services and project numbers."
+  pages={[
+    { src: buildAbout, label: 'About' },
+    { src: buildServices, label: 'Services' },
+    { src: buildWork, label: 'Project' },
+    { src: buildContact, label: 'Contact' },
+  ]}
+/>
+
+## What I learned
+
+<Points
+  items={[
+    { title: 'Every industry has its own trust signals', body: 'Prices for a shop, security for payments, numbers for finance, real photos for construction.' },
+    { title: 'A small system goes far', body: 'A few shared components kept each site consistent and quick to design.' },
+    { title: 'Clients decide on the homepage', body: 'Getting the first screen right made every later page easier to agree on.' },
+    { title: 'Design for the build', body: 'Clear styles and mobile layouts meant fewer questions from developers.' },
+  ]}
+/>
