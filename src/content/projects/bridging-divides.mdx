@@ -26,6 +26,8 @@ import FigureRow from '../../components/mdx/FigureRow.astro';
 import FigurePair from '../../components/mdx/FigurePair.astro';
 import Feature from '../../components/mdx/Feature.astro';
 import Points from '../../components/mdx/Points.astro';
+import Tiles from '../../components/mdx/Tiles.astro';
+import FormMock from '../../components/mdx/FormMock.astro';
 import Quote from '../../components/mdx/Quote.astro';
 
 import forumHome from '../../assets/projects/bridging-divides/forum-screen.jpg';
@@ -105,30 +107,32 @@ Four groups depend on the same data, each for a different reason.
   caption="I sketched the form on paper first to test which questions to ask, and in what order."
 />
 
-### Five clear categories
+<Tiles
+  items={[
+    { title: 'Publications', body: 'Scholarly and public work', tags: ['Papers', 'Policy briefs', 'Infographics', 'Media'] },
+    { title: 'Activities', body: 'Community and training', tags: ['Pilots', 'VR experiments', 'Workshops', 'Focus groups'] },
+    { title: 'Awards', body: 'Recognition and funding', tags: ['Stipends', 'Travel funds', 'Faculty', 'Trainee'] },
+    { title: 'Research tools', body: 'Technical contributions', tags: ['Dashboards', 'Data portals', 'Software', 'Protocols'] },
+    { title: 'Equity tags', body: 'Who the research reaches', tags: ['Across every category'] },
+  ]}
+  caption="Five clear categories, so every output has an obvious home."
+/>
 
-Every output now has an obvious home, with examples and a clear purpose.
+<FormMock
+  kicker="Form"
+  title="Fields that guide you"
+  fields={[
+    { label: 'Category', value: 'Research tools', select: true },
+    { label: 'Output title', value: 'Digital Dashboard for Settlement Agencies', hint: 'Use a clear name people will recognise' },
+    { label: 'Date', value: 'March 2024', hint: 'Month and year is enough' },
+    { label: 'Link or file', value: 'drive.google.com/…' },
+    { label: 'Equity tags', value: 'Newcomers, First generation', select: true },
+  ]}
+>
 
-| Category | Example outputs | Purpose |
-| --- | --- | --- |
-| Publications | Papers, policy briefs, infographics, media mentions | Scholarly and public work |
-| Activities | Pilot projects, VR experiments, workshops, focus groups | Community and training work |
-| Awards | Stipends, travel funds, faculty and trainee awards | Recognition and funding |
-| Research tools | Dashboards, data portals, software, protocols | Technical contributions |
-| Equity tags | Applied across every category | Who the research reaches |
+Every field shows an example and a short hint, so entries come in clean the first time. The form only asks what fits the chosen category: citations fill in from a DOI and appear only for publications, so people see less and type less.
 
-### Fields with guidance built in
-
-Each field tells people what to enter, with an example, so entries come in clean the first time.
-
-| Field | What to enter |
-| --- | --- |
-| Output title | A clear name, like "Digital Dashboard for Settlement Agencies" |
-| Output type | Chosen from a list for the selected category |
-| Authors | Full names of everyone who contributed |
-| Date | Month and year, like "March 2024" |
-| Link or file | Where the output lives, such as a website or Drive link |
-| Citation | Filled in automatically from the DOI, shown only for publications |
+</FormMock>
 
 ## Where outputs used to live
 

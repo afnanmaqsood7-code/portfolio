@@ -1,0 +1,45 @@
+---
+/**
+ * A drawn form preview (real HTML, decorative) beside text, laid out like
+ * Feature so the text lines up with the page's text column.
+ */
+interface Field { label: string; value: string; hint?: string; select?: boolean }
+interface Props { fields: Field[]; kicker?: string; title: string }
+const { fields, kicker, title } = Astro.props;
+---
+<div class="fm cs-wide" data-reveal>
+  <div class="fm__stage" aria-hidden="true">
+    <div class="fm__card">
+      <p class="fm__head">Add an output</p>
+      {fields.map((f) => (
+        <div class="fm__field">
+          <span class="fm__label">{f.label}</span>
+          <span class:list={['fm__input', { 'fm__input--select': f.select }]}>{f.value}</span>
+          {f.hint && <span class="fm__hint">{f.hint}</span>}
+        </div>
+      ))}
+      <span class="fm__btn">Save output</span>
+    </div>
+  </div>
+  <div class="fm__text">
+    {kicker && <p class="dot-label">{kicker}</p>}
+    <h3>{title}</h3>
+    <slot />
+  </div>
+</div>
+<style>
+  .fm { display: grid; gap: var(--space-m); align-items: center; margin-block: var(--space-xl); }
+  @media (min-width: 64rem) { .fm { grid-template-columns: minmax(0, calc(100% - 44rem - var(--space-xl))) minmax(0, 44rem); gap: var(--space-xl); } }
+  .fm__stage { padding: var(--space-l) var(--space-m); background: #f3f2ef; border-radius: var(--radius-m); }
+  .fm__card { display: grid; gap: 0.9rem; max-width: 26rem; margin-inline: auto; padding: 1.4rem; background: #fff; border-radius: 14px; box-shadow: 0 24px 50px -28px rgb(11 11 11 / 0.35); }
+  .fm__head { margin: 0 0 0.2rem !important; font-weight: 700; font-size: 1.1rem !important; }
+  .fm__field { display: grid; gap: 0.3rem; }
+  .fm__label { font-size: 0.78rem; font-weight: 600; }
+  .fm__input { padding: 0.55rem 0.7rem; border: 1px solid var(--color-border); border-radius: 8px; font-size: 0.85rem; color: var(--color-text); }
+  .fm__input--select { position: relative; padding-right: 2rem; }
+  .fm__input--select::after { content: '⌄'; position: absolute; right: 0.7rem; top: 0.35rem; color: var(--color-text-muted); }
+  .fm__hint { font-size: 0.74rem; color: var(--color-accent); }
+  .fm__btn { justify-self: start; margin-top: 0.3rem; padding: 0.55rem 1rem; border-radius: 999px; background: #0b0b0b; color: #fff; font-size: 0.82rem; font-weight: 600; }
+  .fm__text { max-width: 36rem; }
+  .fm__text :global(h3) { margin-top: 0.5rem !important; font: 700 clamp(1.5rem, 1rem + 1.4vw, 2.2rem) / 1.1 var(--font-text) !important; letter-spacing: -0.03em; }
+</style>

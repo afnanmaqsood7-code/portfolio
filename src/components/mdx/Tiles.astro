@@ -1,0 +1,36 @@
+---
+/** A full width row of tiles: big number, title, short purpose and tag chips. */
+interface Tile { title: string; body: string; tags?: string[] }
+interface Props { items: Tile[]; caption?: string }
+const { items, caption } = Astro.props;
+---
+<figure class="tiles cs-wide" data-reveal>
+  <ol class="tiles__row" role="list" style={`--n:${items.length}`}>
+    {items.map((t, i) => (
+      <li class="tile">
+        <span class="tile__n">{String(i + 1).padStart(2, '0')}</span>
+        <h4 class="tile__t">{t.title}</h4>
+        <p class="tile__b">{t.body}</p>
+        {t.tags && <ul class="tile__tags" role="list">{t.tags.map((g) => <li>{g}</li>)}</ul>}
+      </li>
+    ))}
+  </ol>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+<style>
+  .tiles { margin-block: var(--space-l); }
+  .tiles__row { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+  @media (min-width: 40rem) { .tiles__row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .tiles__row { grid-template-columns: repeat(var(--n), minmax(0, 1fr)); } }
+  .tile { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.4rem 1.2rem 1.3rem; background: #f3f2ef; border-radius: var(--radius-m); transition: background 0.25s, color 0.25s, transform 0.25s; }
+  .tile:hover { background: #0b0b0b; color: #fff; transform: translateY(-4px); }
+  .tile:hover .tile__b { color: #cfcfcf; }
+  .tile:hover .tile__tags li { background: #222; color: #fff; }
+  .tile__n { font: 700 2.4rem / 1 var(--font-text); letter-spacing: -0.04em; color: var(--clay-bright); }
+  .tile__t { margin-top: 1.2rem !important; font: 700 1.25rem / 1.15 var(--font-text); letter-spacing: -0.02em; }
+  .tile__b { margin: 0 !important; font-size: 0.95rem !important; line-height: 1.45 !important; color: var(--color-text-muted); }
+  .tile__tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.4rem 0 0; padding: 0; list-style: none; }
+  .tile__tags li { margin: 0 !important; padding: 0.25rem 0.6rem; border-radius: 999px; background: #fff; font-size: 0.78rem !important; line-height: 1.3 !important; }
+  figcaption { margin-top: 0.8rem; font-size: var(--step--1); color: var(--color-text-muted); }
+  @media (prefers-reduced-motion: reduce) { .tile { transition: none; } .tile:hover { transform: none; } }
+</style>
