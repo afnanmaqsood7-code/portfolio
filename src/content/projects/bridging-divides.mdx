@@ -1,7 +1,7 @@
 ---
 title: Bridging Divides
 slug: bridging-divides
-summary: Redesigning the Forum report template at Toronto Metropolitan University so research impact — not just papers — is easy to record, track and report.
+summary: Redesigning the Forum report template at Toronto Metropolitan University so research impact, not just papers, is easy to record, track and report.
 role: UX Designer & Strategist
 timeline: 4 months
 year: '2025'
@@ -9,26 +9,26 @@ team: 1 developer + 10 staff
 tools: [Paper sketching, Wireframing, Content audit, Information architecture]
 outcomes:
   - 60% faster reporting (staff estimate)
-  - Non-traditional outputs — EDI, partnerships, research tools — now visible
+  - EDI, partnerships and research tools now visible
   - Less duplication and manual work for staff
 lens: product
 tags: [UX research, Information architecture]
 cover: ../../assets/projects/bridging-divides/cover.jpg
-coverAlt: A hand-drawn paper sketch of the new report form beside a screenshot of the Bridging Divides Forum platform.
+coverAlt: The Bridging Divides Forum welcome page in a browser window.
 banner: ../../assets/projects/bridging-divides/banner.jpg
-bannerAlt: From paper sketch to platform — an early sketch of the reporting form next to the Bridging Divides Forum.
+bannerAlt: The Bridging Divides Forum, the research reporting platform at Toronto Metropolitan University.
 featured: true
 order: 2
 ---
 
-import FigurePair from '../../components/mdx/FigurePair.astro';
+import Figure from '../../components/mdx/Figure.astro';
 import FigureRow from '../../components/mdx/FigureRow.astro';
 import Split from '../../components/mdx/Split.astro';
 import Cards from '../../components/mdx/Cards.astro';
 import Stats from '../../components/mdx/Stats.astro';
 import Quote from '../../components/mdx/Quote.astro';
 
-import forumHome from '../../assets/projects/bridging-divides/forum-home.jpg';
+import forumHome from '../../assets/projects/bridging-divides/forum-screen.jpg';
 import audit from '../../assets/projects/bridging-divides/audit.jpg';
 import sketch1 from '../../assets/projects/bridging-divides/sketch-1.jpg';
 import sketch2 from '../../assets/projects/bridging-divides/sketch-2.jpg';
@@ -51,7 +51,7 @@ import after from '../../assets/projects/bridging-divides/after.jpg';
 
 The Forum is the internal reporting system for **Bridging Divides**, a research program at Toronto Metropolitan University. It tracks outputs for more than 60 researchers and 10 staff, and feeds the accountability reports the program sends to its funders.
 
-I redesigned its report template so research outputs are easier to record, track and report — and so the work that never fit the old form finally counts.
+I redesigned its report template so research outputs are easier to record, track and report, so the work that never fit the old form finally counts.
 
 </Split>
 
@@ -62,7 +62,7 @@ The old template was built for one kind of output: papers and conferences. Every
 <Cards
   cols={2}
   items={[
-    { kicker: 'Invisible impact', title: 'Only papers counted', body: 'Training, collaborations, EDI work and research tools had nowhere to go — so they simply went unreported.' },
+    { kicker: 'Invisible impact', title: 'Only papers counted', body: 'Training, collaborations, EDI work and research tools had nowhere to go, so they went unreported.' },
     { kicker: 'Wrong labels', title: 'Tools filed as publications', body: 'Dashboards and research tools were logged as “publications”, distorting what the program had produced.' },
     { kicker: 'Missing data', title: 'No counts, no equity, no progress', body: 'No participant counts for workshops or surveys, no equity tagging and no way to track work in progress.' },
     { kicker: 'Manual load', title: 'Staff re-entered everything', body: 'Data was fragmented across reports, duplicated by hand and easy to get wrong.' },
@@ -72,33 +72,20 @@ The old template was built for one kind of output: papers and conferences. Every
 
 ## My role
 
-<Cards
-  items={[
-    { kicker: 'Research', title: 'Audit & gap analysis', body: 'Compared the Forum’s categories with the funder’s reporting categories and mapped what was missing.' },
-    { kicker: 'Design', title: 'Sketches to structure', body: 'Moved from paper sketches to wireframes to a new, modular template aligned with funder needs.' },
-    { kicker: 'Strategy', title: 'Ready for automation', body: 'Documented the process so the structure can later be filled automatically from ORCID and OpenAlex.' },
-  ]}
-/>
+I worked as the UX designer and strategist for four months, alongside one developer and the ten staff who manage outputs for more than 60 researchers.
+
+- Audited the Forum categories against the funder's reporting categories
+- Sketched and wireframed the new template
+- Designed a structure that fits what funders ask for
+- Documented the process so it can be automated later
 
 ## Research process
 
-<Cards
-  items={[
-    { kicker: '01', title: 'Audit', body: 'Compared Forum categories with the funder’s reporting (PMP) categories.' },
-    { kicker: '02', title: 'Gap analysis', body: 'Highlighted the outputs that were underrepresented or mislabeled.' },
-    { kicker: '03', title: 'Feedback', body: 'Ran informal sessions with staff to understand how they actually track outputs.' },
-    { kicker: '04', title: 'Sketch & wireframe', body: 'Explored the form on paper first, then as digital wireframes.' },
-    { kicker: '05', title: 'Alignment', body: 'Reviewed the new categories with the team to make sure they met funder requirements.' },
-  ]}
-/>
-
-<Split src={audit} alt="Annotated research reports, with highlights marking outputs such as publications and activities that the old template did not capture." reverse>
-
-### What the audit showed
-
-Reading real project reports line by line made the gaps obvious. A single report could mention a published paper, a community workshop, a new data tool and a partnership — but only the paper had a place in the template.
-
-</Split>
+1. **Audit.** I compared the Forum's categories with the funder's reporting categories.
+2. **Gap analysis.** I marked which outputs were missing or filed in the wrong place.
+3. **Staff feedback.** Informal sessions with staff showed how they really track outputs.
+4. **Sketching and wireframes.** I explored the form on paper first, then in wireframes.
+5. **Alignment.** The team reviewed the new categories to make sure they met funder rules.
 
 ## Who it’s for
 
@@ -116,7 +103,7 @@ Four groups rely on the same data, each for a different reason.
 
 ## From paper to form
 
-I sketched the new form by hand first — testing which questions to ask, in what order, and how to guide people toward the right category.
+I sketched the new form by hand first to test which questions to ask, in what order, and how to guide people toward the right category.
 
 <FigureRow
   items={[
@@ -144,7 +131,7 @@ I sketched the new form by hand first — testing which questions to ask, in wha
 <Cards
   items={[
     { kicker: 'Publications', title: 'Scholarly & beyond', body: 'Papers plus policy briefs, infographics and media mentions.' },
-    { kicker: 'Activities', title: 'Community & training', body: 'Pilot projects, VR experiments, workshops and focus groups — with participant counts.' },
+    { kicker: 'Activities', title: 'Community & training', body: 'Pilot projects, VR experiments, workshops and focus groups, with participant counts.' },
     { kicker: 'Awards', title: 'Recognition & funding', body: 'Stipends, travel funds and faculty awards, separated from trainee (HQP) awards.' },
     { kicker: 'Research tools', title: 'Innovation', body: 'Dashboards, data portals, software tools and protocols.' },
     { kicker: 'Cross-cutting', title: 'Equity tags', body: 'Tags for equity-deserving groups, applied across every category.' },
@@ -152,27 +139,14 @@ I sketched the new form by hand first — testing which questions to ask, in wha
   ]}
 />
 
-<FigurePair
-  items={[
-    { src: before, alt: 'Before: the Output Management screen, a flat list of outputs dominated by publications.' },
-    { src: after, alt: 'After: the redesigned specification with new activity fields, expanded award options, a research tools module and equity tags.' },
-  ]}
-  caption="Before: a flat, publication-heavy list. After: clear categories with fields for participants, equity and progress."
-/>
+<Figure src={before} alt="Before: the Output Management screen, a flat list of outputs dominated by publications." caption="Before: one flat list, mostly publications." framed />
+
+<Figure src={after} alt="After: the new specification with activity fields, more award types, a research tools module and equity tags." caption="After: clear categories with fields for participants, equity and progress." framed />
 
 
 ## Results
 
-<Stats
-  items={[
-    { value: '60%', label: 'Faster reporting (staff est.)' },
-    { value: '5', label: 'Clear output categories' },
-    { value: '↓', label: 'Less duplication' },
-    { value: '↑', label: 'Funder alignment' },
-  ]}
-/>
-
-Reporting moved from a manual, inconsistent process to a structured one. Staff spend less time duplicating entries, reports need fewer corrections, and the program can finally show the full breadth of its impact — including the community, equity and technical work that used to be invisible.
+Reporting moved from a manual, inconsistent process to a structured one. Staff spend less time duplicating entries, reports need fewer corrections, and the program can finally show the full breadth of its impact, including the community, equity and technical work that used to be invisible.
 
 <Quote text="Balancing qualitative and quantitative data let the template capture the true breadth of research impact." />
 
@@ -180,11 +154,8 @@ Reporting moved from a manual, inconsistent process to a structured one. Staff s
 
 <Cards
   items={[
-    { kicker: 'Worked', title: 'Structure brings clarity', body: 'Clear categories made entries more consistent and easier to review.' },
-    { kicker: 'Worked', title: 'Ready to automate', body: 'The structure is ready for imports from ORCID and OpenAlex.' },
-    { kicker: 'Learned', title: 'Design for who actually uses it', body: 'Researchers rarely engage, so staff remain the key users — the design had to serve them first.' },
-    { kicker: 'Learned', title: 'Tags need training', body: 'Equity tagging only works if everyone applies it the same way, which needs guidance.' },
-    { kicker: 'Next', title: 'A researcher-facing form', body: 'A simple submission form with tooltips, so researchers can add their own outputs.' },
-    { kicker: 'Next', title: 'Dashboards', body: 'Visualize qualitative and quantitative outputs together for the team and funders.' },
+    { kicker: 'What worked', title: 'Clear categories', body: 'Entries became more consistent and easier to review, and the structure is ready for ORCID and OpenAlex imports.' },
+    { kicker: 'What I learned', title: 'Design for the real users', body: 'Researchers rarely log their own work, so the template had to serve staff first. Equity tags also need short training to be used the same way.' },
+    { kicker: 'What comes next', title: 'Forms and dashboards', body: 'A simple form for researchers with helpful tips, and dashboards that show both numbers and stories of impact.' },
   ]}
 />

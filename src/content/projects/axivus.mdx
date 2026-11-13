@@ -1,21 +1,21 @@
 ---
 title: Axivus
 slug: axivus
-summary: A zero-to-one B2B automotive platform — a mechanic phone app, a service-advisor iPad app and a shop-owner web command centre, designed as one system.
+summary: A zero-to-one B2B automotive platform. A mechanic phone app, a service-advisor iPad app and a shop-owner web command centre, designed as one system.
 role: Lead Product Designer
-timeline: '2025–2026'
+timeline: '2025 to 2026'
 team: Startup product team
 tools: [Figma, Component library, Prototyping]
 outcomes:
-  - Three connected apps — mobile, iPad and web — on one design system
+  - Three connected apps (mobile, iPad and web) on one design system
   - 106 mechanic screens across 20+ end-to-end flows
-  - The full job lifecycle — bid, drop-off, inspection, estimate, repair and payment
+  - "The full job lifecycle: bid, drop-off, inspection, estimate, repair and payment"
 lens: product
 tags: [Mobile · iPad · Web, B2B SaaS]
 cover: ../../assets/projects/axivus/cover.jpg
-coverAlt: Three Axivus mechanic app screens — the marketplace, the command-centre dashboard and an active job — on a deep navy background.
+coverAlt: Three Axivus mechanic app screens (marketplace, dashboard and an active job) on a deep navy background.
 banner: ../../assets/projects/axivus/banner.jpg
-bannerAlt: Five Axivus app screens in a row on navy — login, marketplace, dashboard, active job and a payment receipt.
+bannerAlt: "Five Axivus app screens in a row on navy: login, marketplace, dashboard, active job and a payment receipt."
 featured: true
 order: 1
 ---
@@ -50,11 +50,11 @@ import audit from '../../assets/projects/axivus/screen-audit.png';
   ]}
 />
 
-<Split src={cover} alt="Three Axivus mechanic app screens — marketplace, dashboard and an active job — on deep navy.">
+<Split src={cover} alt="Three Axivus mechanic app screens on deep navy.">
 
 ## Overview
 
-Axivus is a platform for auto repair. Customers post a job; mechanics find it, bid, and carry it through to payment — and inside the shop, service advisors and owners run the work behind it.
+Axivus is a platform for auto repair. Customers post a job; mechanics find it, bid, and carry it through to payment. Inside the shop, service advisors and owners run the work behind it.
 
 I designed the product from scratch across three connected apps: the information architecture, the flows, the screens and the component system that ties them together.
 
@@ -62,12 +62,12 @@ I designed the product from scratch across three connected apps: the information
 
 ## One platform, three apps
 
-Each person in a repair has a different job and a different device, so Axivus meets them where they work — all sharing the same data, statuses and design language.
+Each person in a repair has a different job and a different device, so Axivus meets them where they work, with the same data, statuses and design language across all three.
 
 <Cards
   items={[
     { kicker: 'iPhone', title: 'Mechanic app', body: 'For mechanics on the move: find and bid on jobs, run drop-off, inspection, estimate and repair, message customers and get paid.' },
-    { kicker: 'iPad', title: 'Service Advisor app', body: 'For the front desk: an inbox, customers, appointments and repair orders — with MPI, estimates, approvals, a timeline and an audit log on every RO.' },
+    { kicker: 'iPad', title: 'Service Advisor app', body: 'For the front desk: an inbox, customers, appointments and repair orders, with MPI, estimates, approvals, a timeline and an audit log on every RO.' },
     { kicker: 'Desktop web', title: 'Shop Owner Command Centre', body: 'For the owner: an urgent strip, a priority queue, blockers, tech and job snapshots, reports, a bay-capacity calendar and payments.' },
   ]}
 />
@@ -79,10 +79,10 @@ Independent mechanics run their business from a phone, a notebook and a lot of c
 <Cards
   cols={2}
   items={[
-    { kicker: 'Mechanics', title: 'Work is scattered', body: 'Leads, quotes, approvals and payments live in calls, texts and paper — easy to lose track of, hard to scale.' },
+    { kicker: 'Mechanics', title: 'Work is scattered', body: 'Leads, quotes, approvals and payments live in calls, texts and paper. It is easy to lose track of and hard to scale.' },
     { kicker: 'Customers', title: 'Trust is low', body: 'People worry about surprise charges and unnecessary work, and approving a quote often means another phone call.' },
     { kicker: 'Money', title: 'Getting paid is risky', body: 'Mechanics buy parts up front and chase payment after; customers pay before they know the work is done.' },
-    { kicker: 'Goal', title: 'One clear job flow', body: 'Give mechanics a single place to find, run and get paid for a job — with transparency built in for the customer.' },
+    { kicker: 'Goal', title: 'One clear job flow', body: 'Give mechanics a single place to find, run and get paid for a job, with transparency built in for the customer.' },
   ]}
 />
 
@@ -98,7 +98,7 @@ Independent mechanics run their business from a phone, a notebook and a lot of c
 
 ## The job, from start to finish
 
-The whole app is organised around one journey. A clear five-step tracker — **Hired → Drop-off → Inspection → Estimate → Repair** — appears on every active job, so a mechanic always knows where they are and what's next.
+The whole app is organised around one journey. A clear five-step tracker (**Hired → Drop-off → Inspection → Estimate → Repair**) appears on every active job, so a mechanic always knows where they are and what's next.
 
 <Phones
   screens={[
@@ -108,14 +108,14 @@ The whole app is organised around one journey. A clear five-step tracker — **H
     { src: estimate, alt: 'Estimate builder with quick templates, line items with margins, an estimate breakdown and the mechanic\'s take-home.', label: '4 · Estimate' },
     { src: receipt, alt: 'Payment receipt showing the customer approved, the escrow breakdown with two staged releases and the platform fee.', label: '5 · Paid' },
   ]}
-  caption="One job, five stages — each screen answers “what’s happening and what do I do next?”"
+  caption="One job, five stages. Every screen answers “what’s happening and what do I do next?”"
 />
 
 ## Key design decisions
 
 ### 1. A command centre, not a menu
 
-The home screen leads with the job in progress and the actions that can't wait — approvals waiting, payments to collect, customer replies — then today's route and nearby jobs. Mechanics open the app between tasks, so the next action has to be one tap away.
+The home screen leads with the job in progress and the actions that can't wait (approvals waiting, payments to collect, customer replies), then today's route and nearby jobs. Mechanics open the app between tasks, so the next action has to be one tap away.
 
 ### 2. Bids built on trust signals
 
@@ -123,7 +123,7 @@ Every marketplace card shows what a mechanic needs to decide fast: the payout ra
 
 ### 3. Transparent estimates, with an assistant
 
-The estimate builder shows parts, labour, margin and the mechanic's **take-home** in real time, with quick templates for common jobs. **Axi Touch** then reviews the estimate before it's sent — grouping line items, rewriting technical wording in plain language and flagging sensible add-ons — and shows a clear before and after so the mechanic stays in control.
+The estimate builder shows parts, labour, margin and the mechanic's **take-home** in real time, with quick templates for common jobs. **Axi Touch** then reviews the estimate before it's sent. It groups line items, rewrites technical wording in plain language and flags sensible add-ons, then shows a clear before and after so the mechanic stays in control.
 
 <Phones
   screens={[
@@ -135,15 +135,15 @@ The estimate builder shows parts, labour, margin and the mechanic's **take-home*
 
 ### 4. Approval without an account
 
-Customers can approve an estimate from a secure link — **no sign-up, no app**. Removing that step takes the friction out of the moment that most often stalls a repair.
+Customers can approve an estimate from a secure link, with **no sign-up and no app**. Removing that step takes the friction out of the moment that most often stalls a repair.
 
 ### 5. Escrow on both sides
 
-Customers fund the job up front into escrow; mechanics see it marked *funded* before they start. Money is released in two stages — when the repair begins and when the customer signs off — so both sides are protected, and every release appears in the receipt.
+Customers fund the job up front into escrow; mechanics see it marked *funded* before they start. Money is released in two stages (when the repair begins and when the customer signs off), so both sides are protected, and every release appears in the receipt.
 
 ### 6. Trust you can see
 
-Profiles show certifications, specialities, ratings and approval rate, and an **audit trail** keeps a full job history. Messages are grouped by what needs action — objections, approvals, estimates — rather than by time alone.
+Profiles show certifications, specialities, ratings and approval rate, and an **audit trail** keeps a full job history. Messages are grouped by what needs action (objections, approvals, estimates) rather than by time alone.
 
 <Phones
   screens={[
@@ -162,10 +162,10 @@ Inside a shop, the service advisor sits between the customer and the technician:
 <Cards
   cols={2}
   items={[
-    { kicker: 'Hierarchy', title: 'Action first', body: 'The Inbox leads with what needs a decision now — approvals waiting, no response, payments due — then jobs, then communication. No screen only displays information; every one has a clear next step.' },
+    { kicker: 'Hierarchy', title: 'Action first', body: 'The Inbox leads with what needs a decision now (approvals waiting, no response, payments due), then jobs, then communication. No screen only displays information; every one has a clear next step.' },
     { kicker: 'Both sides', title: 'What was asked vs. what was found', body: 'Every RO shows the customer’s concern next to the technician’s findings, so the advisor never has to piece the story together.' },
-    { kicker: 'Risk', title: 'Delays are flagged, not hidden', body: 'Missing information and delay risks — like parts on backorder — appear as explicit flags with the suggested next action.' },
-    { kicker: 'States', title: 'Nine clear RO states', body: 'From Needs Estimate to Sent, Viewed, Approved, In Progress, Waiting Parts, Ready and Completed — the same language everywhere, with a full audit log on each RO.' },
+    { kicker: 'Risk', title: 'Delays are flagged, not hidden', body: 'Missing information and delay risks, like parts on backorder, appear as explicit flags with the suggested next action.' },
+    { kicker: 'States', title: 'Nine clear RO states', body: 'From Needs Estimate to Sent, Viewed, Approved, In Progress, Waiting Parts, Ready and Completed. The same words are used everywhere, with a full audit log on each RO.' },
   ]}
 />
 
@@ -176,16 +176,16 @@ For owners and advisors at a desk or on a shop tablet, the Command Centre is the
 <Cards
   cols={2}
   items={[
-    { kicker: 'Overview', title: 'KPIs that lead to action', body: 'Cards for approvals waiting, viewed-not-approved, waiting parts, waiting payment and in progress each show a count and a dollar value — and open the matching list in one click.' },
+    { kicker: 'Overview', title: 'KPIs that lead to action', body: 'Cards for approvals waiting, viewed-not-approved, waiting parts, waiting payment and in progress each show a count and a dollar value, and open the matching list in one click.' },
     { kicker: 'Urgency', title: 'Aging you can see', body: 'Approvals and payments are sorted by age, with timers that turn orange and then red, so the oldest money at risk is always on top.' },
     { kicker: 'Operations', title: 'Board, calendar and payments', body: 'An RO board by stage, a calendar showing bay and technician capacity, reports, and a payments view for what is due, pending or failed.' },
-    { kicker: 'States', title: 'Designed beyond the happy path', body: 'Every list has empty, loading and error states — skeleton shimmer instead of spinners, inline “Retry” banners instead of error pages — on both desktop and tablet layouts.' },
+    { kicker: 'States', title: 'Designed beyond the happy path', body: 'Every list has empty, loading and error states (a shimmer instead of spinners, an inline “Retry” banner instead of error pages) on both desktop and tablet layouts.' },
   ]}
 />
 
 ## One system across three apps
 
-Designing three apps at once surfaced a key rule: there are **two kinds of job**. On a *shop job*, the advisor owns the estimate and talks to the customer, while the technician only inspects and repairs. On an *independent job*, the mechanic does everything. Making this rule explicit resolved most apparent conflicts between the apps — who sends the estimate, who the customer messages, and how they pay (in-app escrow or a payment link).
+Designing three apps at once surfaced a key rule: there are **two kinds of job**. On a *shop job*, the advisor owns the estimate and talks to the customer, while the technician only inspects and repairs. On an *independent job*, the mechanic does everything. Making this rule explicit resolved most apparent conflicts between the apps: who sends the estimate, who the customer messages, and how they pay (in-app escrow or a payment link).
 
 <Cards
   items={[
@@ -211,7 +211,7 @@ Mechanics use the app with busy hands, often standing up and in a hurry. So the 
 
 <Cards
   items={[
-    { kicker: 'Learned', title: 'Design the edges, not just the happy path', body: 'Scope changes, objections and top-up payments are where real jobs go wrong — designing them early made the product believable.' },
+    { kicker: 'Learned', title: 'Design the edges, not just the happy path', body: 'Scope changes, objections and top-up payments are where real jobs go wrong, and designing them early made the product believable.' },
     { kicker: 'Learned', title: 'Trust is a feature', body: 'Escrow, guest approval and visible history did more for the experience than any single screen.' },
     { kicker: 'Learned', title: 'One journey keeps it simple', body: 'Tying every screen to the five job stages kept a large product easy to navigate.' },
     { kicker: 'Next', title: 'Test with mechanics in the shop', body: 'Run usability sessions on the floor to see how the app holds up with gloves, noise and interruptions.' },
