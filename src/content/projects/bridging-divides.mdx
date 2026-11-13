@@ -29,16 +29,11 @@ import Points from '../../components/mdx/Points.astro';
 import Quote from '../../components/mdx/Quote.astro';
 
 import forumHome from '../../assets/projects/bridging-divides/forum-screen.jpg';
-import sidebar from '../../assets/projects/bridging-divides/sidebar.jpg';
 import audit from '../../assets/projects/bridging-divides/audit.jpg';
-import fields from '../../assets/projects/bridging-divides/fields.jpg';
-import template from '../../assets/projects/bridging-divides/template.jpg';
-import framework from '../../assets/projects/bridging-divides/framework.jpg';
 import sketch1 from '../../assets/projects/bridging-divides/sketch-1.jpg';
 import sketch2 from '../../assets/projects/bridging-divides/sketch-2.jpg';
 import sketch3 from '../../assets/projects/bridging-divides/sketch-3.jpg';
 import before from '../../assets/projects/bridging-divides/before.jpg';
-import after from '../../assets/projects/bridging-divides/after.jpg';
 
 ## Overview
 
@@ -82,7 +77,7 @@ I went through the program's reports and labelled each output by type. This show
 
 </Feature>
 
-<Feature reverse src={forumHome} alt="The Forum: a dark sidebar with People and Outputs sections beside the welcome page." kind="screen" kicker="Gap analysis" title="Matching the Forum to the funder">
+<Feature src={forumHome} alt="The Forum: a dark sidebar with People and Outputs sections beside the welcome page." kind="screen" kicker="Gap analysis" title="Matching the Forum to the funder">
 
 I compared the Forum's categories with the funder's reporting categories and marked every output that was missing or in the wrong place. Short sessions with staff then showed how they actually track outputs day to day.
 
@@ -103,52 +98,68 @@ Four groups depend on the same data, each for a different reason.
 
 ## Design
 
+I sketched the form on paper first to test which questions to ask, and in what order.
+
 <FigureRow
   items={[
     { src: sketch1, alt: 'Paper sketch of the output entry form with questions about publications and output categories.' },
     { src: sketch2, alt: 'Paper sketch of an IP management category with fields for title, category, date and authors.' },
     { src: sketch3, alt: 'Paper sketch of a form asking whether the researcher published, attended or hosted events in the last six months.' },
   ]}
-  caption="I sketched the form on paper first to test which questions to ask and in what order."
+  caption="Early paper sketches of the new reporting form."
 />
 
-<Feature src={framework} alt="Framework table with five categories, example outputs and the purpose of each." kind="screen" kicker="Structure" title="Five clear categories">
+### Five clear categories
 
-Publications, Activities, Awards, Research Tools and a cross cutting set of equity tags. Each one has example outputs and a clear purpose, so people know where their work belongs.
+Every output now has an obvious home, with examples and a clear purpose.
 
-</Feature>
+| Category | Example outputs | Purpose |
+| --- | --- | --- |
+| Publications | Papers, policy briefs, infographics, media mentions | Scholarly and public work |
+| Activities | Pilot projects, VR experiments, workshops, focus groups | Community and training work |
+| Awards | Stipends, travel funds, faculty and trainee awards | Recognition and funding |
+| Research tools | Dashboards, data portals, software, protocols | Technical contributions |
+| Equity tags | Applied across every category | Who the research reaches |
 
-<Feature reverse src={template} alt="Category list for publications, activities, awards, digital technologies and institutional outputs." kind="screen" kicker="Taxonomy" title="A place for every output">
+### Fields with guidance built in
 
-Inside each category I listed the real output types I found in the audit, from policy briefs and media mentions to data portals and sharing circles.
+Each field tells people what to enter, with an example, so entries come in clean the first time.
 
-</Feature>
+| Field | What to enter |
+| --- | --- |
+| Output title | A clear name, like "Digital Dashboard for Settlement Agencies" |
+| Output type | Chosen from a list for the selected category |
+| Authors | Full names of everyone who contributed |
+| Date | Month and year, like "March 2024" |
+| Link or file | Where the output lives, such as a website or Drive link |
+| Citation | Filled in automatically from the DOI, shown only for publications |
 
-<Feature src={fields} alt="Field specification table: output title, type, authors, date, link and citation, with guidance for each." kind="screen" kicker="Form" title="Fields with guidance built in">
+## Where outputs used to live
 
-Every field explains what to enter, with an example. Citations fill in from a DOI, and the citation field only appears for publications, so people see less and enter less.
+The old Output Management screen was one long list, mostly papers, with no way to show participants, equity or progress.
 
-</Feature>
+<Figure src={before} alt="The old Output Management screen: a flat table of outputs with categories, titles and authors." framed />
+
+## What changed
+
+<Points
+  items={[
+    { title: 'Activities that count', body: 'New activity types and a participant count for focus groups, surveys and sharing circles.' },
+    { title: 'More kinds of awards', body: 'Stipends, tuition waivers, travel funds and course releases, with faculty and trainee awards kept apart.' },
+    { title: 'A research tools module', body: 'Its own form for data portals, dashboards, software and protocols, with an annual progress option.' },
+    { title: 'Equity tags everywhere', body: 'BIPOC, LGBTQ2+, first generation and underrepresented groups, tagged across all forms.' },
+  ]}
+/>
 
 ## Key decisions
 
 <Points
   items={[
-    { title: 'Add to it, don\'t replace it', body: 'We kept the existing Manage Outputs section and built on it, so staff could switch without disruption.' },
+    { title: 'Add to it, don\'t replace it', body: 'We built on the existing Manage Outputs section, so staff could switch without disruption.' },
     { title: 'Design for staff first', body: 'Researchers rarely log their own work, so the template follows the staff workflow, with bulk entry and auto fill.' },
-    { title: 'A home for research tools', body: 'A new Research Tools and Infrastructure module for dashboards, data portals and protocols.' },
-    { title: 'Numbers and stories together', body: 'Participant counts, equity tags and progress status sit next to traditional outputs.' },
+    { title: 'Show work in progress', body: 'An in progress status makes ongoing projects visible before they are published.' },
+    { title: 'Numbers and stories together', body: 'Participant counts and equity tags sit next to traditional outputs, so impact is described, not just counted.' },
   ]}
-/>
-
-## Before and after
-
-<FigurePair
-  items={[
-    { src: before, label: 'Before', alt: 'Before: the Output Management screen, a flat list of outputs dominated by publications.' },
-    { src: after, label: 'After', alt: 'After: the new specification with activity fields, more award types, a research tools module and equity tags.' },
-  ]}
-  caption="Before, one flat list that was mostly papers. After, clear categories with fields for participants, equity and progress."
 />
 
 ## Results
