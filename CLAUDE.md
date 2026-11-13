@@ -207,7 +207,12 @@ Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover
    component. Cover/banner = phone screens on navy (PIL). TODO: export iPad
    + web screens (Figma MCP Starter plan hit its call limit) and add them.
    Figma host www.figma.com is allowed in the environment.
-2. `bridging-divides` (product) — TMU research platform, ORCID, researcher workflows
+2. `bridging-divides` (product, order 2) — REAL content from her Canva deck
+   DAG02Evvcdo ("Forum Report Template Redesign", UX Designer & Strategist,
+   4 months, 1 dev + 10 staff, 60+ researchers, 60% faster reporting).
+   Crops in `src/assets/projects/bridging-divides/` (slides are 1920×1440).
+   Cover = paper sketch + Forum screenshot cards on grey. Her photo and
+   phone number in the deck are NOT used.
 3. `glitchard` (product) — AI MetaHuman comedian; Unreal, Convai, ElevenLabs; human in the loop
 4. `brand-identity` (brand, brand lens #1) — brand book, identity, packaging
 5. `web-saas-design` (both, **showcase format**, product #4 / brand #2) — curated
@@ -354,7 +359,10 @@ underneath the whole time (no LCP blocking).
   motion, 44px pause/play button top-right (her signature is bottom-right).
   `iftar-table.jpg` (wide illustration) was removed at Afnan's request;
   file kept in `src/assets/studio` in case she wants it back.
-- `Footer.astro` (#contact, all pages) — the bold colour moment: full-bleed
+- `Footer.astro` REBUILT (Afnan: black footer looked cluttered/off-theme):
+  white, top hairline, "● Contact", big "Let's get in touch" (orange
+  "touch"), email + Copy, LinkedIn/Resume, one quiet nav+meta row. No grid,
+  no outlined sign-off, no uppercase. OLD: full-bleed
   sage with the painted grid (clay cells under the cursor), ● "Open to work
   · Based in Canada", huge "Let's get in *touch*" (peach accent #f0b393,
   5.4:1 on sage), big mailto email + Copy email button (Clipboard API,
