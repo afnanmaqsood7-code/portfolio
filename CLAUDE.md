@@ -82,6 +82,11 @@ characters, illustrations, testimonials or text.
 - Removed in the merge: black hero, liquid glass, Unbounded/Instrument
   Serif/Inter, laptop badge, sage-paper palette.
 
+## Writing rules (Afnan)
+- NO dashes anywhere in visible text (no — or –, no " - "). Ranges use "to".
+- Plain, human wording; avoid AI-sounding phrasing and stacked card sections.
+- YAML values containing ": " must be quoted.
+
 ## Working agreement
 - Build in phases; **stop after each phase** for review with: short summary,
   how to run locally, what to check.
@@ -211,7 +216,7 @@ Placeholder projects (all featured), covers in `src/assets/projects/<slug>/cover
    DAG02Evvcdo ("Forum Report Template Redesign", UX Designer & Strategist,
    4 months, 1 dev + 10 staff, 60+ researchers, 60% faster reporting).
    Crops in `src/assets/projects/bridging-divides/` (slides are 1920×1440).
-   Cover = paper sketch + Forum screenshot cards on grey. Her photo and
+   Cover = Forum welcome screen in a simple browser frame on soft grey (hi-res 3840 export). Page simplified: prose role, numbered process, stacked before/after, 3 reflection cards. Her photo and
    phone number in the deck are NOT used.
 3. `glitchard` (product) — AI MetaHuman comedian; Unreal, Convai, ElevenLabs; human in the loop
 4. `brand-identity` (brand, brand lens #1) — brand book, identity, packaging
