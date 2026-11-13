@@ -31,7 +31,7 @@ const facts = [
   ['Timeline', d.timeline],
   ['Team', d.team],
   ['Tools', d.tools.join(', ')],
-];
+].filter(([, v]) => v) as [string, string][];
 ---
 
 <BaseLayout title={d.title} description={d.summary}>
@@ -47,7 +47,7 @@ const facts = [
       <Image class="cs-hero__img" src={heroSrc} alt={heroAlt} widths={[800, 1200, 1600, 2000]} sizes="(min-width: 90rem) 84rem, 100vw" loading="eager" fetchpriority="high" />
 
       <section class="cs-card" aria-label="Project summary">
-        <dl class="cs-facts">
+        <dl class="cs-facts" style={`--n:${facts.length}`}>
           {facts.map(([k, v]) => (
             <div><dt class="mono-label">{k}</dt><dd>{v}</dd></div>
           ))}
@@ -108,7 +108,7 @@ const facts = [
     background: var(--color-card);
   }
   .cs-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  @media (min-width: 56rem) { .cs-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (min-width: 56rem) { .cs-facts { grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); } }
   .cs-facts > div { padding: var(--space-s) var(--space-m); border-bottom: 1px solid var(--color-border); }
   .cs-facts > div:nth-child(2n) { border-left: 1px solid var(--color-border); }
   @media (min-width: 56rem) { .cs-facts > div + div { border-left: 1px solid var(--color-border); } }

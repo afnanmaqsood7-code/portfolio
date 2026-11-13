@@ -22,7 +22,7 @@ const projects = defineCollection({
       timeline: z.string(),
       // Optional year, e.g. '2025' (shown in project lists).
       year: z.string().optional(),
-      team: z.string(),
+      team: z.string().optional(),
       tools: z.array(z.string()).min(1),
       // Short metric statements. The summary card shows the first 3.
       outcomes: z.array(z.string()).min(1),

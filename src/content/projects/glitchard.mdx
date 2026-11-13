@@ -1,49 +1,161 @@
 ---
 title: Glitchard
 slug: glitchard
-summary: An AI-powered MetaHuman comedian. A real-time AI system with human-in-the-loop design, built with Unreal Engine, Convai and ElevenLabs.
-role: Product & Experience Designer
-timeline: TODO
-team: TODO
+summary: An AI powered MetaHuman comedian. I created Glitchard's personality, built his body in Unreal Engine and his mind in Convai, then trained him until people actually laughed.
+role: Character and AI Experience Designer
+timeline: 9 months
+year: '2025'
 tools: [Unreal Engine, MetaHuman, Convai, ElevenLabs]
 outcomes:
-  - Real-time conversational performance with a human operator in the loop
-  - TODO metric (e.g. response latency under 1.5s)
-  - TODO metric
+  - Humour score rose from 1.6 to 4.8
+  - Over 70% fewer repeated catchphrases
+  - Better timing, rhythm and improv game accuracy
 lens: product
+tags: [AI character, Unreal Engine]
 cover: ../../assets/projects/glitchard/cover.jpg
-coverAlt: Placeholder cover for Glitchard, a plum paint mark crossed by a coral brush stroke.
+coverAlt: "Glitchard, a cartoon style MetaHuman with a small moustache, on a red background next to his mugshot: arrested for public lagging."
+banner: ../../assets/projects/glitchard/banner.jpg
+bannerAlt: Introducing Glitchard, the AI powered MetaHuman comedian.
 featured: true
 order: 3
 ---
 
-{/* PLACEHOLDER CONTENT. Replace each section with the real story.
-    Keep sections short and scannable; lead with decisions and outcomes. */}
+import Figure from '../../components/mdx/Figure.astro';
+import FigurePair from '../../components/mdx/FigurePair.astro';
+import Feature from '../../components/mdx/Feature.astro';
+import Points from '../../components/mdx/Points.astro';
+import Quote from '../../components/mdx/Quote.astro';
 
-## Context
+import message from '../../assets/projects/glitchard/message.jpg';
+import bergson from '../../assets/projects/glitchard/bergson.jpg';
+import question from '../../assets/projects/glitchard/question.jpg';
+import avatars from '../../assets/projects/glitchard/avatars.jpg';
+import improbotics from '../../assets/projects/glitchard/improbotics.jpg';
+import approach from '../../assets/projects/glitchard/approach.jpg';
+import tech from '../../assets/projects/glitchard/tech.jpg';
+import concept from '../../assets/projects/glitchard/concept.jpg';
+import appearance from '../../assets/projects/glitchard/appearance.jpg';
+import convai from '../../assets/projects/glitchard/convai.jpg';
+import unreal from '../../assets/projects/glitchard/unreal.jpg';
+import training from '../../assets/projects/glitchard/training.jpg';
+import evolution from '../../assets/projects/glitchard/evolution.jpg';
+import future from '../../assets/projects/glitchard/future.jpg';
 
-TODO: Who was this for, what was the business, and where did you come in?
+## Overview
 
-## Problem
+Glitchard Bugson is an AI powered MetaHuman comedian, "arrested for public lagging". He talks with an audience in real time, improvises and tells jokes in his own voice.
 
-TODO: The user and business problem in two or three sentences.
+I made him from scratch over nine months. I developed his character and comedy style, built his body as a MetaHuman in Unreal Engine, gave him a mind and a voice in Convai, connected the two, and trained him session after session until his jokes landed.
 
-## Process
+<Figure src={message} alt="Glitchard standing in a bright virtual studio, delivering a message to the audience." caption="Glitchard in his studio." framed />
 
-TODO: Research, synthesis, ideation and testing. What did you learn, and from whom?
+## The question
 
-## Key decisions
+Can an AI character be genuinely funny, or does it just repeat jokes?
 
-TODO: Two to four decisions, each with the trade-off you weighed and why you chose it.
+<Feature src={question} alt="Slide with the research question about designing AI powered MetaHumans with a comedic personality." kind="screen" kicker="Research question" title="Designing a personality, not a joke machine">
 
-## Final design
+How can AI powered MetaHumans be designed to embody a comedic personality and deliver engaging comedic performances? A chatbot can tell a joke. A comedian needs character, timing and the ability to read a room.
 
-TODO: The shipped solution. Large images go here (components arrive in Phase 3).
+</Feature>
+
+## Research
+
+<Feature src={bergson} alt="Bergson's humour theory slide: things are funny when something alive acts a little bit like a robot." kind="screen" kicker="Theory" title="Funny when the alive acts like a robot">
+
+Henri Bergson argued that we laugh when something alive behaves a little like a machine. An AI comedian flips this: a machine that acts almost human. That tension became the heart of Glitchard's humour. He glitches, lags and knows it.
+
+</Feature>
+
+<FigurePair
+  items={[
+    { src: avatars, alt: 'Examples of digital avatars, from film characters to AI presenters and real life recordings.' },
+    { src: improbotics, alt: 'Improbotics, a theatre lab mixing improv comedy with generative AI since 2016.' },
+  ]}
+  caption="I studied digital avatars and Improbotics, a theatre lab mixing improv and AI since 2016."
+/>
+
+## How I worked
+
+<Feature src={approach} alt="Approach diagram: research question, practice based research over nine months, Glitchard." kind="screen" kicker="Approach" title="Learning by building">
+
+This was practice based research: Glitchard is the research. Over nine months I built, tested with people and changed him, again and again. Every version taught me something about what makes an AI character feel alive.
+
+</Feature>
+
+<Feature src={tech} alt="Two technical workflows compared, with the Convai, ElevenLabs and Unreal Engine pipeline." kind="screen" kicker="Tech" title="Choosing the stack">
+
+I compared two workflows and chose Convai for conversation and character memory, ElevenLabs for his voice and Unreal Engine 5 with MetaHuman for his body and face, all running live.
+
+</Feature>
+
+## Building Glitchard
+
+<Points
+  items={[
+    { title: 'Character', body: 'His backstory, comedy style, quirks and emotional state.' },
+    { title: 'Appearance', body: 'A stylised MetaHuman that looks friendly, a little odd and instantly readable.' },
+    { title: 'Mind', body: 'Personality, knowledge and speaking style set up in Convai.' },
+    { title: 'Training', body: 'Live sessions, scoring each joke and adjusting until timing worked.' },
+  ]}
+/>
+
+<Feature src={concept} alt="Character development notes with questions about comedy style, quirks and emotional state, beside an emotion wheel." kind="screen" kicker="01 Character" title="Who is Glitchard?">
+
+I started with three questions. What is his comedy style? What is his emotional state? What are his quirks? I wrote his backstory and used an emotion wheel to map how he reacts, so he feels like a person with moods, not a script.
+
+</Feature>
+
+<Feature src={appearance} alt="Glitchard's face, full body MetaHuman model and stage render." kind="screen" kicker="02 Appearance" title="A face made for comedy">
+
+I designed his look as a MetaHuman: big expressive eyes, a tiny moustache and a casual outfit. He had to read as funny at first glance and still look natural when he moves and talks.
+
+</Feature>
+
+<Feature src={convai} alt="Convai dashboard with Glitchard's character settings, personality sliders and knowledge bank." kind="screen" kicker="03 Mind" title="Bringing him to life in Convai">
+
+In Convai I set his personality traits, speaking style and knowledge bank, so his answers stay in character whatever the audience says.
+
+</Feature>
+
+<Feature src={unreal} alt="Unreal Engine blueprints connected to Convai, with Glitchard rendered on screen." kind="screen" kicker="04 Integration" title="Connecting mind and body">
+
+I connected Convai to Unreal Engine, so his voice, lip sync, facial expressions and gestures all respond live to the conversation.
+
+</Feature>
+
+<Feature src={training} alt="Training session logs with Glitchard's replies and notes, beside Glitchard talking." kind="screen" kicker="05 Training" title="Training him to be funny">
+
+I ran session after session, scoring each joke, noting where timing failed or catchphrases repeated, then adjusting his settings and knowledge. This loop is what turned scripted lines into real comedy.
+
+</Feature>
 
 ## Results
 
-TODO: What changed, with numbers where possible.
+<Points
+  cols={3}
+  items={[
+    { title: '1.6 to 4.8', body: 'Humour score from developer testing.' },
+    { title: '70% fewer', body: 'Repeated catchphrases.' },
+    { title: 'Improv ready', body: 'Follows improv game rules accurately.' },
+  ]}
+/>
 
-## Reflection
+He moved from robotic scripts to a recognisable comedic personality, with better timing, rhythm and awareness of context. Progress was tracked with joke scores and session analytics.
 
-TODO: What you would do differently, and what you'd take to your next team.
+<Figure src={evolution} alt="Audience in a cinema watching, beside a summary of Glitchard's performance results." caption="Glitchard's evolution." framed />
+
+<Quote text="Goodnight, humans. Don't forget to reboot your emotions." accent="reboot your emotions." />
+
+## What's next
+
+<Figure src={future} alt="The future of Glitchard: interactive scenes, adaptive humour, content moderation and new interactive venues." framed />
+
+<Points
+  items={[
+    { title: 'What I learned', body: 'Feedback and embodiment, not just better prompts, are what made him convincing.' },
+    { title: 'Creativity is shared', body: 'Glitchard shows comedy can be a collaboration between a human designer and an AI.' },
+    { title: 'Next', body: 'Interactive scenes, humour that adapts to each audience, and safe content moderation.' },
+    { title: 'New stages', body: 'Taking Glitchard to new interactive venues and live events.' },
+  ]}
+/>
