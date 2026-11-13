@@ -19,7 +19,7 @@ const { src, alt, kicker, title, reverse = false, kind = 'phone' } = Astro.props
   .feat { display: grid; gap: var(--space-m); align-items: center; margin-block: var(--space-xl); }
   .feat__media { display: grid; place-items: center; padding: var(--space-l) var(--space-m); background: #f3f2ef; border-radius: var(--radius-m); }
   .feat--phone .feat__media :global(img) { width: min(17rem, 70%); height: auto; border-radius: 1.6rem; box-shadow: 0 30px 60px -25px rgb(11 11 11 / 0.35); }
-  .feat--screen .feat__media :global(img) { width: 100%; height: auto; border-radius: 0.6rem; box-shadow: 0 30px 60px -30px rgb(11 11 11 / 0.35); }
+  .feat--screen .feat__media :global(img) { width: auto; max-width: 100%; max-height: 30rem; height: auto; border-radius: 0.6rem; box-shadow: 0 30px 60px -30px rgb(11 11 11 / 0.35); }
   .feat__text { max-width: 30rem; }
   .feat__text :global(h3) { margin-top: 0.5rem !important; font: 700 clamp(1.5rem, 1rem + 1.4vw, 2.2rem) / 1.1 var(--font-text) !important; letter-spacing: -0.03em; }
   @media (min-width: 56rem) {
