@@ -28,6 +28,7 @@ import Feature from '../../components/mdx/Feature.astro';
 import Points from '../../components/mdx/Points.astro';
 import Quote from '../../components/mdx/Quote.astro';
 
+import forumHome from '../../assets/projects/bridging-divides/forum-screen.jpg';
 import sidebar from '../../assets/projects/bridging-divides/sidebar.jpg';
 import audit from '../../assets/projects/bridging-divides/audit.jpg';
 import fields from '../../assets/projects/bridging-divides/fields.jpg';
@@ -81,7 +82,7 @@ I went through the program's reports and labelled each output by type. This show
 
 </Feature>
 
-<Feature reverse src={sidebar} alt="The Forum sidebar with People, Manage Outputs, Collaborations and Review Duplicates." kind="screen" kicker="Gap analysis" title="Matching the Forum to the funder">
+<Feature reverse src={forumHome} alt="The Forum: a dark sidebar with People and Outputs sections beside the welcome page." kind="screen" kicker="Gap analysis" title="Matching the Forum to the funder">
 
 I compared the Forum's categories with the funder's reporting categories and marked every output that was missing or in the wrong place. Short sessions with staff then showed how they actually track outputs day to day.
 
@@ -144,10 +145,10 @@ Every field explains what to enter, with an example. Citations fill in from a DO
 
 <FigurePair
   items={[
-    { src: before, alt: 'Before: the Output Management screen, a flat list of outputs dominated by publications.' },
-    { src: after, alt: 'After: the new specification with activity fields, more award types, a research tools module and equity tags.' },
+    { src: before, label: 'Before', alt: 'Before: the Output Management screen, a flat list of outputs dominated by publications.' },
+    { src: after, label: 'After', alt: 'After: the new specification with activity fields, more award types, a research tools module and equity tags.' },
   ]}
-  caption="Before: one flat list, mostly papers. After: clear categories with fields for participants, equity and progress."
+  caption="Before, one flat list that was mostly papers. After, clear categories with fields for participants, equity and progress."
 />
 
 ## Results

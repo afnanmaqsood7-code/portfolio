@@ -6,8 +6,10 @@
 import { Image } from 'astro:assets';
 interface Props { src: ImageMetadata; alt: string; kicker?: string; title: string; reverse?: boolean; kind?: 'phone' | 'screen' }
 const { src, alt, kicker, title, reverse = false, kind = 'phone' } = Astro.props;
+// Only tall documents get the 4:3 top window; wide screens show whole.
+const tall = src.height / src.width > 0.75;
 ---
-<div class:list={['feat cs-wide', `feat--${kind}`, { 'feat--rev': reverse }]} data-reveal>
+<div class:list={['feat cs-wide', `feat--${kind}`, { 'feat--rev': reverse, 'feat--tall': tall }]} data-reveal>
   <div class="feat__media"><Image src={src} alt={alt} widths={kind === 'phone' ? [390, 780] : [720, 1200, 1600]} sizes={kind === 'phone' ? '20rem' : '(min-width: 56rem) 40rem, 100vw'} loading="lazy" /></div>
   <div class="feat__text">
     {kicker && <p class="dot-label">{kicker}</p>}
@@ -19,7 +21,12 @@ const { src, alt, kicker, title, reverse = false, kind = 'phone' } = Astro.props
   .feat { display: grid; gap: var(--space-m); align-items: center; margin-block: var(--space-xl); }
   .feat__media { display: grid; place-items: center; padding: var(--space-l) var(--space-m); background: #f3f2ef; border-radius: var(--radius-m); }
   .feat--phone .feat__media :global(img) { width: min(17rem, 70%); height: auto; border-radius: 1.6rem; box-shadow: 0 30px 60px -25px rgb(11 11 11 / 0.35); }
-  .feat--screen .feat__media :global(img) { width: auto; max-width: 100%; max-height: 30rem; height: auto; border-radius: 0.6rem; box-shadow: 0 30px 60px -30px rgb(11 11 11 / 0.35); }
+  /* Screens fill their column edge to edge: no panel, no empty margins.
+     Tall documents are shown from the top in a 4:3 window. */
+  .feat--screen .feat__media { padding: 0; background: none; display: block; overflow: hidden; border: 1px solid var(--color-border); border-radius: var(--radius-m); }
+  .feat--screen.feat--tall .feat__media { aspect-ratio: 4 / 3; }
+  .feat--screen .feat__media :global(img) { display: block; width: 100%; height: auto; }
+  .feat--tall .feat__media :global(img) { height: 100%; object-fit: cover; object-position: top center; }
   .feat__text { max-width: 30rem; }
   .feat__text :global(h3) { margin-top: 0.5rem !important; font: 700 clamp(1.5rem, 1rem + 1.4vw, 2.2rem) / 1.1 var(--font-text) !important; letter-spacing: -0.03em; }
   @media (min-width: 56rem) {
