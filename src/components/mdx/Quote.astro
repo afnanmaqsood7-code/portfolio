@@ -1,23 +1,25 @@
 ---
-/** Big centred pull quote. */
-interface Props { text: string; by?: string }
-const { text, by } = Astro.props;
+/** Big bold pull quote, left aligned between hairlines. `accent` = a word to colour orange. */
+interface Props { text: string; by?: string; accent?: string }
+const { text, by, accent } = Astro.props;
+const [before, after] = accent && text.includes(accent) ? text.split(accent) : [text, undefined];
 ---
 
 <figure class="quote cs-wide" data-reveal>
-  <blockquote>{text}</blockquote>
+  <blockquote>{before}{after !== undefined && <><span class="accent">{accent}</span>{after}</>}</blockquote>
   {by && <figcaption class="mono-label">{by}</figcaption>}
 </figure>
 
 <style>
-  .quote { margin-block: var(--space-xl); text-align: center; }
+  .quote { margin-block: var(--space-2xl); padding-block: var(--space-l); border-block: 1px solid var(--color-border); }
   blockquote {
-    margin: 0 auto !important;
+    margin: 0 !important;
     padding: 0 !important;
     border: 0 !important;
-    max-width: 22ch;
-    font: 600 clamp(1.9rem, 1.2rem + 2.6vw, 3.4rem) / 1.15 var(--font-display) !important;
-    color: var(--color-accent);
+    max-width: 24ch;
+    font: 700 clamp(2rem, 1.2rem + 3vw, 4rem) / 1.05 var(--font-text) !important;
+    letter-spacing: -0.04em;
+    color: var(--color-text);
     text-wrap: balance;
   }
   figcaption { margin-top: var(--space-s); color: var(--color-text-muted); }

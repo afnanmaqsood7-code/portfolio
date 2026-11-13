@@ -1,0 +1,32 @@
+---
+/** Full bleed navy stage with a row of large phone screens and labels. */
+import { Image } from 'astro:assets';
+interface Screen { src: ImageMetadata; alt: string; label?: string }
+interface Props { screens: Screen[]; title?: string; caption?: string }
+const { screens, title, caption } = Astro.props;
+---
+<section class="show cs-full" aria-label={title ?? 'Screens'} data-reveal>
+  <div class="show__inner">
+    {title && <p class="show__title">{title}</p>}
+    <ul class="show__lane" role="list">
+      {screens.map((s) => (
+        <li>
+          <Image src={s.src} alt={s.alt} widths={[390, 780]} sizes="16rem" loading="lazy" />
+          {s.label && <span>{s.label}</span>}
+        </li>
+      ))}
+    </ul>
+    {caption && <p class="show__cap">{caption}</p>}
+  </div>
+</section>
+<style>
+  .show { margin-block: var(--space-xl); padding: var(--space-xl) 0; background: radial-gradient(80% 70% at 50% 0%, #1d3a8a 0%, #0a1430 60%, #070d22 100%); color: #fff; }
+  .show__inner { max-width: var(--container-max); margin-inline: auto; padding-inline: var(--container-pad); }
+  .show__title { margin: 0 0 var(--space-m) !important; font: 700 clamp(1.4rem, 1rem + 1.2vw, 2rem) / 1.1 var(--font-text); letter-spacing: -0.03em; color: #fff; }
+  .show__lane { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(13rem, 1fr); gap: var(--space-m); overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 0 1rem; margin: 0; list-style: none; }
+  @media (min-width: 64rem) { .show__lane { grid-auto-columns: minmax(0, 1fr); overflow: visible; } }
+  .show__lane li { display: grid; gap: 0.8rem; justify-items: center; scroll-snap-align: start; }
+  .show__lane :global(img) { width: 100%; max-width: 16rem; height: auto; border-radius: 1.4rem; box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.6); }
+  .show__lane span { font-size: 0.85rem; font-weight: 500; color: #c9d2ec; }
+  .show__cap { margin: var(--space-m) 0 0 !important; color: #c9d2ec; }
+</style>

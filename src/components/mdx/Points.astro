@@ -1,0 +1,23 @@
+---
+/** Short numbered points in a 2 column grid with hairlines (replaces long lists). */
+interface Item { title: string; body: string }
+interface Props { items: Item[]; cols?: 2 | 3 }
+const { items, cols = 2 } = Astro.props;
+---
+<ol class="points cs-wide" role="list" style={`--cols:${cols}`} data-reveal>
+  {items.map((it, i) => (
+    <li>
+      <span class="points__n">{String(i + 1).padStart(2, '0')}</span>
+      <h3>{it.title}</h3>
+      <p>{it.body}</p>
+    </li>
+  ))}
+</ol>
+<style>
+  .points { display: grid; gap: var(--space-m) var(--space-xl); margin-block: var(--space-l); padding: 0; list-style: none; }
+  @media (min-width: 48rem) { .points { grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); } }
+  .points li { padding-top: var(--space-s); border-top: 1px solid var(--color-border); }
+  .points__n { font-size: 0.85rem; font-weight: 600; color: var(--color-accent); }
+  .points h3 { margin-top: 0.4rem !important; font: 600 var(--step-1) / 1.25 var(--font-text) !important; letter-spacing: -0.02em; }
+  .points p { margin-top: 0.4rem !important; color: var(--color-text-muted); }
+</style>

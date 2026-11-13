@@ -150,6 +150,34 @@ const facts = [
   }
   .cs-body :global(h2:first-child) { margin-top: 0; }
   .cs-body > :global(h2) { grid-column: wide; }
+  /* Desktop: editorial two columns. Section heading on the left, text on
+     the right edge, so text never leaves an empty band on the right.
+     Wide figures still span both columns. */
+  @media (min-width: 64rem) {
+    .cs-body {
+      grid-template-columns:
+        [full-start] minmax(var(--container-pad), 1fr)
+        [wide-start] minmax(0, calc(var(--content) - 44rem))
+        [text-start] minmax(0, 44rem) [text-end wide-end]
+        minmax(var(--container-pad), 1fr) [full-end];
+    }
+    .cs-body > :global(h2) {
+      grid-column: wide-start / text-start;
+      position: relative;
+      padding-right: var(--space-l);
+      border-top: 0;
+    }
+    .cs-body > :global(h2)::after {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: calc(100% + 44rem); border-top: 1px solid var(--color-border);
+    }
+    /* First block after a heading sits level with the heading text. */
+    .cs-body > :global(h2 + :not(.cs-wide):not(.cs-full)) {
+      margin-top: calc(var(--space-2xl) + var(--space-s) + 1.95rem);
+    }
+    .cs-body > :global(h2:first-child + :not(.cs-wide)) { margin-top: calc(var(--space-s) + 1.95rem); }
+    .cs-body > :global(h2 + p) { font-size: var(--step-1); line-height: 1.55; }
+  }
   /* Headings inside wide components (Split text) keep the reading rhythm. */
   .cs-body :global(.split h2) { margin-top: 0; }
   .cs-body :global(.cs-actions) { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-bottom: var(--space-m); }

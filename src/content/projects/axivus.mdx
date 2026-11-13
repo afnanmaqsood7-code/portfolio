@@ -20,6 +20,9 @@ featured: true
 order: 1
 ---
 
+import Feature from '../../components/mdx/Feature.astro';
+import Points from '../../components/mdx/Points.astro';
+import Showcase from '../../components/mdx/Showcase.astro';
 import Figure from '../../components/mdx/Figure.astro';
 import FigurePair from '../../components/mdx/FigurePair.astro';
 import FigureRow from '../../components/mdx/FigureRow.astro';
@@ -50,180 +53,172 @@ import webCalendar from '../../assets/projects/axivus/web-calendar.jpg';
 import webPayments from '../../assets/projects/axivus/web-payments.jpg';
 import audit from '../../assets/projects/axivus/screen-audit.png';
 
-<Stats
-  items={[
-    { value: '3', label: 'Connected apps' },
-    { value: '106', label: 'Mechanic screens' },
-    { value: '20+', label: 'End to end flows' },
-    { value: '2', label: 'Months to V1' },
-  ]}
-/>
-
 ## Overview
 
-Axivus makes car repair paperless and easy to trust. One platform connects the customer, the technician, the service advisor at the front desk and the shop owner, so a repair can go from check in to payment without a paper form or a chasing phone call.
+Axivus makes car repair paperless and easy to trust. One platform connects the customer, the technician, the service advisor at the front desk and the shop owner, so a repair moves from check in to payment without paper forms or chasing calls.
 
-I was the only designer on the product. I reworked the existing mechanic app and designed two new apps from scratch: an iPad app for service advisors and a web command centre for shop owners. I also built the shared component system behind all three. We had two months to ship V1.
+I was the only designer. I reworked the mechanic app, designed a new iPad app for service advisors and a new web command centre for shop owners, and built one design system for all three. We shipped V1 in two months.
 
 ## The problem
 
-Repair shops and independent mechanics run on calls, texts, notebooks and paper repair orders. Three things kept going wrong:
+Repair shops run on calls, texts, notebooks and paper repair orders. That breaks down in three places.
 
-- **Work gets lost.** Leads, quotes, approvals and payments sit in different places, so jobs stall and nobody knows why.
-- **Customers don't trust the quote.** They fear surprise charges, and approving a quote usually means another phone call.
-- **Money is risky on both sides.** Mechanics buy parts up front and chase payment later. Customers pay before they know the work is done.
-
-The goal was one clear flow for every repair, with the customer able to see and approve what is happening at each step.
-
-## My role
-
-As the sole product designer I owned the work from the founders' briefs to developer handoff:
-
-- Mapped the full repair lifecycle and the roles involved
-- Defined the information architecture for three apps on three devices
-- Designed 20+ end to end flows, including the messy edge cases
-- Designed every screen, from wireframes to high fidelity
-- Built one component library and status language shared by all apps
-- Worked with the founders on scope and with developers on handoff
-
-## How I worked
-
-1. **Understand the job.** I worked from the founders' briefs and broke a repair down into each step, who does it and what they need to see.
-2. **Map the roles.** I wrote down what each role does, owns and must never see, which became the rules for every app.
-3. **Flows first.** I designed each flow end to end before polishing screens, including what happens when things go wrong.
-4. **One system.** I built shared components and states early, so three apps could be designed at the same time without drifting apart.
-5. **Review and ship.** Regular reviews with the founders, then annotated files for developers.
-
-## The rule that shaped everything
-
-Every repair follows one line: **technicians find, advisors decide, customers approve.**
-
-1. A customer or advisor opens a repair order
-2. A technician inspects the car and submits findings
-3. The advisor turns the findings into an estimate with parts and labour
-4. The customer approves in the app, or from a link without an account
-5. The work is done, marked ready and paid for
-
-Designing three apps at once also showed that there are **two kinds of job**. On a *shop job*, the advisor owns the estimate and talks to the customer, and the technician only inspects and repairs. On an *independent job*, the mechanic does it all. Writing this rule down settled most of the arguments between apps: who sends the estimate, who the customer messages, and how they pay.
-
-<Quote text="Every screen answers one question: what's happening, and what do I do next?" />
-
-## Mechanic app (iPhone)
-
-Mechanics use the app standing up, with busy hands, between jobs. Everything is built around one journey, with a five step tracker on every active job: **Hired, Drop off, Inspection, Estimate, Repair.**
-
-<Phones
-  screens={[
-    { src: market, alt: 'Marketplace listing open jobs nearby with payout ranges, distance and verified customer, OBD and photo badges.', label: '1 Find and bid' },
-    { src: activeJob, alt: 'Active job with a five step progress tracker, a drop off alert, customer details and job scope with escrow funded.', label: '2 Drop off' },
-    { src: inspect, alt: 'Add line item screen for parts and labour with quantity, unit cost, markup and a live pricing preview.', label: '3 Inspection' },
-    { src: estimate, alt: 'Estimate builder with quick templates, line items with margins, an estimate breakdown and the mechanic\'s take home.', label: '4 Estimate' },
-    { src: receipt, alt: 'Payment receipt showing the customer approved, the escrow breakdown with two staged releases and the platform fee.', label: '5 Paid' },
-  ]}
-  caption="One job, five stages."
-/>
-
-**Home shows what can't wait.** The job in progress comes first, then approvals waiting, payments to collect and customer replies, then today's route. The next action is always one tap away.
-
-**Bids built on trust.** Each marketplace card shows payout range, distance and badges for a verified customer, OBD codes and photos, so a mechanic can decide in seconds. Filters for *Today* and *High payout* match how they really pick work.
-
-**Honest estimates, with help.** The builder shows parts, labour, margin and the mechanic's take home as they type. Before sending, **Axi Touch** groups line items, rewrites jargon in plain words and suggests related work, with a before and after view so the mechanic stays in control.
-
-<Phones
-  screens={[
-    { src: dashboard, alt: 'Home screen with the current job, items that need attention, today\'s route and nearby jobs.', label: 'Home' },
-    { src: axiTouch, alt: 'Axi Touch summary showing three improvements with before and after examples for grouping, wording and related work.', label: 'Axi Touch' },
-    { src: guest, alt: 'Guest approval screen: approve by link with no account needed, next steps and the estimate to approve.', label: 'Guest approval' },
+<Points
+  cols={3}
+  items={[
+    { title: 'Work gets lost', body: 'Leads, quotes, approvals and payments live in different places, so jobs stall and nobody knows why.' },
+    { title: 'Quotes feel unfair', body: 'Customers fear surprise charges, and approving a quote usually means another phone call.' },
+    { title: 'Money is risky', body: 'Mechanics pay for parts up front and chase payment later. Customers pay before the work is done.' },
   ]}
 />
 
-**Approval without an account.** Customers approve from a secure link with no sign up and no app. This removed the step where repairs most often stalled.
+**The goal:** one clear flow for every repair, where each person sees only what they need and the customer can approve every step.
 
-**Escrow protects both sides.** The customer funds the job up front and the mechanic sees it marked *funded* before starting. Money is released in two stages, when the repair starts and when the customer signs off.
+## My role and process
 
-**Trust you can see.** Profiles show certifications, specialities, ratings and approval rate. Messages are grouped by what needs action, and every job keeps a full history.
+I owned the product design from the founders' briefs to developer handoff: research into the repair process, information architecture, flows, every screen and the design system.
 
-<Phones
+<Points
+  items={[
+    { title: 'Break down the job', body: 'Mapped a repair step by step: who does it, what they need to see and what they decide.' },
+    { title: 'Define the roles', body: 'Wrote down what each role does, owns and must never see. These became the rules for every app.' },
+    { title: 'Flows before screens', body: 'Designed every flow end to end, including what happens when things go wrong, before polishing UI.' },
+    { title: 'One system, three apps', body: 'Built shared components and states early so three apps could be designed in parallel without drifting.' },
+  ]}
+/>
+
+## The rule behind the product
+
+Everything follows one line: **technicians find, advisors decide, customers approve.**
+
+Working on three apps at once showed there are two kinds of job. On a **shop job**, the advisor owns the estimate and talks to the customer, and the technician only inspects and repairs. On an **independent job**, the mechanic does it all. Writing this down settled who sends the estimate, who the customer messages and how they pay.
+
+<Showcase
+  title="Mechanic app: one job in five stages"
   screens={[
-    { src: messages, alt: 'Messages grouped into action needed and active jobs, with quick actions to send proof or adjust an estimate.', label: 'Messages' },
-    { src: profile, alt: 'Mechanic profile with ratings, jobs completed, approval rate, specialities and certifications.', label: 'Profile' },
+    { src: market, alt: 'Marketplace listing open jobs nearby with payout ranges, distance and verified customer, OBD and photo badges.', label: '1  Find and bid' },
+    { src: activeJob, alt: 'Active job with a five step progress tracker, a drop off alert, customer details and job scope with escrow funded.', label: '2  Drop off' },
+    { src: inspect, alt: 'Add line item screen for parts and labour with quantity, unit cost, markup and a live pricing preview.', label: '3  Inspection' },
+    { src: estimate, alt: 'Estimate builder with quick templates, line items with margins, an estimate breakdown and the mechanic\'s take home.', label: '4  Estimate' },
+    { src: receipt, alt: 'Payment receipt showing the customer approved, the escrow breakdown with two staged releases and the platform fee.', label: '5  Paid' },
+  ]}
+  caption="A progress tracker on every active job, so mechanics always know where they are and what comes next."
+/>
+
+## Mechanic app
+
+Mechanics use the app standing up, with busy hands, between jobs. Every screen answers one question: what's happening, and what do I do next?
+
+<Feature src={dashboard} alt="Home screen with the current job, items that need attention, today's route and nearby jobs." kicker="Home" title="What can't wait comes first">
+
+The job in progress sits at the top, then approvals waiting, payments to collect and customer replies, then today's route. The next action is always one tap away.
+
+</Feature>
+
+<Feature reverse src={market} alt="Marketplace cards with payout range, distance and trust badges." kicker="Marketplace" title="Bids built on trust">
+
+Each job card shows payout, distance and badges for a verified customer, OBD codes and photos, so a mechanic can decide in seconds. Filters for Today and High payout match how they really pick work.
+
+</Feature>
+
+<Feature src={axiTouch} alt="Axi Touch summary with before and after examples for grouping, wording and related work." kicker="Estimates" title="Honest quotes, with an assistant">
+
+The builder shows parts, labour, margin and take home as the mechanic types. Before sending, Axi Touch groups line items, rewrites jargon in plain words and suggests related work, with a before and after view so the mechanic stays in control.
+
+</Feature>
+
+<Feature reverse src={guest} alt="Guest approval screen: approve by link with no account needed." kicker="Approval" title="No account needed">
+
+Customers approve an estimate from a secure link, with no sign up and no app. This removed the step where repairs most often stalled.
+
+</Feature>
+
+<Feature src={receipt} alt="Receipt with the escrow breakdown and two staged releases." kicker="Payments" title="Escrow protects both sides">
+
+The customer funds the job up front, and the mechanic sees it marked funded before starting. Money is released in two stages: when the repair starts and when the customer signs off.
+
+</Feature>
+
+<Showcase
+  title="Trust you can see"
+  screens={[
+    { src: messages, alt: 'Messages grouped into action needed and active jobs, with quick actions to send proof or adjust an estimate.', label: 'Messages by action' },
+    { src: profile, alt: 'Mechanic profile with ratings, approval rate, specialities and certifications.', label: 'Verified profile' },
     { src: audit, alt: 'Job history with earnings, jobs completed and recent jobs.', label: 'Job history' },
+    { src: onboard, alt: 'Axivus splash screen with the logo on deep navy.', label: 'Splash' },
+    { src: login, alt: 'Login screen with email, password and Google sign in.', label: 'Sign in' },
   ]}
+  caption="Messages sorted by what needs action, verified profiles and a full history on every job."
 />
 
-## Service advisor app (iPad)
+## Service advisor app
 
-The advisor sits between the customer and the technician: answering calls, opening repair orders, building estimates, chasing approvals and taking payment. The app runs on a shop tablet at the counter, with a sidebar as the only navigation.
+The advisor sits between the customer and the technician, at the counter, on a shop iPad. They answer calls, open repair orders, build estimates, chase approvals and take payment.
 
-<Figure src={ipadInbox} alt="Advisor inbox on iPad: approvals waiting with what the customer said next to what the technician found, a delay risk flag, today's schedule and messages." caption="The inbox leads with decisions, not information." framed />
+<Figure src={ipadInbox} alt="Advisor inbox on iPad: approvals waiting with what the customer said next to what the technician found, a delay risk flag, today's schedule and messages." caption="The inbox leads with decisions: approvals waiting, no response and payments due." framed />
 
-- **Action first.** The inbox opens on approvals waiting, no response and payments due. Every screen has one clear next step.
-- **Both sides of the story.** Each repair order shows what the customer said next to what the technician found.
-- **Delays are flagged.** Risks like a part on backorder appear as a clear flag with the suggested next action.
-- **Nine clear states.** Needs estimate, Sent, Viewed, Approved, In progress, Waiting parts, Ready, Completed and Paid, worded the same everywhere.
+<Points
+  items={[
+    { title: 'Both sides of the story', body: 'Every repair order shows what the customer said next to what the technician found.' },
+    { title: 'Delays are flagged', body: 'Risks like a part on backorder show up as a clear flag with the suggested next step.' },
+    { title: 'Nine clear states', body: 'From Needs estimate to Paid, worded the same way on every screen and every device.' },
+    { title: 'A full timeline', body: 'Every action by the advisor, technician and system is logged on the repair order.' },
+  ]}
+/>
 
 <FigurePair
   items={[
     { src: ipadAudit, alt: 'Repair order timeline on iPad: a log of every action by the advisor, technician and system.' },
     { src: ipadPayments, alt: 'Payments on iPad: repair orders that are due, failed, partial or in escrow, each with one clear action.' },
   ]}
-  caption="A full timeline on every repair order, and one clear action for every payment."
+  caption="Repair order timeline and payments."
 />
 
-## Shop owner command centre (web)
+## Shop owner command centre
 
-The command centre is where an owner starts every shift. The brief was strict: answer "what do I do next?" in under three seconds.
+Where the owner starts every shift. The brief was strict: answer "what do I do next?" in under three seconds.
 
 <Figure src={webCommand} alt="Shop owner command centre: four cards for needs approval, needs parts, waiting payment and in progress, an urgent strip of aging repair orders, blockers and a tech snapshot." caption="Money at risk, what is blocked and who is busy, in one view." framed />
 
-- **Numbers that lead somewhere.** Each card shows a count and a dollar value and opens the matching list in one click.
-- **Age you can see.** Approvals and payments are sorted by age, and timers turn orange then red, so the oldest money at risk stays on top.
-- **Capacity at a glance.** A calendar shows bays and technicians at capacity, next to a board of repair orders by stage.
-- **Beyond the happy path.** Every list has empty, loading and error states, with an inline retry instead of an error page.
+<Points
+  items={[
+    { title: 'Numbers that lead somewhere', body: 'Each card shows a count and a dollar value, and opens the matching list in one click.' },
+    { title: 'Age you can see', body: 'Approvals and payments sort by age. Timers turn orange, then red, so the oldest money at risk stays on top.' },
+    { title: 'Capacity at a glance', body: 'A calendar shows which bays and technicians are full, next to a board of repair orders by stage.' },
+    { title: 'Beyond the happy path', body: 'Every list has empty, loading and error states, with an inline retry instead of an error page.' },
+  ]}
+/>
 
 <FigurePair
   items={[
     { src: webCalendar, alt: 'Calendar view with bays active, techs at capacity, appointments and shop capacity above a monthly calendar.' },
     { src: webPayments, alt: 'Payments view with totals for waiting payment and collected this week above a table of repair orders.' },
   ]}
-  caption="Calendar and payments for the owner."
+  caption="Calendar and payments."
 />
 
 ## One design system
 
-Three apps on three devices had to feel like one product.
+Three devices, one product. The same components, states and words run through all three apps.
 
-- **One status language.** The same job and payment states, colours and chips on phone, tablet and desktop.
-- **Built for the shop floor.** Large tap targets, a fixed bottom bar with Jobs raised in the centre, short labels and screens readable at arm's length.
-- **A clear brand.** Deep navy with bright blue actions, so the important button is always easy to find.
-- **Axi Touch everywhere.** The estimate assistant appears wherever an estimate is sent, and always sorts work into fix now, fix soon and later.
-
-<Phones
-  screens={[
-    { src: onboard, alt: 'Axivus splash screen with the logo on a deep navy background.', label: 'Splash' },
-    { src: login, alt: 'Login screen with email, password, Google sign in and a sign up link.', label: 'Login' },
-    { src: dashboard, alt: 'Mechanic home screen.', label: 'Home' },
+<Points
+  items={[
+    { title: 'One status language', body: 'The same job and payment states, colours and chips on phone, tablet and desktop.' },
+    { title: 'Built for the shop floor', body: 'Large tap targets, a fixed bottom bar with Jobs in the centre and screens readable at arm\'s length.' },
+    { title: 'A clear brand', body: 'Deep navy with bright blue actions, so the important button is always easy to find.' },
+    { title: 'Designed for what goes wrong', body: 'Scope changes mid job, escrow top ups, customer objections and approvals from a link.' },
   ]}
 />
 
-## Designing the edge cases
-
-Real repairs rarely go to plan, so I designed for what goes wrong as carefully as the main flow:
-
-- **Scope changes mid job.** The mechanic finds more work, sends a new estimate and the customer approves the change.
-- **Top up payments.** When the cost goes up, escrow is topped up before work continues.
-- **Objections.** A customer can question a line item, and the conversation stays attached to the job.
-- **Customers without the app.** Approvals and payments work from a link.
+<Quote text="Every screen answers one question: what's happening, and what do I do next?" accent="what do I do next?" />
 
 ## Reflection
 
-**What I learned**
-
-- **Design the edges early.** Scope changes and objections are where real jobs fail, and designing them first made the product believable.
-- **Trust is a feature.** Escrow, guest approval and a visible history did more for the experience than any single screen.
-- **Write the rules down.** The "shop job or independent job" rule saved more time than any component.
-
-**What comes next**
-
-- **Test on the shop floor** to see how the apps hold up with gloves, noise and interruptions.
-- **Measure the funnel,** from bid to hire and from estimate to approval, to find where jobs stall.
+<Points
+  items={[
+    { title: 'Design the edges early', body: 'Scope changes and objections are where real jobs fail. Designing them first made the product believable.' },
+    { title: 'Trust is a feature', body: 'Escrow, guest approval and a visible history did more for the experience than any single screen.' },
+    { title: 'Write the rules down', body: 'The shop job or independent job rule saved more time than any component.' },
+    { title: 'Next: test on the floor', body: 'Watch mechanics use it with gloves, noise and interruptions, and measure where jobs stall.' },
+  ]}
+/>
