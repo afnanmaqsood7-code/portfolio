@@ -53,9 +53,7 @@ const ogUrl = new URL(ogImage, Astro.site);
 
     <!-- Self-hosted fonts (configured in astro.config.mjs). Preload only the
          text font: it renders the first paint of body copy. -->
-    <Font cssVariable="--font-display-src" />
     <Font cssVariable="--font-text-src" preload />
-    <Font cssVariable="--font-mono-src" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

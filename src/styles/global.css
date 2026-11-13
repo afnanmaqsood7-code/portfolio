@@ -131,9 +131,10 @@ a:hover { color: var(--color-accent); }
 
 /* ---------- Italic serif accent words (dverso-style headlines) ---------- */
 .accent {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
+  /* Accent word = same font, the one orange accent. */
+  font-family: inherit;
+  font-style: normal;
+  color: var(--color-accent);
   letter-spacing: -0.01em;
 }
 

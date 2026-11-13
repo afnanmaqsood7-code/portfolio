@@ -46,9 +46,9 @@
 
 
   /* ---------- TYPOGRAPHY ---------- */
-  --font-display: var(--font-display-src, Georgia, serif); /* Lora: headings, italic accents */
+  --font-display: var(--font-text-src, 'Helvetica Neue', Arial, sans-serif); /* ONE family: Archivo everywhere */ /* Lora: headings, italic accents */
   --font-text: var(--font-text-src, system-ui, sans-serif); /* Geist: text, big sans headlines */
-  --font-mono: var(--font-mono-src, ui-monospace, monospace); /* Geist Mono: small labels */
+  --font-mono: var(--font-text-src, 'Helvetica Neue', Arial, sans-serif); /* labels use Archivo too */ /* Geist Mono: small labels */
 
   /* Fluid type scale: clamp(min @ 360px, preferred, max @ 1440px) */
   --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.94rem);

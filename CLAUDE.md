@@ -37,8 +37,14 @@ characters, illustrations, testimonials or text.
   #ff7a45 on black; muted text #6d6d6d; soft grey panels #f3f2ef. Labels
   are quiet sentence case (`.mono-label`), plus `.dot-label` = orange dot +
   label (case-study eyebrow). Lora kept for section headings/accents.
-- Fonts: Geist (text + big sans headlines, tight -0.04em), Geist Mono (small
-  uppercase labels), Lora (section headings, italic accent words via *word*).
+- ONE THEME (Afnan: "one colour, one accent, harmony — not a copy"): ONE font
+  family, Archivo, everywhere (Lora + Geist Mono removed; --font-display and
+  --font-mono now alias Archivo). `.accent` words = same font, orange, not
+  italic. White / black / one orange accent only.
+- Hero card = silent showreel `public/home/reel.mp4` (21 s, ~2 MB, 9 cuts:
+  VR trailer, Axivus, Life Goes On, city/smoke portraits, Unreal level,
+  dervish painting) centred like the reference with a thin centre line;
+  pause button, off-screen pause, no autoplay with reduced motion.
 - Home (Nov 2026, brandlic.studio layout + motion, ORIGINAL build, her
   content): Loader → Hero (huge Archivo name + grey typed "_<Role>
   designer" with orange caret; Axivus banner card clipped centre-left that
