@@ -137,13 +137,16 @@ a:hover { color: var(--color-accent); }
   letter-spacing: -0.01em;
 }
 
-/* ---------- Small mono label (dverso-style corner/meta text) ---------- */
+/* ---------- Small label (brandlic-style: sentence case, quiet) ---------- */
 .mono-label {
-  font: 400 0.75rem/1.35 var(--font-mono);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font: 400 0.82rem/1.35 var(--font-text);
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--color-text-muted);
 }
+/* Orange dot + label, e.g. "● Branding" */
+.dot-label { display: inline-flex; align-items: center; gap: 0.5rem; font: 500 0.95rem var(--font-text); color: var(--color-text); }
+.dot-label::before { content: ''; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--clay-bright); }
 
 /* ---------- Reveal on scroll (added by scripts/motion/reveal.ts) ---------- */
 html[data-motion]:not([data-motion='none']) [data-reveal] {

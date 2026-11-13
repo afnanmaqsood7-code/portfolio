@@ -24,9 +24,9 @@ export default defineConfig({
     },
     {
       provider: fontProviders.google(),
-      name: 'Geist', // ← text + big sans headlines
+      name: 'Archivo', // ← text + big bold headlines (ref. brandlic.studio)
       cssVariable: '--font-text-src',
-      weights: ['300 600'],
+      weights: ['300 700'],
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['system-ui', 'sans-serif'],

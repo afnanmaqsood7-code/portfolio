@@ -39,7 +39,7 @@ const facts = [
     <header class="cs-hero">
       <div class="cs-hero__text">
         <a class="cs-back mono-label" href="/#work"><span aria-hidden="true">←</span> All work</a>
-        <p class="mono-label cs-eyebrow">{eyebrow}</p>
+        <p class="dot-label cs-eyebrow">{eyebrow}</p>
         <h1 class="cs-title">{d.title}</h1>
         <p class="cs-lede">{d.summary}</p>
       </div>
@@ -86,7 +86,7 @@ const facts = [
   .cs-hero__text { display: grid; gap: var(--space-xs); max-width: 52rem; }
   .cs-back { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; width: fit-content; text-decoration: none; color: var(--color-text-muted); }
   .cs-back:hover { color: var(--color-text); }
-  .cs-eyebrow { color: var(--color-accent); }
+  .cs-eyebrow { color: var(--color-text); }
   .cs-title {
     font: 600 clamp(2.6rem, 1.2rem + 6vw, 6.5rem) / 0.95 var(--font-text);
     letter-spacing: -0.05em;

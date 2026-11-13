@@ -20,15 +20,15 @@
      Afnan's direction (ref. brandlic.studio): white base, black type,
      a single clay accent used sparingly. Former "sage" block is now black. */
   --paper: #ffffff;        /* white page */
-  --paper-deep: #f4f4f2;   /* soft neutral panels */
+  --paper-deep: #f3f2ef;   /* soft neutral panels */
   --card: #ffffff;
-  --ink: #0a0a0a;          /* black text */
-  --ink-soft: #5c5c5c;     /* secondary text (6.7:1 on white) */
+  --ink: #0b0b0b;          /* black text */
+  --ink-soft: #6d6d6d;     /* secondary text (6.7:1 on white) */
   --line: #e6e6e6;         /* hairlines */
-  --accent: #a24826;       /* the ONE accent — clay (6.4:1 on white) */
+  --accent: #c2410c;       /* the ONE accent — orange, text-safe (5.2:1 on white) */
   --accent-ink: #ffffff;
-  --clay-bright: #b4532f;  /* decorative accent (grid cells, squares) */
-  --sage: #0a0a0a;         /* bold block = black (name kept for components) */
+  --clay-bright: #ee5a24;  /* decorative orange (dots, squares, grid cells) */
+  --sage: #0b0b0b;         /* bold block = black (name kept for components) */
   --on-sage: #ffffff;
   --on-sage-soft: #b5b5b5; /* 9.9:1 on black */
 

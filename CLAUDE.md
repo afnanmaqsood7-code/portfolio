@@ -29,9 +29,14 @@ Studied directly in a browser (screens, fonts, colours). Follow THIS system
 everywhere; do not mix in other references. Never copy their logos, 3D
 characters, illustrations, testimonials or text.
 - Colours (Afnan, Nov 2026, ref. brandlic.studio/spark-beauty): WHITE base
-  #fff, BLACK #0a0a0a text and bold blocks (footer), ONE accent only — clay
-  #a24826 text / #b4532f decorative (#e9a07e on black). No dark mode; site is
+  #fff, BLACK #0a0a0a text and bold blocks (footer), ONE accent only — orange (see below). No dark mode; site is
   always light. Token names (--sage etc.) kept; --sage is now black.
+  Studied brandlic.studio/spark-beauty in a browser (host now allowed):
+  Archivo (bold, tight) replaces Geist as the text/headline font; near-black
+  #0b0b0b; ONE orange accent — #c2410c for text, #ee5a24 decorative,
+  #ff7a45 on black; muted text #6d6d6d; soft grey panels #f3f2ef. Labels
+  are quiet sentence case (`.mono-label`), plus `.dot-label` = orange dot +
+  label (case-study eyebrow). Lora kept for section headings/accents.
 - Fonts: Geist (text + big sans headlines, tight -0.04em), Geist Mono (small
   uppercase labels), Lora (section headings, italic accent words via *word*).
 - Home: Loader → Hero → Featured Projects → From the studio → Contact/footer.
