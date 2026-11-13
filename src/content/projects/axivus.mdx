@@ -13,13 +13,16 @@ outcomes:
 lens: product
 tags: [Mobile · iPad · Web, B2B SaaS]
 cover: ../../assets/projects/axivus/cover.jpg
-coverAlt: Three Axivus mechanic app screens (marketplace, dashboard and an active job) on a deep navy background.
+coverAlt: "Axivus on three devices: the shop owner command centre on a laptop, the advisor inbox on an iPad and the mechanic app on a phone."
 banner: ../../assets/projects/axivus/banner.jpg
-bannerAlt: "Five Axivus app screens in a row on navy: login, marketplace, dashboard, active job and a payment receipt."
+bannerAlt: "The three Axivus apps together on a laptop, an iPad and a phone."
 featured: true
 order: 1
 ---
 
+import Figure from '../../components/mdx/Figure.astro';
+import FigurePair from '../../components/mdx/FigurePair.astro';
+import FigureRow from '../../components/mdx/FigureRow.astro';
 import Phones from '../../components/mdx/Phones.astro';
 import Split from '../../components/mdx/Split.astro';
 import Cards from '../../components/mdx/Cards.astro';
@@ -39,6 +42,12 @@ import guest from '../../assets/projects/axivus/screen-guest.png';
 import messages from '../../assets/projects/axivus/screen-messages.png';
 import receipt from '../../assets/projects/axivus/screen-receipt.png';
 import profile from '../../assets/projects/axivus/screen-profile.png';
+import ipadInbox from '../../assets/projects/axivus/ipad-inbox.jpg';
+import ipadAudit from '../../assets/projects/axivus/ipad-audit.jpg';
+import ipadPayments from '../../assets/projects/axivus/ipad-payments.jpg';
+import webCommand from '../../assets/projects/axivus/web-command.jpg';
+import webCalendar from '../../assets/projects/axivus/web-calendar.jpg';
+import webPayments from '../../assets/projects/axivus/web-payments.jpg';
 import audit from '../../assets/projects/axivus/screen-audit.png';
 
 <Stats
@@ -179,6 +188,16 @@ Inside a shop, the service advisor sits between the customer and the technician:
   ]}
 />
 
+<Figure src={ipadInbox} alt="Advisor inbox on iPad: approvals waiting with what the customer said next to what the technician found, a delay risk flag, today's schedule and messages." caption="Advisor inbox: what needs a decision now, with both sides of every job." framed />
+
+<FigurePair
+  items={[
+    { src: ipadAudit, alt: 'Repair order timeline on iPad: an audit log of every action by the advisor, technician and system.' },
+    { src: ipadPayments, alt: 'Payments on iPad: repair orders that are due, failed, partial or in escrow, each with one clear action.' },
+  ]}
+  caption="Every repair order keeps a full timeline, and every payment has one clear next step."
+/>
+
 ## The Shop Owner Command Centre (web)
 
 For owners and advisors at a desk or on a shop tablet, the Command Centre is the start of every shift. The brief was simple and strict: answer “what do I do next?” in under three seconds.
@@ -191,6 +210,16 @@ For owners and advisors at a desk or on a shop tablet, the Command Centre is the
     { kicker: 'Operations', title: 'Board, calendar and payments', body: 'An RO board by stage, a calendar showing bay and technician capacity, reports, and a payments view for what is due, pending or failed.' },
     { kicker: 'States', title: 'Designed beyond the happy path', body: 'Every list has empty, loading and error states (a shimmer instead of spinners, an inline “Retry” banner instead of error pages) on both desktop and tablet layouts.' },
   ]}
+/>
+
+<Figure src={webCommand} alt="Shop owner command centre: four cards for needs approval, needs parts, waiting payment and in progress, an urgent strip of aging repair orders, blockers and a tech snapshot." caption="Command centre: money at risk, what is blocked and who is busy, in one view." framed />
+
+<FigurePair
+  items={[
+    { src: webCalendar, alt: 'Calendar view with bays active, techs at capacity, appointments and shop capacity above a monthly calendar.' },
+    { src: webPayments, alt: 'Payments view with totals for waiting payment and collected this week above a table of repair orders.' },
+  ]}
+  caption="Calendar and payments for the owner."
 />
 
 ## One system across three apps
