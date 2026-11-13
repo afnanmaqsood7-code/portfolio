@@ -41,6 +41,9 @@ characters, illustrations, testimonials or text.
   family, Archivo, everywhere (Lora + Geist Mono removed; --font-display and
   --font-mono now alias Archivo). `.accent` words = same font, orange, not
   italic. White / black / one orange accent only.
+- **Numbers & Facts section REMOVED** (Afnan). Hero background = the
+  painted grid again (`paint-grid.ts`, full hero, 72px cells, faint lines,
+  orange cells under the cursor + breathing) behind name, reel and intro.
 - Hero card = silent showreel `public/home/reel.mp4` (21 s, ~2 MB, 9 cuts:
   VR trailer, Axivus, Life Goes On, city/smoke portraits, Unreal level,
   dervish painting) centred like the reference with a thin centre line;
@@ -50,8 +53,7 @@ characters, illustrations, testimonials or text.
   designer" with orange caret; Axivus banner card clipped centre-left that
   grows to full-bleed on scroll — sticky 230vh stage, GSAP clip-path scrub,
   ≥48rem + motion only; orange "Afnan" mark bottom-left, intro + "● scroll
-  down" bottom-right) → Facts (black "● Numbers & Facts" card + grey stat
-  cards, count-up) → Services ("● What I do", 5 big rows with her images,
+  down" bottom-right) → Services ("● What I do", 5 big rows with her images,
   hover lift) → Portfolio (ProjectGrid, "● Portfolio" + sentence heading,
   left-aligned) → From the studio → Contact/footer.
 - **"What I do" Disciplines (sage sketchbook + flying cards) and the "All

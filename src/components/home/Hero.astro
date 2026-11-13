@@ -18,6 +18,7 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
 
 <section class="hero" aria-labelledby="hero-title" data-hero>
   <div class="hero__stage">
+    <canvas class="hero__grid" data-hero-grid aria-hidden="true"></canvas>
     <span class="hero__line" aria-hidden="true"></span>
     <div class="hero__top">
       <h1 id="hero-title" class="hero__title">
@@ -37,7 +38,7 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
       <a href="/" class="hero__mark" aria-hidden="true" tabindex="-1">Afnan</a>
       <div class="hero__intro">
         <p>{intro}</p>
-        <a class="dot-label hero__scroll" href="#facts">scroll down</a>
+        <a class="dot-label hero__scroll" href="#work">scroll down</a>
       </div>
     </div>
   </div>
@@ -45,12 +46,25 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
 
 <script>
   import { getTier } from '../../scripts/motion/capabilities';
+  import { paintGrid } from '../../scripts/paint-grid';
 
   const hero = document.querySelector<HTMLElement>('[data-hero]');
   if (hero) {
     const tier = getTier();
     if (tier !== 'none') typeRoles(hero);
     initReel(hero, tier === 'none');
+    // Background: the painted grid — cells light orange under the cursor.
+    const stage = hero.querySelector<HTMLElement>('.hero__stage')!;
+    const css = getComputedStyle(document.documentElement);
+    paintGrid(stage, hero.querySelector<HTMLCanvasElement>('[data-hero-grid]')!, {
+      band: (w, h, cell) => { const cols = Math.ceil(w / cell), rows = Math.ceil(h / cell); return { cols, rows, x0: Math.round((w - cols * cell) / 2), y0: 0 }; },
+      cell: (w) => (w < 700 ? 44 : 72),
+      line: css.getPropertyValue('--ink').trim() || '#0b0b0b',
+      lineAlpha: 0.07,
+      fill: css.getPropertyValue('--clay-bright').trim() || '#ee5a24',
+      maxAlpha: 0.5,
+      breathe: 1.4,
+    });
     if (tier !== 'none' && matchMedia('(min-width: 48rem)').matches) void grow(hero);
   }
 
@@ -115,6 +129,7 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
 
 <style>
   .hero { position: relative; }
+  .hero__grid { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
   .hero__stage {
     position: relative;
     display: grid;
