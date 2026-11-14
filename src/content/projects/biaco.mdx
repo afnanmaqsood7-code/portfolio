@@ -1,0 +1,148 @@
+---
+title: Biaaco Med
+slug: biaco
+summary: A telehealth app that connects patients in Pakistan to a call centre, a doctor, a pharmacy and lab tests from one phone, designed for people who are not confident with apps.
+role: UI/UX Designer
+timeline: 2020 to 2021
+year: '2021'
+tools: [Adobe XD, Illustrator, Prototyping]
+outcomes:
+  - 64 screens covering sign up, consultation, pharmacy, labs and insurance
+  - A guided call centre path for patients who prefer to talk
+  - One brand system in a warm purple and red gradient
+lens: product
+category: product
+tags: [Mobile app, Healthcare]
+cover: ../../assets/projects/biaco/cover.jpg
+coverAlt: Three phones showing the Biaaco Med welcome screen, a video consultation with a doctor and the home screen.
+featured: true
+order: 3
+---
+
+import Phones from '../../components/mdx/Phones.astro';
+import Showcase from '../../components/mdx/Showcase.astro';
+import Feature from '../../components/mdx/Feature.astro';
+import Points from '../../components/mdx/Points.astro';
+import Quote from '../../components/mdx/Quote.astro';
+
+import welcome from '../../assets/projects/biaco/welcome.png';
+import join from '../../assets/projects/biaco/join.png';
+import signup from '../../assets/projects/biaco/signup.png';
+import verify from '../../assets/projects/biaco/verify.png';
+import photo from '../../assets/projects/biaco/photo.png';
+import location from '../../assets/projects/biaco/location.png';
+import family from '../../assets/projects/biaco/family.png';
+import done from '../../assets/projects/biaco/done.png';
+import home from '../../assets/projects/biaco/home.png';
+import queue from '../../assets/projects/biaco/queue.png';
+import connected from '../../assets/projects/biaco/connected.png';
+import prescription from '../../assets/projects/biaco/prescription.png';
+import rate from '../../assets/projects/biaco/rate.png';
+import doctor from '../../assets/projects/biaco/doctor.png';
+import cart from '../../assets/projects/biaco/cart.png';
+import pay from '../../assets/projects/biaco/pay.png';
+import pharmacist from '../../assets/projects/biaco/pharmacist.png';
+import checkout from '../../assets/projects/biaco/checkout.png';
+import insurance from '../../assets/projects/biaco/insurance.png';
+import specialist from '../../assets/projects/biaco/specialist.png';
+import recorded from '../../assets/projects/biaco/recorded.png';
+
+## Overview
+
+Biaaco Med is an online healthcare partner for families in Pakistan. In one app, a patient can talk to a healthcare facilitator, see a doctor on video, order medicine, book lab tests and manage insurance.
+
+I designed the app end to end: the flows, all 64 screens and the visual system.
+
+## The challenge
+
+Many of Biaaco's patients are older or new to smartphones. They trust a phone call more than a form. The app had to feel as easy as calling a family doctor, while still offering everything online for people who want it.
+
+<Points
+  cols={3}
+  items={[
+    { title: 'Low digital confidence', body: 'Long forms and hidden menus would lose people on the first screen.' },
+    { title: 'Families, not individuals', body: 'One person often books care for parents and children.' },
+    { title: 'Many services', body: 'Doctors, medicine, labs and insurance had to feel like one simple place.' },
+  ]}
+/>
+
+## Design principles
+
+<Points
+  items={[
+    { title: 'A call is always one tap away', body: 'Every key screen offers to call or connect online, so no one gets stuck.' },
+    { title: 'One question per screen', body: 'Sign up is split into five short, numbered steps with clear progress.' },
+    { title: 'Skip, then come back', body: 'Photo, location and family can be added later, so sign up never blocks care.' },
+    { title: 'Show waiting time', body: 'Queues show an estimated wait and useful health videos instead of a spinner.' },
+  ]}
+/>
+
+<Showcase
+  title="Joining in five short steps"
+  screens={[
+    { src: join, alt: 'Join screen with a large call now to register button and an option to sign up manually.', label: 'Call or sign up' },
+    { src: signup, alt: 'Sign up step 1 of 5: name, phone, gender and date of birth.', label: '1  Details' },
+    { src: verify, alt: 'Step 2 of 5: choose to verify by SMS or by a phone call.', label: '2  Verify' },
+    { src: location, alt: 'Step 4 of 5: country, province, city and community.', label: '4  Location' },
+    { src: family, alt: 'Step 5 of 5: add family members with name, date of birth and relationship.', label: '5  Family' },
+  ]}
+  caption="Registering by phone is the biggest button. Manual sign up takes about five minutes and says so up front."
+/>
+
+## A consultation
+
+<Feature src={home} alt="Home screen with a large Connect Online button, a message field and shortcuts to call a doctor, order medicine and book lab tests." kicker="Home" title="One big button">
+
+The home screen leads with a single round button: Connect Online. Below it sit the three things patients do most, call a doctor, order medicine and book a lab test, plus a bar for voice or text messages.
+
+</Feature>
+
+<Feature src={queue} alt="Waiting screen with an estimated wait of two minutes and a library of healthcare videos." kicker="Waiting" title="Waiting that feels useful">
+
+While a facilitator or doctor joins, patients see an honest countdown and can watch short health videos about their symptoms, or hang up and ask for a call back.
+
+</Feature>
+
+<Phones
+  screens={[
+    { src: connected, alt: 'Connecting to a doctor, with an estimated wait and health videos.', label: 'Connecting' },
+    { src: prescription, alt: 'Live video consultation with a doctor and the patient on screen.', label: 'Video consultation' },
+    { src: rate, alt: 'Thank you screen with a rating and options to order medicine or book labs.', label: 'Next steps' },
+  ]}
+  caption="After the call, patients can order medicine, book tests or reconnect, in one tap."
+/>
+
+## Pharmacy, labs and insurance
+
+<Showcase
+  title="Everything after the visit"
+  screens={[
+    { src: specialist, alt: 'Find a specialist by category, with doctor cards.', label: 'Specialists' },
+    { src: doctor, alt: 'Doctor profile with rating and bookable dates and times.', label: 'Book a doctor' },
+    { src: cart, alt: 'Cart with medicines, quantities and prices in rupees.', label: 'Cart' },
+    { src: checkout, alt: 'Checkout with shipping address and order total.', label: 'Checkout' },
+    { src: pay, alt: 'Payment options including card and mobile wallets.', label: 'Pay' },
+  ]}
+  caption="Local payment options, including mobile wallets, made ordering possible for more families."
+/>
+
+<Phones
+  screens={[
+    { src: recorded, alt: 'Consultation options screen with call, voice and video buttons.', label: 'Call, voice or video' },
+    { src: pharmacist, alt: 'Get ready countdown before a call connects.', label: 'Get ready' },
+    { src: insurance, alt: 'Message that the health insurance is being verified.', label: 'Insurance' },
+  ]}
+/>
+
+<Quote text="It should feel as easy as calling your family doctor." accent="calling your family doctor." />
+
+## What I learned
+
+<Points
+  items={[
+    { title: 'Design for the least confident user', body: 'If it works for a grandparent, it works for everyone.' },
+    { title: 'Humans are a feature', body: 'Offering a call at every step built more trust than any screen.' },
+    { title: 'Never block care', body: 'Optional steps that can wait should always be skippable.' },
+    { title: 'Next time', body: 'I would test the flows with real patients early and add Urdu throughout.' },
+  ]}
+/>
