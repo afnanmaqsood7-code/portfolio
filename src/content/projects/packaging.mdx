@@ -1,0 +1,128 @@
+---
+title: Packaging Design
+slug: packaging
+summary: Packaging for two product ranges. Blends of Nature, a natural skincare brand from Kenya, and a product catalogue for Global Tobacco's Canvas and Monch ranges.
+role: Packaging Designer
+timeline: Client projects
+year: '2021'
+tools: [Illustrator, Photoshop, 3D mockups]
+outcomes:
+  - A full skincare range in jars, bottles and pouches
+  - Two cigarette brands with colour coded variants
+  - A printed product catalogue with specs for every pack
+lens: brand
+tags: [Packaging, Product]
+cover: ../../assets/projects/packaging/cover.jpg
+coverAlt: A Blends of Nature cream jar floating on a warm orange background.
+banner: ../../assets/projects/packaging/banner.jpg
+bannerAlt: The Blends of Nature Wild African Range of beard oil bottles in black and gold animal print.
+featured: true
+order: 8
+lensOrder:
+  brand: 4
+---
+
+import Band from '../../components/mdx/Band.astro';
+import Video from '../../components/mdx/Video.astro';
+import Figure from '../../components/mdx/Figure.astro';
+import FigurePair from '../../components/mdx/FigurePair.astro';
+import Feature from '../../components/mdx/Feature.astro';
+import Points from '../../components/mdx/Points.astro';
+
+import spray from '../../assets/projects/packaging/bon-spray.jpg';
+import jars from '../../assets/projects/packaging/bon-jars.jpg';
+import jar from '../../assets/projects/packaging/bon-jar.jpg';
+import pouch from '../../assets/projects/packaging/bon-pouch.jpg';
+import podCanvas from '../../assets/projects/packaging/tob-podium-canvas.jpg';
+import podMonch from '../../assets/projects/packaging/tob-podium-monch.jpg';
+import monchLine from '../../assets/projects/packaging/tob-monch-line.jpg';
+import canvasLine from '../../assets/projects/packaging/tob-canvas-line.jpg';
+import monchDark from '../../assets/projects/packaging/tob-monch-dark.jpg';
+import canvasDark from '../../assets/projects/packaging/tob-canvas-dark.jpg';
+import monchSpec from '../../assets/projects/packaging/tob-monch-spec.jpg';
+import canvasSpec from '../../assets/projects/packaging/tob-canvas-spec.jpg';
+
+<Band label="Product reel">
+  <Video
+    src="/work/packaging/reel.mp4"
+    poster="/work/packaging/reel.jpg"
+    title="Packaging reel: Blends of Nature skincare and Global Tobacco packs"
+    caption="Both ranges in 17 seconds."
+  />
+</Band>
+
+## Overview
+
+Two very different packaging projects. One is warm, natural and handmade. The other is precise, premium and built around strict legal rules. Both needed a system: one look that stretches across many products without losing what makes each one different.
+
+## Blends of Nature
+
+A natural skincare brand from Kenya, made with Africa's raw materials. I designed packaging for the whole range: body oil, beard oil, body butter and coffee scrub.
+
+<Feature src={jars} alt="Cream jars with the Blends of Nature monogram on kraft brown, one jar open showing the lid." kind="screen" kicker="Idea" title="Africa, without the clichés">
+
+Every product carries a real African pattern, leopard, zebra or cowhide, paired with a calm monogram and lots of space. The prints make each product easy to tell apart on a shelf, and the shared monogram keeps them one family.
+
+</Feature>
+
+<FigurePair
+  items={[
+    { src: jar, alt: 'An open Blends of Nature cream jar with its lid on a soft yellow background.' },
+    { src: spray, alt: 'Green and white Blends of Nature spray bottles with a matching cap.' },
+  ]}
+  caption="Body butter and spray bottles in the same system."
+/>
+
+<Feature src={pouch} alt="Kraft paper stand up pouches with a coffee bean pattern for the coffee scrub." kind="screen" kicker="Materials" title="Natural materials, honest finish">
+
+Kraft paper, brown glass and simple white jars match the brand's promise: handmade, 100% natural and nothing to hide.
+
+</Feature>
+
+## Global Tobacco catalogue
+
+Packaging and a printed product catalogue for two cigarette brands, Canvas and Monch. Each brand has several variants, and every pack had to carry large health warnings by law.
+
+<FigurePair
+  items={[
+    { src: podCanvas, alt: 'Canvas cigarette packs on a lit copper podium in a dark studio.' },
+    { src: podMonch, alt: 'Monch cigarette packs on a lit copper podium in a dark studio.' },
+  ]}
+  caption="Hero renders for the catalogue."
+/>
+
+<Points
+  items={[
+    { title: 'Monch, premium', body: 'Deep jewel colours with fine gold mountain line art, one colour per variant.' },
+    { title: 'Canvas, clean', body: 'White packs with a single coloured stripe, so each variant is clear at a glance.' },
+    { title: 'Warnings first', body: 'Health warnings are designed into the layout, not squeezed in at the end.' },
+    { title: 'A full catalogue', body: 'Every pack shown in 3D with its specs, for buyers and distributors.' },
+  ]}
+/>
+
+<FigurePair
+  items={[
+    { src: monchLine, alt: 'Four Monch packs in brown, green, red and navy on grey stone.' },
+    { src: canvasLine, alt: 'Four Canvas packs with blue, orange, green and red stripes on grey stone.' },
+  ]}
+  caption="Each range as a family: one colour per variant."
+/>
+
+<FigurePair
+  items={[
+    { src: monchSpec, alt: 'Catalogue page for a Monch variant with open pack, carton and product description.' },
+    { src: canvasSpec, alt: 'Catalogue page for a Canvas variant with open pack, carton and product description.' },
+  ]}
+  caption="Catalogue spreads with pack, carton and specs."
+/>
+
+## What I learned
+
+<Points
+  items={[
+    { title: 'Systems beat single designs', body: 'A clear rule for colour and pattern made adding new products easy.' },
+    { title: 'Constraints shape good work', body: 'Legal warnings and small labels forced clearer hierarchy.' },
+    { title: 'Show it real', body: '3D renders helped clients approve faster than flat artwork.' },
+    { title: 'Material is part of the message', body: 'Kraft, glass and gold foil say as much as the graphics.' },
+  ]}
+/>
