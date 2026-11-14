@@ -1,51 +1,152 @@
 ---
-title: Brand Identity
+title: Build One
 slug: brand-identity
-summary: One brand told end to end, from the brand book and visual identity to packaging on the shelf.
-role: Brand & Graphic Designer
-timeline: TODO
-team: TODO
+summary: A complete brand identity for Build One, a home building company working across five countries. Logo, colour, type, a 42 page brand book, stationery and campaign standees.
+role: Brand Designer
+timeline: Full identity system
+year: '2021'
 tools: [Illustrator, Photoshop, InDesign]
 outcomes:
-  - Complete brand book, identity system and packaging range
-  - TODO metric
-  - TODO metric
+  - A 42 page brand book that keeps every touchpoint consistent
+  - Full stationery system, from business cards to invoices
+  - Six campaign standees and matching social ads
 lens: brand
+tags: [Brand identity, Print]
 cover: ../../assets/projects/brand-identity/cover.jpg
-coverAlt: Placeholder cover for Brand Identity, a near-black paint mark crossed by an ochre brush stroke.
+coverAlt: Build One stationery on a deep navy surface, with a letterhead, envelopes and business cards.
+banner: ../../assets/projects/brand-identity/banner.jpg
+bannerAlt: The Build One stationery system laid out on navy.
 featured: true
 order: 4
 lensOrder:
   brand: 1
 ---
 
-{/* PLACEHOLDER CONTENT. Replace each section with the real story.
-    Keep sections short and scannable; lead with decisions and outcomes. */}
+import Band from '../../components/mdx/Band.astro';
+import Video from '../../components/mdx/Video.astro';
+import Figure from '../../components/mdx/Figure.astro';
+import FigurePair from '../../components/mdx/FigurePair.astro';
+import Feature from '../../components/mdx/Feature.astro';
+import Points from '../../components/mdx/Points.astro';
+import Quote from '../../components/mdx/Quote.astro';
 
-## Context
+import cards from '../../assets/projects/brand-identity/cards.jpg';
+import folder from '../../assets/projects/brand-identity/folder.jpg';
+import brandbook from '../../assets/projects/brand-identity/brandbook.jpg';
+import standees from '../../assets/projects/brand-identity/standees.jpg';
+import logo from '../../assets/projects/brand-identity/bb-logo.jpg';
+import mark from '../../assets/projects/brand-identity/bb-mark.jpg';
+import type from '../../assets/projects/brand-identity/bb-type.jpg';
+import colours from '../../assets/projects/brand-identity/bb-colours.jpg';
+import secondary from '../../assets/projects/brand-identity/bb-secondary.jpg';
+import misuse from '../../assets/projects/brand-identity/bb-misuse.jpg';
+import patterns from '../../assets/projects/brand-identity/bb-patterns.jpg';
+import icons from '../../assets/projects/brand-identity/bb-icons.jpg';
+import web from '../../assets/projects/brand-identity/bb-web.jpg';
+import social from '../../assets/projects/brand-identity/bb-social.jpg';
+import imagery from '../../assets/projects/brand-identity/bb-imagery.jpg';
 
-TODO: Who was this for, what was the business, and where did you come in?
+<Band label="Brand film">
+  <Video
+    src="/work/brand-identity/film.mp4"
+    poster="/work/brand-identity/film.jpg"
+    title="Build One brand film: stationery, business cards, folder, brand book and standees"
+    caption="The Build One identity across print, in 13 seconds."
+  />
+</Band>
 
-## Problem
+## Overview
 
-TODO: The user and business problem in two or three sentences.
+Build One builds homes for clients in the USA, the UK, the UAE, Saudi Arabia and Pakistan. They needed a brand that felt solid and trustworthy, and simple enough to work in every one of those markets.
 
-## Process
+I designed the full identity: the logo, colour and type system, a 42 page brand book, the complete stationery set, campaign standees and social ads.
 
-TODO: Research, synthesis, ideation and testing. What did you learn, and from whom?
+## The idea
 
-## Key decisions
+<Feature src={mark} alt="The Build One monogram B1 in navy and orange." kind="screen" kicker="Concept" title="The 1 is a building">
 
-TODO: Two to four decisions, each with the trade-off you weighed and why you chose it.
+The name gave me the mark. The final letter of "Build" becomes a bold numeral 1 that rises like a building, in orange, the colour of construction and energy. It reads as a word and a symbol at once, and the 1 works alone on cards, folders and social avatars.
 
-## Final design
+</Feature>
 
-TODO: The shipped solution. Large images go here (components arrive in Phase 3).
+<Figure src={logo} alt="Build One logo versions on navy, white, orange and grey backgrounds, with clear space guides." caption="The logo on every brand colour, with clear space rules." framed />
 
-## Results
+## Colour and type
 
-TODO: What changed, with numbers where possible.
+<FigurePair
+  items={[
+    { src: colours, alt: 'Primary colours: dark blue and orange, with colour values and tints.' },
+    { src: secondary, alt: 'Secondary colours: maroon and grey, with colour values.' },
+  ]}
+  caption="Dark blue for trust and orange for energy, supported by maroon and grey."
+/>
 
-## Reflection
+<Feature src={type} alt="Typography page with Montserrat and Square721 type specimens." kind="screen" kicker="Typography" title="Two typefaces, clear roles">
 
-TODO: What you would do differently, and what you'd take to your next team.
+Montserrat carries headlines and body text: modern, open and easy to read in English. Square721 adds a sturdy, engineered accent for numbers and short labels, echoing the shapes of the logo.
+
+</Feature>
+
+## Stationery
+
+Every printed piece uses the same simple rule: lots of white space, the logo top left, and the navy and orange 1 as a bold signature.
+
+<Figure src={cards} alt="Build One business cards in perspective on an orange surface: a navy back with the orange 1, and a white front with contact details." caption="Business cards: the navy back carries the 1 and the five countries." />
+
+<Figure src={folder} alt="Navy and orange presentation folder with a letterhead and business cards on a light stone surface." caption="Presentation folder, letterhead and cards." />
+
+## The brand book
+
+<Figure src={brandbook} alt="Build One brand book pages fanned out: cover, logo versions, colours and icon set." caption="A 42 page guide so any designer or printer can use the brand correctly." />
+
+<Points
+  items={[
+    { title: 'Logo rules', body: 'Clear space, minimum sizes and a page of things never to do.' },
+    { title: 'Colour and type', body: 'Exact values for print and screen, and when to use each font.' },
+    { title: 'Imagery', body: 'Bright, real photos of builders and homes, with a mood board.' },
+    { title: 'Digital', body: 'Website grid, social templates and email signatures.' },
+  ]}
+/>
+
+<FigurePair
+  items={[
+    { src: misuse, alt: 'Incorrect logo use page showing stretched, recoloured and rearranged logos.' },
+    { src: patterns, alt: 'Brand patterns built from the 1 in orange, navy and grey.' },
+  ]}
+  caption="Logo misuse rules and patterns built from the 1."
+/>
+
+<FigurePair
+  items={[
+    { src: icons, alt: 'Custom icon set in orange, navy and grey.' },
+    { src: imagery, alt: 'Brand imagery page with builders on site and the logo on photos.' },
+  ]}
+  caption="A custom icon set and the photography style."
+/>
+
+<FigurePair
+  items={[
+    { src: web, alt: 'Website grid with desktop and mobile layouts.' },
+    { src: social, alt: 'Social media system with profile picture and post examples.' },
+  ]}
+  caption="The identity carried into web and social."
+/>
+
+## Campaign
+
+For launch I designed six standees with one playful idea: a home treated as something precious. A house in a pearl, a house wrapped in a scarf, a house floating above the clouds.
+
+<Figure src={standees} alt="Six Build One roll up standees in a gallery: a house from a magic lamp, a floating island home, a house on a tablet, a roof filling a gap, a house in a red scarf and a house in a pearl." caption="Six campaign standees, each one simple idea and one line of copy." />
+
+<Quote text="We build homes just like a priceless pearl." accent="priceless pearl." />
+
+## What I learned
+
+<Points
+  items={[
+    { title: 'A strong idea saves work', body: 'Once the 1 was a building, every other decision followed from it.' },
+    { title: 'Write the rules down', body: 'The brand book let other people extend the brand without diluting it.' },
+    { title: 'Two colours are enough', body: 'Navy and orange made every piece instantly recognisable.' },
+    { title: 'Design for many markets', body: 'Simple shapes and clear type work in every country Build One serves.' },
+  ]}
+/>
