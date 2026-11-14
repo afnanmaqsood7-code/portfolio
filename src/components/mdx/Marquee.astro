@@ -1,0 +1,48 @@
+---
+/**
+ * An endless, slowly scrolling strip of one brand's images.
+ * `kind`: "wide" (A+ banners) or "square" (listing images), picked by aspect.
+ * Pauses on hover/focus. Reduced motion: a still, swipeable row.
+ * The duplicate set is aria-hidden so screen readers hear each image once.
+ */
+import { Image } from 'astro:assets';
+interface Props { brand: string; kind?: 'wide' | 'square'; label: string; reverse?: boolean; seconds?: number }
+const { brand, kind = 'square', label, reverse = false, seconds = 50 } = Astro.props;
+const all = import.meta.glob<{ default: ImageMetadata }>('../../assets/projects/amazon/*.jpg', { eager: true });
+const imgs = Object.entries(all)
+  .filter(([p]) => p.split('/').pop()!.startsWith(brand + '_'))
+  .map(([, m]) => m.default)
+  .filter((m) => (kind === 'wide' ? m.width / m.height > 1.45 : m.width / m.height <= 1.45));
+const h = kind === 'wide' ? 220 : 300;
+---
+{imgs.length > 0 && (
+  <div class="mq cs-full" style={`--h:${h}px;--t:${seconds}s`} data-dir={reverse ? 'rev' : 'fwd'} role="region" aria-label={label} tabindex="0">
+    <div class="mq__track">
+      {[0, 1].map((dup) => (
+        <ul class="mq__set" role="list" aria-hidden={dup === 1 ? 'true' : undefined}>
+          {imgs.map((m, i) => (
+            <li><Image src={m} alt={dup ? '' : `${label}, image ${i + 1}`} height={h * 2} loading="eager" decoding="async" /></li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </div>
+)}
+<style>
+  .mq { margin-block: var(--space-m); overflow: hidden; outline-offset: -3px;
+        mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+  .mq__track { display: flex; width: max-content; animation: mq var(--t) linear infinite; }
+  .mq[data-dir='rev'] .mq__track { animation-direction: reverse; }
+  .mq:hover .mq__track, .mq:focus-within .mq__track { animation-play-state: paused; }
+  .mq__set { display: flex; gap: 14px; padding: 0 7px; margin: 0; list-style: none; }
+  .mq__set li { flex: none; }
+  .mq__set :global(img) { display: block; height: var(--h); width: auto; border-radius: 12px; box-shadow: 0 14px 30px -18px rgb(11 11 11 / 0.35); transition: transform .35s ease; }
+  .mq__set li:hover :global(img) { transform: translateY(-6px) scale(1.02); }
+  @keyframes mq { to { transform: translateX(-50%); } }
+  @media (max-width: 40rem) { .mq { --h: calc(var(--h) * 0.6); } .mq__set :global(img) { height: calc(var(--h) * 0.6); } }
+  @media (prefers-reduced-motion: reduce) {
+    .mq { overflow-x: auto; mask-image: none; }
+    .mq__track { animation: none; }
+    .mq__set[aria-hidden] { display: none; }
+  }
+</style>
