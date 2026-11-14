@@ -29,7 +29,6 @@ const eyebrow = [d.tags?.join(' · ') ?? lensLabel(d.lens), d.year].filter(Boole
 const facts = [
   ['Role', d.role],
   ['Timeline', d.timeline],
-  ['Team', d.team],
   ['Tools', d.tools.join(', ')],
 ].filter(([, v]) => v) as [string, string][];
 ---

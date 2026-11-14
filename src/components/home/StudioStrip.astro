@@ -10,6 +10,8 @@ import dervish from '../../assets/studio/whirling-dervish.jpg';
 import portraitGlasses from '../../assets/studio/portrait-glasses.png';
 import portraitCity from '../../assets/studio/portrait-city.webp';
 import portraitSmoke from '../../assets/studio/portrait-smoke.jpg';
+import portraitRed from '../../assets/studio/portrait-red.jpg';
+import iftar from '../../assets/studio/iftar-table.jpg';
 
 // `video` (optional): a short silent loop in /public/studio that plays over
 // the still image. The still is the poster, so no-JS / reduced motion just
@@ -38,6 +40,17 @@ const tiles: Tile[] = [
     src: portraitSmoke,
     alt: 'Vector illustration of a bearded man in sunglasses and a grey shirt holding a cigarette, smoke curling up against a black background.',
     video: '/studio/smoke-portrait.mp4',
+  },
+  {
+    caption: 'Red portrait, animated illustration',
+    src: portraitRed,
+    video: '/studio/red-portrait.mp4',
+    alt: 'Vector illustration of a woman with dark hair in a bun and a red top, against a warm sunburst background.',
+  },
+  {
+    caption: 'Iftar table, illustration',
+    src: iftar,
+    alt: 'Illustration of a family sharing an iftar meal at a table under hanging lanterns.',
   },
 ];
 const posters = await Promise.all(
@@ -112,7 +125,7 @@ const posters = await Promise.all(
   }
   .studio__title { font: 400 clamp(1.9rem, 1.4rem + 1.8vw, 2.9rem) / 1.05 var(--font-text); letter-spacing: -0.04em; }
   .studio__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--grid-gap); }
-  @media (min-width: 64rem) { .studio__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .studio__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   .studio__img {
     display: block;
     width: 100%;
