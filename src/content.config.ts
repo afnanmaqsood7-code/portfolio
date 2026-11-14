@@ -8,6 +8,7 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 export const LENSES = ['product', 'brand', 'both'] as const;
+export const CATEGORIES = ['product', 'web', 'branding', 'marketing', 'motion', 'games'] as const;
 
 const projects = defineCollection({
   // Every .mdx file in src/content/projects. The `slug` frontmatter field
@@ -27,6 +28,12 @@ const projects = defineCollection({
       // Short metric statements. The summary card shows the first 3.
       outcomes: z.array(z.string()).min(1),
       lens: z.enum(LENSES),
+      // Home page category filter. `sub` narrows Branding (identity,
+      // packaging, print, logos). `preview` = short silent mp4 played on
+      // card hover, e.g. '/work/packaging/reel.mp4'.
+      category: z.enum(CATEGORIES),
+      sub: z.enum(['identity', 'packaging', 'print', 'logos']).optional(),
+      preview: z.string().regex(/^\/.+\.mp4$/).optional(),
       // Optional small tag chips on project cards (e.g. 'Mobile design', 'Hackathon winner').
       tags: z.array(z.string()).max(3).optional(),
 

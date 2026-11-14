@@ -1,17 +1,23 @@
 ---
 /**
- * Featured work grid + role lens.
+ * Featured work grid + category filter (see utils/categories.ts).
  * Server output = the Everything lens (all featured projects, by `order`).
  * The script then applies ?lens= from the URL. Same rules on both sides
  * (src/utils/lens.ts), so layouts match.
  */
 import ProjectCard from './ProjectCard.astro';
-import RoleLens from './RoleLens.astro';
+import CategoryFilter from './CategoryFilter.astro';
 import { getFeaturedProjects } from '../../utils/projects';
 import { cardSizes } from '../../utils/lens';
 
 const projects = await getFeaturedProjects();
 const sizes = cardSizes(projects.length);
+const counts: Record<string, number> = { all: projects.length };
+const subCounts: Record<string, number> = {};
+for (const p of projects) {
+  counts[p.data.category] = (counts[p.data.category] ?? 0) + 1;
+  if (p.data.sub) subCounts[p.data.sub] = (subCounts[p.data.sub] ?? 0) + 1;
+}
 ---
 
 <section id="work" class="section work" aria-labelledby="work-title">
@@ -21,7 +27,7 @@ const sizes = cardSizes(projects.length);
         <p class="dot-label">Portfolio</p>
         <h2 id="work-title" class="work__h">I design products and brands that are clear, useful and considered.</h2>
       </div>
-      <RoleLens />
+      <CategoryFilter counts={counts} subCounts={subCounts} />
     </div>
 
     <!-- Announces lens changes to screen readers. -->
@@ -36,80 +42,74 @@ const sizes = cardSizes(projects.length);
 </section>
 
 <script>
-  import { parseLens, matchesLens, cardSizes, LENS_OPTIONS, type Lens, type ProjectLens } from '../../utils/lens';
+  import { parseCategory, parseSub, CATEGORY_OPTIONS, type Category, type Sub } from '../../utils/categories';
 
-  // Runs once per page load. (Phase 5 adds view transitions; this will then
-  // also be called on `astro:page-load`, so it must stay idempotent.)
-  function initLens() {
+  function initFilter() {
     const grid = document.querySelector<HTMLUListElement>('[data-project-grid]');
-    const toggle = document.querySelector<HTMLElement>('[data-role-lens]');
+    const ui = document.querySelector<HTMLElement>('[data-cat-filter]');
     const status = document.querySelector<HTMLElement>('[data-lens-status]');
-    if (!grid || !toggle) return;
-
+    if (!grid || !ui) return;
     const cards = Array.from(grid.querySelectorAll<HTMLLIElement>('.project-card'));
-    const buttons = Array.from(toggle.querySelectorAll<HTMLButtonElement>('[data-lens-option]'));
+    const catBtns = Array.from(ui.querySelectorAll<HTMLButtonElement>('[data-cat]'));
+    const subRow = ui.querySelector<HTMLElement>('[data-sub-row]');
+    const subBtns = Array.from(ui.querySelectorAll<HTMLButtonElement>('[data-sub]'));
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Sliding pill behind the pressed option (purely visual).
-    const options = toggle.querySelector<HTMLElement>('[data-lens-options]');
-    const indicator = options?.querySelector<HTMLElement>('.role-lens__indicator');
-    function moveIndicator() {
-      const pressed = buttons.find((b) => b.getAttribute('aria-pressed') === 'true');
-      if (!options || !indicator || !pressed) return;
-      indicator.style.width = `${pressed.offsetWidth}px`;
-      indicator.style.translate = `${pressed.offsetLeft}px 0`;
-      options.classList.add('has-indicator');
-    }
-
-    function apply(lens: Lens, { announce }: { announce: boolean }) {
-      // 1. Filter + sort. We move DOM nodes (not CSS `order`) so keyboard
-      //    and screen-reader order always match what you see.
-      const visible = cards
-        .filter((c) => matchesLens(c.dataset.lens as ProjectLens, lens))
-        .sort((a, b) => Number(a.dataset[`order${cap(lens)}`]) - Number(b.dataset[`order${cap(lens)}`]));
-      const sizes = cardSizes(visible.length);
-
-      cards.forEach((c) => (c.hidden = !visible.includes(c)));
-      visible.forEach((c, i) => {
-        c.dataset.size = sizes[i];
-        grid!.appendChild(c); // appendChild moves an existing node to the end
-      });
-
-      // 2. Button state + sliding indicator.
-      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lensOption === lens)));
-      moveIndicator();
-
-      // 3. URL: ?lens=product|brand, no param for Everything. replaceState so
-      //    toggling doesn't fill the back button with history entries.
-      const url = new URL(window.location.href);
-      if (lens === 'everything') url.searchParams.delete('lens');
-      else url.searchParams.set('lens', lens);
+    function apply(cat: Category, sub: Sub | null, announce: boolean) {
+      // FLIP: remember where visible cards are, change, then animate from there.
+      const before = new Map(cards.filter((c) => !c.hidden).map((c) => [c, c.getBoundingClientRect()]));
+      const show = cards.filter((c) => (cat === 'all' || c.dataset.cat === cat) && (!sub || c.dataset.sub === sub));
+      cards.forEach((c) => (c.hidden = !show.includes(c)));
+      show.sort((a, b) => Number(a.dataset.orderEverything) - Number(b.dataset.orderEverything)).forEach((c) => grid!.appendChild(c));
+      if (!reduce) {
+        show.forEach((c, i) => {
+          const was = before.get(c), now = c.getBoundingClientRect();
+          if (was) {
+            c.animate([{ transform: `translate(${was.left - now.left}px, ${was.top - now.top}px)` }, { transform: 'none' }],
+              { duration: 600, easing: 'cubic-bezier(.2,.8,.2,1)' });
+          } else {
+            c.animate([{ opacity: 0, transform: 'translateY(40px) scale(.97)' }, { opacity: 1, transform: 'none' }],
+              { duration: 600, delay: i * 70, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
+          }
+        });
+      }
+      catBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.cat === cat)));
+      if (subRow) subRow.hidden = cat !== 'branding';
+      subBtns.forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.sub || null) === sub)));
+      const url = new URL(location.href);
+      url.searchParams.delete('lens');
+      cat === 'all' ? url.searchParams.delete('cat') : url.searchParams.set('cat', cat);
+      sub ? url.searchParams.set('type', sub) : url.searchParams.delete('type');
       history.replaceState(history.state, '', url);
-
-      // Let other parts of the page follow the lens.
-      document.dispatchEvent(new CustomEvent('lens:change', { detail: { lens } }));
-
       if (announce && status) {
-        const label = LENS_OPTIONS.find((o) => o.id === lens)?.description ?? '';
-        status.textContent = `Showing ${visible.length} projects: ${label}.`;
+        const label = CATEGORY_OPTIONS.find((o) => o.id === cat)?.label ?? '';
+        status.textContent = `Showing ${show.length} projects: ${label}${sub ? ', ' + sub : ''}.`;
       }
     }
 
-    buttons.forEach((b) =>
-      b.addEventListener('click', () => apply(parseLens(b.dataset.lensOption), { announce: true })),
-    );
+    let cat: Category = 'all', sub: Sub | null = null;
+    catBtns.forEach((b) => b.addEventListener('click', () => { cat = parseCategory(b.dataset.cat); sub = null; apply(cat, sub, true); }));
+    subBtns.forEach((b) => b.addEventListener('click', () => { sub = parseSub(b.dataset.sub); apply(cat, sub, true); }));
 
-    toggle.hidden = false;
-    apply(parseLens(new URLSearchParams(window.location.search).get('lens')), { announce: false });
-    // Enable the slide only after the first placement (no slide-in on load),
-    // and re-place it when fonts load or the layout changes size.
-    requestAnimationFrame(() => options?.classList.add('is-animated'));
-    if (options) new ResizeObserver(moveIndicator).observe(options);
+    // Old ?lens= links keep working.
+    const q = new URLSearchParams(location.search);
+    const legacy = q.get('lens'); 
+    cat = parseCategory(q.get('cat') ?? (legacy === 'brand' ? 'branding' : legacy));
+    sub = cat === 'branding' ? parseSub(q.get('type')) : null;
+    ui.hidden = false;
+    apply(cat, sub, false);
+
+    // Hover previews: play a short silent clip inside the card (mouse only, motion allowed).
+    if (!reduce && matchMedia('(hover: hover)').matches) {
+      grid.querySelectorAll<HTMLElement>('[data-preview]').forEach((card) => {
+        const v = card.querySelector('video');
+        if (!v) return;
+        card.addEventListener('mouseenter', () => { if (!v.src) v.src = v.dataset.src!; card.classList.add('is-playing'); void v.play().catch(() => {}); });
+        card.addEventListener('mouseleave', () => { card.classList.remove('is-playing'); v.pause(); });
+      });
+    }
   }
-
-  // dataset keys are camelCase: data-order-product → dataset.orderProduct
-  const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
-  initLens();
+  initFilter();
 </script>
 
 <style>
@@ -135,4 +135,6 @@ const sizes = cardSizes(projects.length);
     .work__grid > :global(.project-card) { grid-column: span 6; }
   }
   .work__grid > :global([hidden]) { display: none; }
+  .work__head :global(.cf) { justify-self: start; }
+  @media (min-width: 56rem) { .work__head { grid-template-columns: 1fr; } }
 </style>
