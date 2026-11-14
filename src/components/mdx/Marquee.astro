@@ -6,11 +6,11 @@
  * The duplicate set is aria-hidden so screen readers hear each image once.
  */
 import { Image } from 'astro:assets';
-interface Props { brand: string; kind?: 'wide' | 'square'; label: string; reverse?: boolean; seconds?: number }
-const { brand, kind = 'square', label, reverse = false, seconds = 50 } = Astro.props;
-const all = import.meta.glob<{ default: ImageMetadata }>('../../assets/projects/amazon/*.jpg', { eager: true });
+interface Props { folder?: string; brand: string; kind?: 'wide' | 'square'; label: string; reverse?: boolean; seconds?: number }
+const { folder = 'amazon', brand, kind = 'square', label, reverse = false, seconds = 50 } = Astro.props;
+const all = import.meta.glob<{ default: ImageMetadata }>('../../assets/projects/*/*.jpg', { eager: true });
 const imgs = Object.entries(all)
-  .filter(([p]) => p.split('/').pop()!.startsWith(brand + '_'))
+  .filter(([p]) => p.split('/').at(-2) === folder && p.split('/').pop()!.startsWith(brand + '_'))
   .map(([, m]) => m.default)
   .filter((m) => (kind === 'wide' ? m.width / m.height > 1.45 : m.width / m.height <= 1.45));
 const h = kind === 'wide' ? 220 : 300;

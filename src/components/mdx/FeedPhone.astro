@@ -1,0 +1,63 @@
+---
+/**
+ * A phone showing a generic social feed for one brand that scrolls by
+ * itself (CSS only), beside text. Not branded as any real app.
+ * Pauses on hover. Reduced motion: still, scrollable feed.
+ */
+import { Image } from 'astro:assets';
+interface Props { folder?: string; brand: string; handle: string; kicker?: string; title: string; max?: number }
+const { folder = 'social', brand, handle, kicker, title, max = 6 } = Astro.props;
+const all = import.meta.glob<{ default: ImageMetadata }>('../../assets/projects/*/*.jpg', { eager: true });
+const imgs = Object.entries(all)
+  .filter(([p]) => p.split('/').at(-2) === folder && p.split('/').pop()!.startsWith(brand + '_'))
+  .map(([, m]) => m.default).slice(0, max);
+const initial = handle.replace(/[^A-Za-z]/g, '').charAt(0).toUpperCase();
+---
+<div class="fp cs-wide" data-reveal>
+  <div class="fp__stage">
+    <div class="fp__phone" style={`--t:${imgs.length * 4}s`}>
+      <div class="fp__notch" aria-hidden="true"></div>
+      <div class="fp__screen">
+        <div class="fp__top" aria-hidden="true"><span class="fp__av">{initial}</span><b>{handle}</b><span class="fp__dots">•••</span></div>
+        <div class="fp__viewport" tabindex="0" aria-label={`${handle} feed`}>
+          <ul class="fp__feed" role="list">
+            {[0, 1].map((dup) => imgs.map((m, i) => (
+              <li aria-hidden={dup ? 'true' : undefined}>
+                <Image src={m} alt={dup ? '' : `${handle} post ${i + 1}`} width={600} loading="eager" decoding="async" />
+                <div class="fp__actions" aria-hidden="true"><span>♡</span><span>💬</span><span>↗</span></div>
+                <span class="fp__line"></span><span class="fp__line" style="width:60%"></span>
+              </li>
+            )))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="fp__text">
+    {kicker && <p class="dot-label">{kicker}</p>}
+    <h3>{title}</h3>
+    <slot />
+  </div>
+</div>
+<style>
+  .fp { display: grid; gap: var(--space-m); align-items: center; margin-block: var(--space-xl); }
+  @media (min-width: 64rem) { .fp { grid-template-columns: minmax(0, calc(100% - 44rem - var(--space-xl))) minmax(0, 44rem); gap: var(--space-xl); } }
+  .fp__stage { display: grid; place-items: center; padding: var(--space-l) var(--space-m); background: #f3f2ef; border-radius: var(--radius-m); }
+  .fp__phone { position: relative; width: min(19rem, 80%); aspect-ratio: 9 / 17.5; padding: 10px; background: #0b0b0b; border-radius: 2.6rem; box-shadow: 0 40px 70px -35px rgb(11 11 11 / .55); }
+  .fp__notch { position: absolute; top: 18px; left: 50%; width: 30%; height: 18px; translate: -50% 0; background: #0b0b0b; border-radius: 99px; z-index: 3; }
+  .fp__screen { height: 100%; overflow: hidden; border-radius: 2rem; background: #fff; display: flex; flex-direction: column; }
+  .fp__top { display: flex; align-items: center; gap: .5rem; padding: 2.6rem .8rem .6rem; border-bottom: 1px solid #eee; font-size: .78rem; position: relative; z-index: 2; background: #fff; }
+  .fp__av { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(135deg, var(--clay-bright), #0b0b0b); color: #fff; font-size: .7rem; font-weight: 700; }
+  .fp__dots { margin-left: auto; color: #999; }
+  .fp__viewport { flex: 1; overflow: hidden; }
+  .fp__feed { margin: 0; padding: 0; list-style: none; animation: fp-scroll var(--t) linear infinite; }
+  .fp__viewport:hover .fp__feed, .fp__viewport:focus .fp__feed { animation-play-state: paused; }
+  .fp__feed li { padding-bottom: .7rem; display: grid; gap: .3rem; }
+  .fp__feed :global(img) { width: 100%; height: auto; display: block; }
+  .fp__actions { display: flex; gap: .7rem; padding: .2rem .7rem 0; font-size: .85rem; }
+  .fp__line { display: block; height: 5px; width: 80%; margin-left: .7rem; border-radius: 3px; background: #ececec; }
+  @keyframes fp-scroll { to { transform: translateY(-50%); } }
+  .fp__text { max-width: 36rem; }
+  .fp__text :global(h3) { margin-top: .5rem !important; font: 700 clamp(1.5rem, 1rem + 1.4vw, 2.2rem) / 1.1 var(--font-text) !important; letter-spacing: -0.03em; }
+  @media (prefers-reduced-motion: reduce) { .fp__feed { animation: none; } .fp__viewport { overflow-y: auto; } .fp__feed li[aria-hidden] { display: none; } }
+</style>
