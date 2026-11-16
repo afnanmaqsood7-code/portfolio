@@ -1,20 +1,18 @@
 ---
 /**
- * Home — merged direction (dversostudio.io × itsamy.ca), see CLAUDE.md.
- * Loader → hero (name, intro, reel) → selected work (6 large cards) →
- * more work (category filter, smaller cards) → from the studio → contact. Disciplines + all-projects table removed at
- * Afnan's request.
+ * Home: loader → hero (name, intro, reel) → six selected projects →
+ * one line about Afnan → contact (footer). Everything else is on /work and /about.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Preloader from '../components/home/Preloader.astro';
 import Hero from '../components/home/Hero.astro';
 import ProjectGrid from '../components/home/ProjectGrid.astro';
-import StudioStrip from '../components/home/StudioStrip.astro';
+import AboutTeaser from '../components/home/AboutTeaser.astro';
 ---
 
 <BaseLayout>
   <Preloader />
   <Hero />
   <ProjectGrid />
-  <StudioStrip />
+  <AboutTeaser />
 </BaseLayout>

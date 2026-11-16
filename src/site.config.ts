@@ -26,8 +26,7 @@ export const site = {
 /** Primary navigation, in order of what recruiters need first.
  *  The name in the header links home; Resume is a separate download. */
 export const nav = [
-  { label: 'Work', href: '/#work' },
-  { label: 'About', href: '/about' },
-  { label: 'Studio', href: '/#studio' }, // home section, no separate page
+  { label: 'Work', href: '/work/' },
+  { label: 'About', href: '/about/' },
   { label: 'Contact', href: '#contact' },
 ] as const;

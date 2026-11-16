@@ -1,8 +1,46 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageIntro from '../components/ui/PageIntro.astro';
+import StudioStrip from '../components/home/StudioStrip.astro';
+import Button from '../components/ui/Button.astro';
+import { site } from '../site.config';
 ---
 
-<BaseLayout title="About" description="About Afnan Maqsood: designer, painter and illustrator in Ontario, Canada.">
-  <PageIntro eyebrow="About" title="Designer with a painter’s hand" lede="Built in Phase 4: bio, skills, tools, education and resume download." />
+<BaseLayout title="About" description="About Afnan Maqsood: product, brand and web designer in Canada, painter and illustrator.">
+  <PageIntro eyebrow="About" title="Designer with a painter’s hand" lede="I design products, brands and websites that are clear, useful and considered. Based in Canada, open to work." />
+
+  <section class="about container">
+    <div class="about__grid">
+      <div class="about__text">
+        <p>I have spent 5+ years designing for clients across product, brand, web and marketing: a paperless platform for auto repair shops, a telehealth app, an emergency response app, brand identities, packaging, e-commerce listings and social campaigns.</p>
+        <p>I like problems where the design has to work for people under pressure or new to technology, and I care about the details that make an interface feel calm. Most of my work starts with flows on paper and ends with a system other people can build on.</p>
+        <p>I studied at Toronto Metropolitan University (MDM, Master of Digital Media) and hold a BFA in Graphic Design. Off screen, I paint and illustrate, and that hand shows up in my work.</p>
+        <div class="about__ctas">
+          <Button href={site.resume} download>Resume ↓</Button>
+          <Button href={site.linkedin} variant="ghost" external>LinkedIn ↗</Button>
+        </div>
+      </div>
+      <dl class="about__facts">
+        <div><dt>Roles</dt><dd>Product and UX, brand, web, marketing</dd></div>
+        <div><dt>Tools</dt><dd>Figma, Adobe XD, Illustrator, Photoshop, After Effects, Unreal Engine, Canva</dd></div>
+        <div><dt>Education</dt><dd>MDM, Toronto Metropolitan University<br />BFA Graphic Design</dd></div>
+        <div><dt>Location</dt><dd>{site.location}</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <StudioStrip />
 </BaseLayout>
+
+<style>
+  .about { padding-bottom: var(--space-2xl); }
+  .about__grid { display: grid; gap: var(--space-xl); }
+  @media (min-width: 56rem) { .about__grid { grid-template-columns: minmax(0, 44rem) minmax(16rem, 22rem); justify-content: space-between; align-items: start; } }
+  .about__text { display: grid; gap: 1em; font-size: var(--step-0); line-height: 1.7; }
+  .about__text p { max-width: 44rem; }
+  .about__ctas { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: var(--space-s); }
+  .about__facts { display: grid; gap: var(--space-s); margin: 0; }
+  .about__facts div { padding-top: var(--space-xs); border-top: 1px solid var(--color-border); }
+  .about__facts dt { font-size: .85rem; color: var(--color-text-muted); margin-bottom: .25rem; }
+  .about__facts dd { margin: 0; line-height: 1.5; }
+</style>

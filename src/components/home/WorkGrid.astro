@@ -1,0 +1,108 @@
+---
+/**
+ * /work: every featured project with the category filter. The filter script
+ * (FLIP reflow, URL sync, hover previews) lives here only.
+ */
+import ProjectCard from './ProjectCard.astro';
+import CategoryFilter from './CategoryFilter.astro';
+import { getFeaturedProjects } from '../../utils/projects';
+import { cardSizes } from '../../utils/lens';
+
+const projects = await getFeaturedProjects();
+const sizes = cardSizes(projects.length);
+const counts: Record<string, number> = { all: projects.length };
+const subCounts: Record<string, number> = {};
+for (const p of projects) {
+  counts[p.data.category] = (counts[p.data.category] ?? 0) + 1;
+  if (p.data.sub) subCounts[p.data.sub] = (subCounts[p.data.sub] ?? 0) + 1;
+}
+---
+
+<section class="section work" aria-label="All projects">
+  <div class="container stack">
+    <CategoryFilter counts={counts} subCounts={subCounts} />
+    <p class="visually-hidden" aria-live="polite" data-lens-status></p>
+    <ul role="list" class="grid work__grid" data-project-grid>
+      {projects.map((project, i) => <ProjectCard project={project} size={sizes[i]} eager={i < 2} />)}
+    </ul>
+  </div>
+</section>
+
+<script>
+  import { parseCategory, parseSub, CATEGORY_OPTIONS, type Category, type Sub } from '../../utils/categories';
+
+  function initFilter() {
+    const grid = document.querySelector<HTMLUListElement>('[data-project-grid]');
+    const ui = document.querySelector<HTMLElement>('[data-cat-filter]');
+    const status = document.querySelector<HTMLElement>('[data-lens-status]');
+    if (!grid || !ui) return;
+    const cards = Array.from(grid.querySelectorAll<HTMLLIElement>('.project-card'));
+    const catBtns = Array.from(ui.querySelectorAll<HTMLButtonElement>('[data-cat]'));
+    const subRow = ui.querySelector<HTMLElement>('[data-sub-row]');
+    const subBtns = Array.from(ui.querySelectorAll<HTMLButtonElement>('[data-sub]'));
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function apply(cat: Category, sub: Sub | null, announce: boolean) {
+      // FLIP: remember where visible cards are, change, then animate from there.
+      const before = new Map(cards.filter((c) => !c.hidden).map((c) => [c, c.getBoundingClientRect()]));
+      const show = cards.filter((c) => (cat === 'all' || c.dataset.cat === cat) && (!sub || c.dataset.sub === sub));
+      cards.forEach((c) => (c.hidden = !show.includes(c)));
+      show.sort((a, b) => Number(a.dataset.orderEverything) - Number(b.dataset.orderEverything)).forEach((c) => grid!.appendChild(c));
+      if (!reduce) {
+        show.forEach((c, i) => {
+          const was = before.get(c), now = c.getBoundingClientRect();
+          if (was) {
+            c.animate([{ transform: `translate(${was.left - now.left}px, ${was.top - now.top}px)` }, { transform: 'none' }],
+              { duration: 600, easing: 'cubic-bezier(.2,.8,.2,1)' });
+          } else {
+            c.animate([{ opacity: 0, transform: 'translateY(40px) scale(.97)' }, { opacity: 1, transform: 'none' }],
+              { duration: 600, delay: i * 70, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
+          }
+        });
+      }
+      catBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.cat === cat)));
+      if (subRow) subRow.hidden = cat !== 'branding';
+      subBtns.forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.sub || null) === sub)));
+      const url = new URL(location.href);
+      url.searchParams.delete('lens');
+      cat === 'all' ? url.searchParams.delete('cat') : url.searchParams.set('cat', cat);
+      sub ? url.searchParams.set('type', sub) : url.searchParams.delete('type');
+      history.replaceState(history.state, '', url);
+      if (announce && status) {
+        const label = CATEGORY_OPTIONS.find((o) => o.id === cat)?.label ?? '';
+        status.textContent = `Showing ${show.length} projects: ${label}${sub ? ', ' + sub : ''}.`;
+      }
+    }
+
+    let cat: Category = 'all', sub: Sub | null = null;
+    catBtns.forEach((b) => b.addEventListener('click', () => { cat = parseCategory(b.dataset.cat); sub = null; apply(cat, sub, true); }));
+    subBtns.forEach((b) => b.addEventListener('click', () => { sub = parseSub(b.dataset.sub); apply(cat, sub, true); }));
+
+    // Old ?lens= links keep working.
+    const q = new URLSearchParams(location.search);
+    const legacy = q.get('lens'); 
+    cat = parseCategory(q.get('cat') ?? (legacy === 'brand' ? 'branding' : legacy));
+    sub = cat === 'branding' ? parseSub(q.get('type')) : null;
+    ui.hidden = false;
+    apply(cat, sub, false);
+
+    // Hover previews: play a short silent clip inside the card (mouse only, motion allowed).
+    if (!reduce && matchMedia('(hover: hover)').matches) {
+      grid.querySelectorAll<HTMLElement>('[data-preview]').forEach((card) => {
+        const v = card.querySelector('video');
+        if (!v) return;
+        card.addEventListener('mouseenter', () => { if (!v.src) v.src = v.dataset.src!; card.classList.add('is-playing'); void v.play().catch(() => {}); });
+        card.addEventListener('mouseleave', () => { card.classList.remove('is-playing'); v.pause(); });
+      });
+    }
+  }
+  initFilter();
+</script>
+
+<style>
+  .work__grid { row-gap: var(--space-xl); }
+  @media (min-width: 48rem) { .work__grid > :global(.project-card) { grid-column: span 4; } }
+  @media (min-width: 64rem) { .work__grid > :global(.project-card) { grid-column: span 4; } }
+  .work__grid > :global([hidden]) { display: none; }
+  .work :global(.cf) { justify-self: start; }
+</style>

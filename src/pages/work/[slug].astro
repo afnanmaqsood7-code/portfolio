@@ -60,6 +60,10 @@ const facts = [
       </section>
     </header>
 
+    <nav class="cs-toc" aria-label="On this page" data-toc hidden>
+      <span class="cs-toc__k">On this page</span>
+      <ul role="list" data-toc-list></ul>
+    </nav>
     <div class="cs-body">
       <Content />
     </div>
@@ -204,6 +208,15 @@ const facts = [
   .cs-body :global(td) { padding: 0.8rem 1rem 0.8rem 0; border-bottom: 1px solid var(--color-border); vertical-align: top; line-height: 1.5; color: var(--color-text-muted); }
   .cs-body :global(td:first-child) { color: var(--color-text); font-weight: 500; white-space: nowrap; }
 
+  /* ---- On this page (long case studies only, built by the script) ---- */
+  .cs-toc { position: sticky; top: var(--header-h); z-index: 5; display: flex; align-items: center; gap: 1rem; margin-inline: calc(-1 * var(--container-pad)); padding: .4rem var(--container-pad); border-block: 1px solid var(--color-border); background: rgb(255 255 255 / .92); backdrop-filter: blur(8px); overflow-x: auto; white-space: nowrap; }
+  .cs-toc[hidden] { display: none; }
+  .cs-toc__k { flex: none; font-size: .78rem; color: var(--color-text-muted); }
+  .cs-toc :global(ul) { display: flex; gap: .2rem; margin: 0; padding: 0; list-style: none; }
+  .cs-toc :global(a) { display: inline-flex; align-items: center; min-height: 40px; padding: 0 .7rem; border-radius: 999px; font-size: .85rem; font-weight: 500; color: var(--color-text-muted); text-decoration: none; }
+  .cs-toc :global(a:hover) { color: var(--color-text); }
+  .cs-toc :global(a[aria-current]) { background: var(--color-text); color: var(--color-bg); }
+
   /* ---- Next project ---- */
   .cs-next { border-top: 1px solid var(--color-border); }
   .cs-next a {
@@ -218,3 +231,26 @@ const facts = [
   .cs-next__title { font: 600 clamp(2rem, 1rem + 4vw, 4.5rem) / 1 var(--font-text); letter-spacing: -0.045em; }
   .cs-next a:hover .cs-next__title { color: var(--color-accent); }
 </style>
+
+<script>
+  // "On this page": only for long case studies (6+ sections). Links use the
+  // ids Astro gives every MDX heading; the current one is highlighted.
+  const toc = document.querySelector<HTMLElement>('[data-toc]');
+  const list = document.querySelector<HTMLElement>('[data-toc-list]');
+  const h2s = Array.from(document.querySelectorAll<HTMLHeadingElement>('.cs-body > h2')).filter((h) => h.id);
+  if (toc && list && h2s.length >= 6) {
+    const links = h2s.map((h) => {
+      const li = document.createElement('li'); const a = document.createElement('a');
+      a.href = `#${h.id}`; a.textContent = h.textContent?.replace(/^\d+\s*/, '') ?? ''; li.append(a); list.append(li); return a;
+    });
+    toc.hidden = false;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) {
+        const i = h2s.indexOf(e.target as HTMLHeadingElement);
+        links.forEach((a, k) => k === i ? a.setAttribute('aria-current', 'location') : a.removeAttribute('aria-current'));
+        links[i].scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+      } });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    h2s.forEach((h) => io.observe(h));
+  }
+</script>
