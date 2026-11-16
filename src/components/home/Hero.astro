@@ -25,12 +25,20 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     <canvas class="hero__grid" data-hero-grid aria-hidden="true"></canvas>
     <span class="hero__line" aria-hidden="true"></span>
     <div class="hero__top">
-      <p class="dot-label hero__status">{status} · {location}</p>
       <h1 id="hero-title" class="hero__title">
         <span class="hero__name">{site.name}</span>
         <span class="hero__role" aria-hidden="true">_<span data-typed data-words={JSON.stringify(roles)}>{roles[0]}</span><span class="hero__caret"></span> designer</span>
         <span class="visually-hidden">, {roleList.toLowerCase()}</span>
       </h1>
+      <div class="hero__aside">
+        <p class="hero__intro">{intro}</p>
+        <div class="hero__actions">
+          <a class="hero__now" href={`/work/${chapters[0][1]}/`} data-reel-now data-chapters={JSON.stringify(chapters)}>
+            <span class="hero__now-k">Now playing</span> <span data-reel-title>{chapters[0][2]}</span> <span aria-hidden="true">↗</span>
+          </a>
+          <a class="hero__scroll" href="#work">See the work ↓</a>
+        </div>
+      </div>
     </div>
 
     <div class="hero__media" data-hero-media>
@@ -38,15 +46,6 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
       <button type="button" class="hero__pause" data-reel-toggle hidden aria-pressed="false"><span class="visually-hidden" data-reel-label>Pause showreel</span><span aria-hidden="true" data-reel-icon>❚❚</span></button>
     </div>
 
-    <div class="hero__bottom">
-      <p class="hero__intro">{intro}</p>
-      <div class="hero__actions">
-          <a class="hero__now" href={`/work/${chapters[0][1]}/`} data-reel-now data-chapters={JSON.stringify(chapters)}>
-            <span class="hero__now-k">Now playing</span> <span data-reel-title>{chapters[0][2]}</span> <span aria-hidden="true">↗</span>
-          </a>
-          <a class="dot-label hero__scroll" href="#work">Scroll to work</a>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -138,12 +137,11 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     const video = media.querySelector('video')!;
     const stage = root.querySelector<HTMLElement>('.hero__stage')!;
     const top = root.querySelector<HTMLElement>('.hero__top')!;
-    const bottom = root.querySelector<HTMLElement>('.hero__bottom')!;
     // Fit the small card into the real gap between the name and the intro,
     // measured on this screen, so text and video never overlap.
     const box = () => {
       const S = stage.getBoundingClientRect(), T = top.getBoundingClientRect();
-      const B = { top: Math.min(...Array.from(bottom.children).map((c) => c.getBoundingClientRect().top)) };
+      const B = { top: S.bottom - 40 };
       const gap = 24, y0 = T.bottom - S.top + gap, y1 = B.top - S.top - gap;
       let h = Math.max(0, y1 - y0), w = h * 16 / 9;
       const maxW = S.width * 0.46;
@@ -170,13 +168,14 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
   .hero__stage {
     position: relative;
     display: grid;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto 1fr;
     gap: var(--space-l);
     min-height: calc(100svh - var(--header-h));
     padding: var(--space-m) var(--container-pad) var(--space-m);
   }
-  .hero__top, .hero__bottom { width: 100%; max-width: calc(var(--container-max) - 2 * var(--container-pad)); margin-inline: auto; }
-  .hero__top { display: grid; gap: .9rem; justify-items: start; position: relative; z-index: 2; }
+  .hero__top { width: 100%; max-width: calc(var(--container-max) - 2 * var(--container-pad)); margin-inline: auto; display: grid; gap: 1.4rem 3rem; align-items: start; position: relative; z-index: 2; }
+  @media (min-width: 64rem) { .hero__top { grid-template-columns: minmax(0, 1fr) minmax(16rem, 24rem); } .hero__aside { padding-top: .9rem; } }
+  .hero__aside { display: grid; gap: 1.1rem; justify-items: start; }
   .hero__title { display: grid; font: inherit; }
   .hero__name {
     font: 700 clamp(3rem, 1.2rem + 7.4vw, 8.5rem) / 0.92 var(--font-text);
@@ -206,9 +205,7 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
   .hero__line { display: none; }
   @media (min-width: 56rem) { .hero__line { display: block; position: absolute; top: 0; bottom: 6%; left: 50%; width: 1px; background: var(--color-border); z-index: 0; } }
 
-  .hero__bottom { display: grid; gap: 1.2rem; align-items: end; position: relative; z-index: 2; }
-  @media (min-width: 56rem) { .hero__bottom { grid-template-columns: minmax(0, 36rem) auto; justify-content: space-between; } }
-  .hero__intro { margin: 0; max-width: 36rem; font-size: clamp(1.05rem, .95rem + .35vw, 1.3rem); line-height: 1.45; letter-spacing: -0.01em; color: var(--color-text); }
+  .hero__intro { margin: 0; font-size: 1.02rem; line-height: 1.55; color: var(--color-text-muted); }
   .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1.4rem; }
   .hero__now { display: inline-flex; align-items: center; gap: .45rem; width: fit-content; min-height: 44px; padding: 0 1rem; border-radius: 999px; background: #0b0b0b; color: #fff; text-decoration: none; font-size: .95rem; font-weight: 500; transition: background .3s; }
   .hero__now:hover { background: var(--clay-bright); }
@@ -216,7 +213,8 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
   .hero__now:global(.is-in) [data-reel-title] { animation: now-in .45s ease both; }
   @keyframes now-in { from { opacity: 0; transform: translateY(6px); } }
   @media (prefers-reduced-motion: reduce) { .hero__now:global(.is-in) [data-reel-title] { animation: none; } }
-  .hero__scroll { font-size: 0.8rem; color: var(--color-text-muted); text-decoration: none; }
+  .hero__scroll { min-height: 44px; display: inline-flex; align-items: center; font-size: .9rem; font-weight: 500; color: var(--color-text); text-decoration: none; }
+  .hero__scroll:hover { color: var(--color-accent); }
 
   /* Live (motion, ≥48rem): sticky stage; the card is clipped and grows. */
   .hero:global(.hero--live) { height: 230vh; }

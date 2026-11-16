@@ -10,7 +10,11 @@ import CategoryFilter from './CategoryFilter.astro';
 import { getFeaturedProjects } from '../../utils/projects';
 import { cardSizes } from '../../utils/lens';
 
-const projects = await getFeaturedProjects();
+const all = await getFeaturedProjects();
+// The six strongest projects lead as large cards; the rest sit in "More work".
+const SELECTED = ['axivus', 'biaco', 'brand-identity', 'glitchard', 'web-saas-design', 'bridging-divides'];
+const selected = SELECTED.map((id) => all.find((p) => p.id === id)!).filter(Boolean);
+const projects = all.filter((p) => !SELECTED.includes(p.id));
 const sizes = cardSizes(projects.length);
 const counts: Record<string, number> = { all: projects.length };
 const subCounts: Record<string, number> = {};
@@ -24,19 +28,28 @@ for (const p of projects) {
   <div class="container stack">
     <div class="work__head">
       <div class="work__titles">
-        <p class="dot-label">Portfolio</p>
-        <h2 id="work-title" class="work__h">I design products and brands that are clear, useful and considered.</h2>
+        <p class="dot-label">Selected work</p>
+        <h2 id="work-title" class="work__h">Products and brands that are clear, useful and considered.</h2>
+      </div>
+    </div>
+    <ul role="list" class="grid work__grid work__grid--selected">
+      {selected.map((project, i) => <ProjectCard project={project} size="half" eager={i < 2} />)}
+    </ul>
+  </div>
+</section>
+
+<section class="section work work--more" aria-labelledby="more-title">
+  <div class="container stack">
+    <div class="work__head">
+      <div class="work__titles">
+        <p class="dot-label">More work</p>
+        <h2 id="more-title" class="work__h">Apps, games, packaging, e-commerce, motion and social.</h2>
       </div>
       <CategoryFilter counts={counts} subCounts={subCounts} />
     </div>
-
-    <!-- Announces lens changes to screen readers. -->
     <p class="visually-hidden" aria-live="polite" data-lens-status></p>
-
-    <ul role="list" class="grid work__grid" data-project-grid>
-      {projects.map((project, i) => (
-        <ProjectCard project={project} size={sizes[i]} eager={i === 0} />
-      ))}
+    <ul role="list" class="grid work__grid work__grid--more" data-project-grid>
+      {projects.map((project, i) => <ProjectCard project={project} size={sizes[i]} />)}
     </ul>
   </div>
 </section>
@@ -135,6 +148,9 @@ for (const p of projects) {
     .work__grid > :global(.project-card) { grid-column: span 6; }
   }
   .work__grid > :global([hidden]) { display: none; }
+  .work--more { padding-top: 0; }
+  @media (min-width: 64rem) { .work__grid--more > :global(.project-card) { grid-column: span 4; } }
+  .work__grid--more :global(.project-card__title) { font-size: 1.1rem; }
   .work__head :global(.cf) { justify-self: start; }
   @media (min-width: 56rem) { .work__head { grid-template-columns: 1fr; } }
 </style>
