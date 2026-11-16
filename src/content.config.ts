@@ -33,6 +33,8 @@ const projects = defineCollection({
       // card hover, e.g. '/work/packaging/reel.mp4'.
       category: z.enum(CATEGORIES),
       sub: z.enum(['identity', 'packaging', 'print', 'logos']).optional(),
+      // Optional looping video shown as the card cover (always playing).
+      coverVideo: z.string().regex(/^\/.+\.mp4$/).optional(),
       preview: z.string().regex(/^\/.+\.mp4$/).optional(),
       // Optional small tag chips on project cards (e.g. 'Mobile design', 'Hackathon winner').
       tags: z.array(z.string()).max(3).optional(),

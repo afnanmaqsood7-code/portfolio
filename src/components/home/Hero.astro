@@ -15,9 +15,7 @@ import { site } from '../../site.config';
 const { roles, intro, status, location } = site.home;
 // Reel chapters: start time (s) → project. Matches public/home/reel.mp4.
 const chapters = [
-  [0, 'axivus', 'Axivus'], [2.6, 'biaco', 'Biaaco Med'], [5.0, 'evacovation', 'Evacovation'],
-  [7.4, 'web-saas-design', 'Website Design'], [10.6, 'brand-identity', 'Build One'], [13.6, 'packaging', 'Packaging Design'],
-  [16.6, 'amazon', 'Amazon E-commerce'], [19.0, 'motion', 'Motion Design'], [22.0, 'social-media', 'Social Media'],
+  [0.0, 'axivus', 'Axivus'], [2.3, 'biaco', 'Biaaco Med'], [4.6, 'evacovation', 'Evacovation'], [6.9, 'web-saas-design', 'Website Design'], [9.2, 'brand-identity', 'Build One'], [11.5, 'packaging', 'Packaging Design'], [13.8, 'amazon', 'Amazon E-commerce'], [16.1, 'social-media', 'Social Media'], [18.4, 'bridging-divides', 'Bridging Divides'],
 ] as const;
 const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`;
 ---
@@ -27,27 +25,26 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     <canvas class="hero__grid" data-hero-grid aria-hidden="true"></canvas>
     <span class="hero__line" aria-hidden="true"></span>
     <div class="hero__top">
+      <p class="dot-label hero__status">{status} · {location}</p>
       <h1 id="hero-title" class="hero__title">
         <span class="hero__name">{site.name}</span>
         <span class="hero__role" aria-hidden="true">_<span data-typed data-words={JSON.stringify(roles)}>{roles[0]}</span><span class="hero__caret"></span> designer</span>
         <span class="visually-hidden">, {roleList.toLowerCase()}</span>
       </h1>
-      <p class="dot-label hero__status">{status} · {location}</p>
     </div>
 
     <div class="hero__media" data-hero-media>
-      <video src="/home/reel.mp4" poster="/home/reel.jpg" muted loop playsinline autoplay preload="metadata" aria-label="Showreel of Afnan's work: app design, websites, branding, packaging, e-commerce, motion and social media." data-reel></video>
+      <video src="/home/reel.mp4" poster="/home/reel.jpg" muted loop playsinline autoplay preload="metadata" aria-label="Showreel of Afnan's work: app design, websites, branding, packaging, e-commerce and social media." data-reel></video>
       <button type="button" class="hero__pause" data-reel-toggle hidden aria-pressed="false"><span class="visually-hidden" data-reel-label>Pause showreel</span><span aria-hidden="true" data-reel-icon>❚❚</span></button>
     </div>
 
     <div class="hero__bottom">
-      <a href="/" class="hero__mark" aria-hidden="true" tabindex="-1">Afnan</a>
-      <div class="hero__intro">
-        <p>{intro}</p>
-        <a class="hero__now" href={`/work/${chapters[0][1]}/`} data-reel-now data-chapters={JSON.stringify(chapters)}>
-          <span class="hero__now-k">Now playing</span> <span data-reel-title>{chapters[0][2]}</span> <span aria-hidden="true">↗</span>
-        </a>
-        <a class="dot-label hero__scroll" href="#work">scroll down</a>
+      <p class="hero__intro">{intro}</p>
+      <div class="hero__actions">
+          <a class="hero__now" href={`/work/${chapters[0][1]}/`} data-reel-now data-chapters={JSON.stringify(chapters)}>
+            <span class="hero__now-k">Now playing</span> <span data-reel-title>{chapters[0][2]}</span> <span aria-hidden="true">↗</span>
+          </a>
+          <a class="dot-label hero__scroll" href="#work">Scroll to work</a>
       </div>
     </div>
   </div>
@@ -178,7 +175,8 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     min-height: calc(100svh - var(--header-h));
     padding: var(--space-m) var(--container-pad) var(--space-m);
   }
-  .hero__top { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 1rem; position: relative; z-index: 2; }
+  .hero__top, .hero__bottom { width: 100%; max-width: calc(var(--container-max) - 2 * var(--container-pad)); margin-inline: auto; }
+  .hero__top { display: grid; gap: .9rem; justify-items: start; position: relative; z-index: 2; }
   .hero__title { display: grid; font: inherit; }
   .hero__name {
     font: 700 clamp(3rem, 1.2rem + 7.4vw, 8.5rem) / 0.92 var(--font-text);
@@ -196,7 +194,7 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     animation: blink 1s step-end infinite;
   }
   @keyframes blink { 50% { opacity: 0; } }
-  .hero__status { margin-top: 0.6rem; }
+  .hero__status { margin: 0; }
 
   /* Static layout: image card under the name. */
   .hero__media { border-radius: 14px; overflow: hidden; }
@@ -208,11 +206,10 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
   .hero__line { display: none; }
   @media (min-width: 56rem) { .hero__line { display: block; position: absolute; top: 0; bottom: 6%; left: 50%; width: 1px; background: var(--color-border); z-index: 0; } }
 
-  .hero__bottom { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; position: relative; z-index: 2; }
-  .hero__mark { font: 700 clamp(1.6rem, 1rem + 2vw, 2.6rem) var(--font-text); letter-spacing: -0.04em; color: var(--clay-bright); text-decoration: none; }
-  .hero__intro { display: grid; gap: 0.8rem; max-width: 34rem; }
-  @media (min-width: 56rem) { .hero__intro { width: calc(50% - var(--container-pad)); max-width: none; } .hero__intro p { font-size: 1.35rem; line-height: 1.35; letter-spacing: -0.01em; } }
-  .hero__intro p { color: var(--color-text); line-height: 1.5; }
+  .hero__bottom { display: grid; gap: 1.2rem; align-items: end; position: relative; z-index: 2; }
+  @media (min-width: 56rem) { .hero__bottom { grid-template-columns: minmax(0, 36rem) auto; justify-content: space-between; } }
+  .hero__intro { margin: 0; max-width: 36rem; font-size: clamp(1.05rem, .95rem + .35vw, 1.3rem); line-height: 1.45; letter-spacing: -0.01em; color: var(--color-text); }
+  .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1.4rem; }
   .hero__now { display: inline-flex; align-items: center; gap: .45rem; width: fit-content; min-height: 44px; padding: 0 1rem; border-radius: 999px; background: #0b0b0b; color: #fff; text-decoration: none; font-size: .95rem; font-weight: 500; transition: background .3s; }
   .hero__now:hover { background: var(--clay-bright); }
   .hero__now-k { color: #ff9a6b; font-size: .78rem; }
