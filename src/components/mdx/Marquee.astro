@@ -14,14 +14,18 @@ const imgs = Object.entries(all)
   .map(([, m]) => m.default)
   .filter((m) => (kind === 'wide' ? m.width / m.height > 1.45 : m.width / m.height <= 1.45));
 const h = kind === 'wide' ? 220 : 300;
+// Short strips repeat their images so one set is always wider than the
+// screen; otherwise the loop runs out and shows empty space.
+const reps = imgs.length ? Math.ceil(10 / imgs.length) : 1;
+const set = Array.from({ length: reps }, () => imgs).flat();
 ---
 {imgs.length > 0 && (
   <div class="mq cs-full" style={`--h:${h}px;--t:${seconds}s`} data-dir={reverse ? 'rev' : 'fwd'} role="region" aria-label={label} tabindex="0">
     <div class="mq__track">
       {[0, 1].map((dup) => (
         <ul class="mq__set" role="list" aria-hidden={dup === 1 ? 'true' : undefined}>
-          {imgs.map((m, i) => (
-            <li><Image src={m} alt={dup ? '' : `${label}, image ${i + 1}`} height={h * 2} loading="eager" decoding="async" /></li>
+          {set.map((m, i) => (
+            <li aria-hidden={i >= imgs.length ? 'true' : undefined}><Image src={m} alt={dup || i >= imgs.length ? '' : `${label}, image ${i + 1}`} height={h * 2} loading="eager" decoding="async" /></li>
           ))}
         </ul>
       ))}

@@ -13,6 +13,12 @@
 import { site } from '../../site.config';
 
 const { roles, intro, status, location } = site.home;
+// Reel chapters: start time (s) → project. Matches public/home/reel.mp4.
+const chapters = [
+  [0, 'axivus', 'Axivus'], [2.6, 'biaco', 'Biaaco Med'], [5.0, 'evacovation', 'Evacovation'],
+  [7.4, 'web-saas-design', 'Website Design'], [10.6, 'brand-identity', 'Build One'], [13.6, 'packaging', 'Packaging Design'],
+  [16.6, 'amazon', 'Amazon E-commerce'], [19.0, 'motion', 'Motion Design'], [22.0, 'social-media', 'Social Media'],
+] as const;
 const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`;
 ---
 
@@ -30,7 +36,7 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     </div>
 
     <div class="hero__media" data-hero-media>
-      <video src="/home/reel.mp4" poster="/home/reel.jpg" muted loop playsinline autoplay preload="metadata" aria-label="Showreel of Afnan's work: app design, websites, games, branding, packaging, e-commerce, motion and social media." data-reel></video>
+      <video src="/home/reel.mp4" poster="/home/reel.jpg" muted loop playsinline autoplay preload="metadata" aria-label="Showreel of Afnan's work: app design, websites, branding, packaging, e-commerce, motion and social media." data-reel></video>
       <button type="button" class="hero__pause" data-reel-toggle hidden aria-pressed="false"><span class="visually-hidden" data-reel-label>Pause showreel</span><span aria-hidden="true" data-reel-icon>❚❚</span></button>
     </div>
 
@@ -38,6 +44,9 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
       <a href="/" class="hero__mark" aria-hidden="true" tabindex="-1">Afnan</a>
       <div class="hero__intro">
         <p>{intro}</p>
+        <a class="hero__now" href={`/work/${chapters[0][1]}/`} data-reel-now data-chapters={JSON.stringify(chapters)}>
+          <span class="hero__now-k">Now playing</span> <span data-reel-title>{chapters[0][2]}</span> <span aria-hidden="true">↗</span>
+        </a>
         <a class="dot-label hero__scroll" href="#work">scroll down</a>
       </div>
     </div>
@@ -85,6 +94,19 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     if (reduce) v.removeAttribute('autoplay');
     btn.hidden = false;
     btn.addEventListener('click', () => { paused = !paused; sync(); });
+    // "Now playing" link follows the reel.
+    const now = root.querySelector<HTMLAnchorElement>('[data-reel-now]');
+    const title = now?.querySelector<HTMLElement>('[data-reel-title]');
+    if (now && title) {
+      const ch: [number, string, string][] = JSON.parse(now.dataset.chapters || '[]');
+      let last = -1;
+      v.addEventListener('timeupdate', () => {
+        let i = 0; while (i + 1 < ch.length && v.currentTime >= ch[i + 1][0]) i++;
+        if (i === last) return; last = i;
+        now.classList.remove('is-in'); void now.offsetWidth; now.classList.add('is-in');
+        title.textContent = ch[i][2]; now.href = `/work/${ch[i][1]}/`;
+      });
+    }
     new IntersectionObserver((e) => { onScreen = e[0].isIntersecting; sync(); }).observe(root);
     sync();
   }
@@ -179,6 +201,12 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
   .hero__intro { display: grid; gap: 0.8rem; max-width: 34rem; }
   @media (min-width: 56rem) { .hero__intro { width: calc(50% - var(--container-pad)); max-width: none; } .hero__intro p { font-size: 1.35rem; line-height: 1.35; letter-spacing: -0.01em; } }
   .hero__intro p { color: var(--color-text); line-height: 1.5; }
+  .hero__now { display: inline-flex; align-items: center; gap: .45rem; width: fit-content; min-height: 44px; padding: 0 1rem; border-radius: 999px; background: #0b0b0b; color: #fff; text-decoration: none; font-size: .95rem; font-weight: 500; transition: background .3s; }
+  .hero__now:hover { background: var(--clay-bright); }
+  .hero__now-k { color: #ff9a6b; font-size: .78rem; }
+  .hero__now:global(.is-in) [data-reel-title] { animation: now-in .45s ease both; }
+  @keyframes now-in { from { opacity: 0; transform: translateY(6px); } }
+  @media (prefers-reduced-motion: reduce) { .hero__now:global(.is-in) [data-reel-title] { animation: none; } }
   .hero__scroll { font-size: 0.8rem; color: var(--color-text-muted); text-decoration: none; }
 
   /* Live (motion, ≥48rem): sticky stage; the card is clipped and grows. */
