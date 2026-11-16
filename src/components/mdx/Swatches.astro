@@ -1,0 +1,29 @@
+---
+/** Colour swatches with names and hex values, plus an optional type sample. */
+interface Swatch { name: string; hex: string; use?: string }
+interface Props { colors: Swatch[]; font?: string }
+const { colors, font } = Astro.props;
+---
+<div class="sw cs-wide" data-reveal>
+  <ul class="sw__row" role="list">
+    {colors.map((c) => (
+      <li>
+        <span class="sw__chip" style={`background:${c.hex}`}></span>
+        <strong>{c.name}</strong>
+        <span class="sw__hex">{c.hex.toUpperCase()}</span>
+        {c.use && <span class="sw__use">{c.use}</span>}
+      </li>
+    ))}
+  </ul>
+  {font && <p class="sw__font"><span>Aa</span> {font}</p>}
+</div>
+<style>
+  .sw { margin-block: var(--space-l); }
+  .sw__row { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: var(--space-s); margin: 0; padding: 0; list-style: none; }
+  .sw__row li { display: grid; gap: .2rem; }
+  .sw__chip { height: 110px; border-radius: 14px; margin-bottom: .5rem; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .06); }
+  .sw__row strong { font-size: .95rem; }
+  .sw__hex, .sw__use { font-size: .8rem; color: var(--color-text-muted); }
+  .sw__font { margin-top: var(--space-m) !important; display: flex; align-items: baseline; gap: 1rem; font-size: 1rem; color: var(--color-text-muted); }
+  .sw__font span { font-size: 3.5rem; font-weight: 700; line-height: 1; color: var(--color-text); }
+</style>

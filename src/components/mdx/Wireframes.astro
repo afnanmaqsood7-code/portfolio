@@ -1,0 +1,53 @@
+---
+/**
+ * Low fidelity wireframes drawn in HTML: each screen is a list of block
+ * tokens rendered as grey shapes inside a phone outline. Process visuals.
+ * Tokens: bar (status/header), logo, title, text, text2, input, select,
+ * button, ghost, circle, list, card, map, video, timer, grid, keypad, nav, gap
+ */
+interface Screen { label: string; items: string[] }
+interface Props { screens: Screen[]; caption?: string }
+const { screens, caption } = Astro.props;
+---
+<figure class="wf cs-wide" data-reveal>
+  <ul class="wf__row" role="list">
+    {screens.map((s) => (
+      <li>
+        <div class="wf__phone" aria-hidden="true">
+          {s.items.map((t) => <span class={`wf__b wf__${t}`}></span>)}
+        </div>
+        <span class="wf__label">{s.label}</span>
+      </li>
+    ))}
+  </ul>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+<style>
+  .wf { margin-block: var(--space-l); padding: var(--space-l) var(--space-m); background: #f3f2ef; border-radius: var(--radius-m); background-image: radial-gradient(#d9d6cf 1px, transparent 1px); background-size: 18px 18px; }
+  .wf__row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(10rem, 1fr); gap: var(--space-m); overflow-x: auto; margin: 0; padding: 0 0 .5rem; list-style: none; }
+  @media (min-width: 64rem) { .wf__row { overflow: visible; grid-auto-columns: minmax(0, 1fr); } }
+  .wf__row li { display: grid; gap: .6rem; justify-items: center; }
+  .wf__phone { width: 100%; max-width: 13rem; aspect-ratio: 9 / 19; display: flex; flex-direction: column; gap: 7px; padding: 14px 12px; background: #fff; border: 2px solid #8a8a8a; border-radius: 22px; box-shadow: 0 16px 30px -22px rgb(0 0 0 / .4); }
+  .wf__label { font-size: .85rem; color: var(--color-text-muted); }
+  .wf__b { display: block; flex: none; background: #dcdcdc; border-radius: 4px; }
+  .wf__bar { height: 14px; background: #ececec; }
+  .wf__logo { width: 38%; height: 30px; margin: 6px auto 2px; background: #c9c9c9; border-radius: 6px; }
+  .wf__title { width: 70%; height: 12px; margin: 4px auto 0; background: #9e9e9e; }
+  .wf__text { width: 85%; height: 7px; margin-inline: auto; }
+  .wf__text2 { width: 60%; height: 7px; margin-inline: auto; }
+  .wf__input { height: 22px; background: #fff; border: 1.5px solid #bdbdbd; }
+  .wf__select { height: 22px; background: linear-gradient(90deg, #fff 82%, #e3e3e3 82%); border: 1.5px solid #bdbdbd; }
+  .wf__button { height: 24px; margin-top: 2px; background: #6f6f6f; border-radius: 99px; }
+  .wf__ghost { height: 22px; background: #fff; border: 1.5px dashed #9e9e9e; border-radius: 99px; }
+  .wf__circle { width: 62%; aspect-ratio: 1; margin: 6px auto; border-radius: 50%; background: #fff; border: 6px solid #cfcfcf; }
+  .wf__list { height: 20px; background: linear-gradient(90deg, #cfcfcf 0 12%, #fff 12% 16%, #e2e2e2 16% 80%, #fff 80% 86%, #cfcfcf 86%); }
+  .wf__card { height: 54px; background: linear-gradient(90deg, #cfcfcf 0 30%, #fff 30% 34%, #e6e6e6 34%); }
+  .wf__map { height: 70px; background: repeating-linear-gradient(45deg, #e6e6e6 0 6px, #f2f2f2 6px 12px); border: 1.5px solid #cfcfcf; }
+  .wf__video { height: 90px; background: #bdbdbd; }
+  .wf__timer { width: 55%; height: 30px; margin: 4px auto; background: #9e9e9e; }
+  .wf__grid { height: 46px; background: linear-gradient(90deg, #d6d6d6 0 31%, #fff 31% 34.5%, #d6d6d6 34.5% 65.5%, #fff 65.5% 69%, #d6d6d6 69%); }
+  .wf__keypad { height: 60px; background: repeating-linear-gradient(90deg, #e6e6e6 0 9%, #fff 9% 10%); }
+  .wf__nav { height: 22px; margin-top: auto; background: repeating-linear-gradient(90deg, #d0d0d0 0 18%, #f4f4f4 18% 20%); }
+  .wf__gap { flex: 1; background: none; }
+  figcaption { margin-top: .9rem; font-size: var(--step--1); color: var(--color-text-muted); }
+</style>

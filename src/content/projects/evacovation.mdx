@@ -24,6 +24,10 @@ import Phones from '../../components/mdx/Phones.astro';
 import Feature from '../../components/mdx/Feature.astro';
 import Points from '../../components/mdx/Points.astro';
 import Marquee from '../../components/mdx/Marquee.astro';
+import Wireframes from '../../components/mdx/Wireframes.astro';
+import Flow from '../../components/mdx/Flow.astro';
+import Swatches from '../../components/mdx/Swatches.astro';
+import Tiles from '../../components/mdx/Tiles.astro';
 import Quote from '../../components/mdx/Quote.astro';
 
 import select from '../../assets/projects/evacovation/select.jpg';
@@ -46,7 +50,7 @@ import sure from '../../assets/projects/evacovation/sure.jpg';
 
 In an emergency, buildings still rely on alarms, radios and people shouting instructions. Evacovation puts the whole response in one app. The chief warden declares what is happening, floor wardens get clear instructions, staff confirm where they are, and everyone can see progress until the building is safe.
 
-I designed the app's flows and screens, and the campaign for its launch.
+I designed the app from scratch to final: the role flows, information architecture, wireframes, every high fidelity screen, a clickable prototype in Adobe XD, and the campaign for its launch.
 
 ## The challenge
 
@@ -59,6 +63,58 @@ People use this app at the worst possible moment: stressed, rushed and sometimes
     { title: 'Many roles', body: 'Chief warden, floor wardens, staff and security all need different views.' },
     { title: 'No mistakes', body: 'Sending everyone the wrong instruction could put people in danger.' },
   ]}
+/>
+
+## My process
+
+<Points
+  cols={3}
+  items={[
+    { title: '1  Understand the drill', body: 'Mapped how a building evacuation really runs: who declares it, who checks each floor, where people go.' },
+    { title: '2  Define the roles', body: 'Chief warden, floor wardens, staff and security, each with what they must see and do.' },
+    { title: '3  Map every emergency', body: 'Fire, evacuation, lockdown, medical, bomb threat and personal threat as separate flows.' },
+    { title: '4  Wireframe', body: 'Grey box screens in Adobe XD to test the order of steps and the size of every target.' },
+    { title: '5  Visual design', body: 'A strict colour code, red, yellow and green, used the same way across all screens.' },
+    { title: '6  Prototype and handoff', body: 'A clickable XD prototype of each flow for review and for the developers.' },
+  ]}
+/>
+
+## How an emergency flows
+
+<Flow
+  steps={[
+    { label: 'Chief warden declares', note: 'Choose type and confirm' },
+    { label: 'Assembly points set', note: 'Primary and secondary, on a map' },
+    { label: 'Wardens notified', note: 'One instruction at a time' },
+    { label: 'Staff confirm floor', note: 'Are you at your floor?' },
+    { label: 'Floors clear', note: 'Live snapshot turns green' },
+    { label: 'Repopulate', note: 'All clear, back inside' },
+  ]}
+  caption="One flow shared by every emergency type, with role specific screens at each step."
+/>
+
+## Who sees what
+
+<Tiles
+  items={[
+    { title: 'Chief warden', body: 'Declares and directs', tags: ['Declare', 'Snapshot', 'Send to all'] },
+    { title: 'Floor warden', body: 'Clears one floor', tags: ['Instructions', 'Floor cleared'] },
+    { title: 'Staff', body: 'Follows and confirms', tags: ['Confirm floor', 'Proceed'] },
+    { title: 'Security', body: 'Handles threats', tags: ['Live tools', 'Status'] },
+  ]}
+/>
+
+## Wireframes
+
+<Wireframes
+  screens={[
+    { label: 'Select emergency', items: ['bar','title','text2','list','list','list','list','list','list','circle'] },
+    { label: 'Declare', items: ['bar','logo','title','input','input','input','input','card','button'] },
+    { label: 'Assembly point', items: ['bar','title','select','select','map','button','button'] },
+    { label: 'Floor snapshot', items: ['bar','grid','list','list','list','list','list','list','button','nav'] },
+    { label: 'Instruction', items: ['bar','logo','title','gap','card','timer','gap','nav'] },
+  ]}
+  caption="Low fidelity wireframes in Adobe XD. Large targets and one action per screen were set here, before colour."
 />
 
 ## Declaring an emergency
@@ -117,6 +173,21 @@ The emergency process snapshot shows each floor with a status icon, from alarm t
     { src: liveTools, alt: 'Live emergency tools with security staff status and the current state of the threat.', label: 'Live tools' },
   ]}
   caption="For personal threats, security follow live status updates until the threat is neutralised."
+/>
+
+## Visual design
+
+In an emergency, colour has to mean the same thing every time. Red is danger or stop, yellow is wait or attention, green is safe or go. Charcoal panels hold live status so it reads even in bright sunlight or smoke.
+
+<Swatches
+  colors={[
+    { name: 'Alert red', hex: '#e53935', use: 'Emergencies, stop, cancel' },
+    { name: 'Wait yellow', hex: '#f7be17', use: 'Attention, wait for instruction' },
+    { name: 'Safe green', hex: '#3b8240', use: 'Confirm, cleared, go' },
+    { name: 'Charcoal', hex: '#313131', use: 'Live status panels' },
+    { name: 'White', hex: '#ffffff', use: 'Forms and lists' },
+  ]}
+  font="Bold sans serif, large labels readable at arm's length"
 />
 
 ## Launch campaign

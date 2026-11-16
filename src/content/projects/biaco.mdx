@@ -5,7 +5,7 @@ summary: A telehealth app that connects patients in Pakistan to a call centre, a
 role: UI/UX Designer
 timeline: 2020 to 2021
 year: '2021'
-tools: [Adobe XD, Illustrator, Prototyping]
+tools: [Adobe XD, Illustrator, Photoshop]
 outcomes:
   - 64 screens covering sign up, consultation, pharmacy, labs and insurance
   - A guided call centre path for patients who prefer to talk
@@ -23,6 +23,10 @@ import Phones from '../../components/mdx/Phones.astro';
 import Showcase from '../../components/mdx/Showcase.astro';
 import Feature from '../../components/mdx/Feature.astro';
 import Points from '../../components/mdx/Points.astro';
+import Wireframes from '../../components/mdx/Wireframes.astro';
+import Flow from '../../components/mdx/Flow.astro';
+import Swatches from '../../components/mdx/Swatches.astro';
+import Tiles from '../../components/mdx/Tiles.astro';
 import Quote from '../../components/mdx/Quote.astro';
 
 import welcome from '../../assets/projects/biaco/welcome.png';
@@ -51,7 +55,7 @@ import recorded from '../../assets/projects/biaco/recorded.png';
 
 Biaaco Med is an online healthcare partner for families in Pakistan. In one app, a patient can talk to a healthcare facilitator, see a doctor on video, order medicine, book lab tests and manage insurance.
 
-I designed the app end to end: the flows, all 64 screens and the visual system.
+I designed the app from scratch to final: the research and flows, the information architecture, wireframes, all 64 high fidelity screens, the visual system and a clickable prototype in Adobe XD for the developers.
 
 ## The challenge
 
@@ -64,6 +68,60 @@ Many of Biaaco's patients are older or new to smartphones. They trust a phone ca
     { title: 'Families, not individuals', body: 'One person often books care for parents and children.' },
     { title: 'Many services', body: 'Doctors, medicine, labs and insurance had to feel like one simple place.' },
   ]}
+/>
+
+## My process
+
+<Points
+  cols={3}
+  items={[
+    { title: '1  Discover', body: 'Worked with the Biaaco team to understand their patients, their call centre and the services they offer.' },
+    { title: '2  Map the journeys', body: 'Wrote the main journeys step by step: join, get a consultation, order medicine, book a lab test.' },
+    { title: '3  Structure', body: 'Grouped everything into five tabs so any service is at most two taps from home.' },
+    { title: '4  Wireframe', body: 'Sketched each screen in grey boxes in Adobe XD to agree the flow before any colour.' },
+    { title: '5  Visual design', body: 'Built the brand gradient, type and components, then designed all 64 screens.' },
+    { title: '6  Prototype and handoff', body: 'Linked the screens into a clickable XD prototype and shared specs with developers.' },
+  ]}
+/>
+
+## The core journey
+
+<Flow
+  steps={[
+    { label: 'Open the app', note: 'Welcome and brand' },
+    { label: 'Call or sign up', note: 'Register by phone, or five quick steps' },
+    { label: 'Connect online', note: 'One big button on home' },
+    { label: 'Facilitator', note: 'Call centre takes symptoms' },
+    { label: 'Doctor on video', note: 'Consultation and prescription' },
+    { label: 'Order or book', note: 'Medicine, labs, follow up' },
+  ]}
+  caption="Every service hangs off this one path, so patients learn the app once."
+/>
+
+## Information architecture
+
+<Tiles
+  items={[
+    { title: 'Home', body: 'Connect online and shortcuts', tags: ['Call a doctor', 'Order medicine', 'Labs'] },
+    { title: 'Notifications', body: 'Updates on every order', tags: ['Prescriptions', 'Reminders'] },
+    { title: 'Appointments', body: 'Doctors and lab bookings', tags: ['Specialists', 'Dates and times'] },
+    { title: 'My orders', body: 'Medicine and lab orders', tags: ['Cart', 'Checkout', 'Pay'] },
+    { title: 'Profile', body: 'Health record and family', tags: ['Family', 'Insurance'] },
+  ]}
+  caption="Five tabs, the same on every screen."
+/>
+
+## Wireframes
+
+<Wireframes
+  screens={[
+    { label: 'Welcome', items: ['bar','gap','logo','title','text','gap','button','text2'] },
+    { label: 'Sign up', items: ['bar','logo','title','text2','input','input','select','select','button'] },
+    { label: 'Home', items: ['bar','logo','circle','input','gap','grid','nav'] },
+    { label: 'Waiting', items: ['bar','text','timer','text2','input','video','ghost'] },
+    { label: 'Video call', items: ['bar','video','video','grid','nav'] },
+  ]}
+  caption="Low fidelity wireframes in Adobe XD, used to agree the flow and layout with the team before visual design."
 />
 
 ## Design principles
@@ -132,6 +190,21 @@ While a facilitator or doctor joins, patients see an honest countdown and can wa
     { src: pharmacist, alt: 'Get ready countdown before a call connects.', label: 'Get ready' },
     { src: insurance, alt: 'Message that the health insurance is being verified.', label: 'Insurance' },
   ]}
+/>
+
+## Visual design
+
+A warm red to purple gradient makes the brand feel caring rather than clinical, while white screens keep forms and information calm and readable. Big round buttons and icons with labels make every action obvious.
+
+<Swatches
+  colors={[
+    { name: 'Biaaco red', hex: '#c1272d', use: 'Brand, alerts, calls to action' },
+    { name: 'Plum', hex: '#6c1c6a', use: 'Gradient middle, headers' },
+    { name: 'Deep indigo', hex: '#2e215f', use: 'Gradient end, text on light' },
+    { name: 'Call green', hex: '#3fa34d', use: 'Call and confirm buttons' },
+    { name: 'Paper', hex: '#ffffff', use: 'Forms and content' },
+  ]}
+  font="Rounded sans serif, large sizes for older users"
 />
 
 <Quote text="It should feel as easy as calling your family doctor." accent="calling your family doctor." />

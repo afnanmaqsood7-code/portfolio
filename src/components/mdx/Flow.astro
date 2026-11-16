@@ -1,0 +1,29 @@
+---
+/** A user flow drawn as connected steps. `alt` marks a branch step (dashed). */
+interface Step { label: string; note?: string; alt?: boolean }
+interface Props { steps: Step[]; caption?: string }
+const { steps, caption } = Astro.props;
+---
+<figure class="fl cs-wide" data-reveal>
+  <ol class="fl__row" role="list">
+    {steps.map((s, i) => (
+      <li class:list={['fl__step', { 'fl__step--alt': s.alt }]}>
+        <span class="fl__n">{String(i + 1).padStart(2, '0')}</span>
+        <strong>{s.label}</strong>
+        {s.note && <span class="fl__note">{s.note}</span>}
+      </li>
+    ))}
+  </ol>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+<style>
+  .fl { margin-block: var(--space-l); overflow-x: clip; }
+  .fl__row { display: flex; flex-wrap: wrap; gap: 2.2rem .6rem; margin: 0; padding: 0; list-style: none; counter-reset: s; }
+  .fl__step { position: relative; flex: 1 1 9rem; display: grid; gap: .25rem; align-content: start; padding: 1rem; border: 1.5px solid var(--color-text); border-radius: 14px; background: var(--color-bg); }
+  .fl__step--alt { border-style: dashed; border-color: var(--color-text-muted); }
+  .fl__step:not(:last-child)::after { content: '→'; position: absolute; right: -0.75rem; top: 50%; translate: 50% -50%; z-index: 1; width: 1.4rem; height: 1.4rem; display: grid; place-items: center; border-radius: 50%; background: var(--clay-bright); color: #fff; font-size: .75rem; }
+  .fl__n { font-size: .75rem; font-weight: 600; color: var(--color-accent); }
+  .fl__step strong { font-size: 1rem; font-weight: 600; line-height: 1.25; }
+  .fl__note { font-size: .82rem; line-height: 1.4; color: var(--color-text-muted); }
+  figcaption { margin-top: .9rem; font-size: var(--step--1); color: var(--color-text-muted); }
+</style>
