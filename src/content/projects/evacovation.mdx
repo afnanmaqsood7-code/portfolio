@@ -1,0 +1,139 @@
+---
+title: Evacovation
+slug: evacovation
+summary: An emergency response app for buildings. A chief warden declares an emergency, floor wardens follow live instructions, and every floor is tracked until the building is safe again.
+role: UI/UX Designer
+timeline: App and launch campaign
+year: '2021'
+tools: [Adobe XD, Illustrator, Photoshop]
+outcomes:
+  - Flows for fire, evacuation, bomb threat and personal threat
+  - A live floor by floor snapshot for the chief warden
+  - Launch campaign for the app's release
+lens: product
+category: product
+tags: [Mobile app, Safety]
+cover: ../../assets/projects/evacovation/cover.jpg
+coverAlt: Three phones showing Evacovation's emergency selection, the floor by floor snapshot and the repopulated screen.
+featured: true
+order: 4
+---
+
+import Showcase from '../../components/mdx/Showcase.astro';
+import Phones from '../../components/mdx/Phones.astro';
+import Feature from '../../components/mdx/Feature.astro';
+import Points from '../../components/mdx/Points.astro';
+import Marquee from '../../components/mdx/Marquee.astro';
+import Quote from '../../components/mdx/Quote.astro';
+
+import select from '../../assets/projects/evacovation/select.jpg';
+import declare from '../../assets/projects/evacovation/declare.jpg';
+import assembly from '../../assets/projects/evacovation/assembly.jpg';
+import map from '../../assets/projects/evacovation/map.jpg';
+import confirmed from '../../assets/projects/evacovation/confirmed.jpg';
+import snapshot from '../../assets/projects/evacovation/snapshot.jpg';
+import progress from '../../assets/projects/evacovation/progress.jpg';
+import cleared from '../../assets/projects/evacovation/cleared.jpg';
+import attention from '../../assets/projects/evacovation/attention.jpg';
+import onfloor from '../../assets/projects/evacovation/onfloor.jpg';
+import proceed from '../../assets/projects/evacovation/proceed.jpg';
+import threatType from '../../assets/projects/evacovation/threat-type.jpg';
+import liveTools from '../../assets/projects/evacovation/live-tools.jpg';
+import repopulated from '../../assets/projects/evacovation/repopulated.jpg';
+import sure from '../../assets/projects/evacovation/sure.jpg';
+
+## Overview
+
+In an emergency, buildings still rely on alarms, radios and people shouting instructions. Evacovation puts the whole response in one app. The chief warden declares what is happening, floor wardens get clear instructions, staff confirm where they are, and everyone can see progress until the building is safe.
+
+I designed the app's flows and screens, and the campaign for its launch.
+
+## The challenge
+
+People use this app at the worst possible moment: stressed, rushed and sometimes in smoke or noise. Every screen had to be understood in a glance and every action had to be hard to get wrong.
+
+<Points
+  cols={3}
+  items={[
+    { title: 'Seconds matter', body: 'Declaring an emergency had to take a few taps, not a form.' },
+    { title: 'Many roles', body: 'Chief warden, floor wardens, staff and security all need different views.' },
+    { title: 'No mistakes', body: 'Sending everyone the wrong instruction could put people in danger.' },
+  ]}
+/>
+
+## Declaring an emergency
+
+<Showcase
+  title="From alarm to instruction in four steps"
+  screens={[
+    { src: select, alt: 'Select emergency list: fire, evacuation, internal, medical, lockdown, personal threat and bomb threat.', label: '1  Choose type' },
+    { src: declare, alt: 'Emergency declaration form for a bomb threat with warden, location and time, and an approve button.', label: '2  Declare' },
+    { src: assembly, alt: 'Define assembly points, primary and secondary, and share them with floor wardens.', label: '3  Assembly point' },
+    { src: map, alt: 'Reconfirm the assembly point location on a map.', label: '4  Confirm on map' },
+    { src: confirmed, alt: 'Confirmation that the assembly point has been shared with all floor wardens.', label: 'Shared' },
+  ]}
+  caption="Big, colour coded choices and a confirmation at every step that sends something to other people."
+/>
+
+<Feature src={sure} alt="Are you sure dialog before evacuating all wardens at the same time." kicker="Safety" title="A pause before anything irreversible">
+
+Actions that affect the whole building, like evacuating everyone at once, always ask "Are you sure?" with a clear reason. Red means stop, green means go, used the same way on every screen.
+
+</Feature>
+
+## The chief warden's view
+
+<Feature src={snapshot} alt="Emergency process snapshot listing every floor with its status: no action, alarm, evacuating, floor clear, going to meeting point and repopulating." kicker="Live snapshot" title="Every floor, at a glance">
+
+The emergency process snapshot shows each floor with a status icon, from alarm to evacuating to floor clear. One tap sends an instruction to all floors or asks every warden for an update.
+
+</Feature>
+
+<Phones
+  screens={[
+    { src: progress, alt: 'Snapshot with floors turning green as they are cleared.', label: 'Progress' },
+    { src: cleared, alt: 'Notification that a floor warden has cleared their floor.', label: 'Floor cleared' },
+    { src: repopulated, alt: 'Congratulations screen: all steps completed and the building repopulated.', label: 'Repopulated' },
+  ]}
+  caption="Floors turn green as they clear, until the building is safely repopulated."
+/>
+
+## Wardens and staff
+
+<Phones
+  screens={[
+    { src: attention, alt: 'Attention: please wait until the next instruction from the chief warden.', label: 'Wait for instruction' },
+    { src: onfloor, alt: 'Are you at your floor? Yes or no.', label: 'Confirm floor' },
+    { src: proceed, alt: 'Please proceed to the assembly address, with a countdown timer.', label: 'Proceed' },
+  ]}
+  caption="Wardens get one instruction at a time, in large type, with a timer when speed matters."
+/>
+
+## Personal threat
+
+<Phones
+  screens={[
+    { src: threatType, alt: 'Describe the type of threat, physical or verbal, and the number of people involved.', label: 'Describe threat' },
+    { src: liveTools, alt: 'Live emergency tools with security staff status and the current state of the threat.', label: 'Live tools' },
+  ]}
+  caption="For personal threats, security follow live status updates until the threat is neutralised."
+/>
+
+## Launch campaign
+
+<Marquee folder="evacovation" brand="launch" kind="square" label="Evacovation launch posts" seconds={25} />
+
+The launch posts turn everyday safety equipment, a fire extinguisher, a gas cylinder and a life raft, into rockets: saving lives, ready for lift off.
+
+<Quote text="In an emergency, the right instruction is the one people understand instantly." accent="understand instantly." />
+
+## What I learned
+
+<Points
+  items={[
+    { title: 'Design for stress', body: 'Large targets, one action per screen and strong colour meaning.' },
+    { title: 'Confirm what matters', body: 'Only actions that affect other people ask for confirmation.' },
+    { title: 'Roles shape screens', body: 'The same emergency looks very different to a warden and to staff.' },
+    { title: 'Next time', body: 'I would run drills with real wardens to test timing and wording.' },
+  ]}
+/>
