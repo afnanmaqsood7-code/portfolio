@@ -30,7 +30,7 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     </div>
 
     <div class="hero__media" data-hero-media>
-      <video src="/home/reel.mp4" poster="/home/reel.jpg" muted loop playsinline autoplay preload="metadata" aria-label="Showreel of Afnan's work: VR game, app design, interactive game, illustration and painting." data-reel></video>
+      <video src="/home/reel.mp4" poster="/home/reel.jpg" muted loop playsinline autoplay preload="metadata" aria-label="Showreel of Afnan's work: app design, websites, games, branding, packaging, e-commerce, motion and social media." data-reel></video>
       <button type="button" class="hero__pause" data-reel-toggle hidden aria-pressed="false"><span class="visually-hidden" data-reel-label>Pause showreel</span><span aria-hidden="true" data-reel-icon>❚❚</span></button>
     </div>
 
@@ -120,6 +120,12 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
       { clipPath: 'inset(31% 30% 36% 30% round 14px)' },
       { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none',
         scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.5 } });
+    // The video shrinks with the card, so the small card shows the whole
+    // frame (not a crop of its middle), then both grow to full screen.
+    gsap.fromTo(media.querySelector('video'),
+      { scale: 0.42 },
+      { scale: 1, ease: 'none',
+        scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.5 } });
     gsap.to(root.querySelectorAll('.hero__top, .hero__bottom'), {
       opacity: 0, ease: 'none',
       scrollTrigger: { trigger: root, start: '15% top', end: '45% top', scrub: true },
@@ -183,6 +189,7 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     clip-path: inset(31% 30% 36% 30% round 14px);
     will-change: clip-path;
   }
+  .hero:global(.hero--live) .hero__media video { transform: scale(0.42); transform-origin: 50% 47.5%; will-change: transform; }
 
   @media (prefers-reduced-motion: reduce) { .hero__caret { animation: none; } }
 </style>
