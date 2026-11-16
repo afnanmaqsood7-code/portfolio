@@ -138,19 +138,31 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     gsap.registerPlugin(ScrollTrigger);
     root.classList.add('hero--live');
     const media = root.querySelector<HTMLElement>('[data-hero-media]')!;
-    gsap.fromTo(media,
-      { clipPath: 'inset(31% 30% 36% 30% round 14px)' },
-      { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none',
-        scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.5 } });
-    // The video shrinks with the card, so the small card shows the whole
-    // frame (not a crop of its middle), then both grow to full screen.
-    gsap.fromTo(media.querySelector('video'),
-      { scale: 0.42 },
-      { scale: 1, ease: 'none',
-        scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.5 } });
+    const video = media.querySelector('video')!;
+    const stage = root.querySelector<HTMLElement>('.hero__stage')!;
+    const top = root.querySelector<HTMLElement>('.hero__top')!;
+    const bottom = root.querySelector<HTMLElement>('.hero__bottom')!;
+    // Fit the small card into the real gap between the name and the intro,
+    // measured on this screen, so text and video never overlap.
+    const box = () => {
+      const S = stage.getBoundingClientRect(), T = top.getBoundingClientRect();
+      const B = { top: Math.min(...Array.from(bottom.children).map((c) => c.getBoundingClientRect().top)) };
+      const gap = 24, y0 = T.bottom - S.top + gap, y1 = B.top - S.top - gap;
+      let h = Math.max(0, y1 - y0), w = h * 16 / 9;
+      const maxW = S.width * 0.46;
+      if (w > maxW) { w = maxW; h = w * 9 / 16; }
+      const x = (S.width - w) / 2, y = y0 + (y1 - y0 - h) / 2;
+      return { x, y, w, h, W: S.width, H: S.height };
+    };
+    const clip = () => { const b = box(); return `inset(${b.y}px ${b.W - b.x - b.w}px ${b.H - b.y - b.h}px ${b.x}px round 14px)`; };
+    const scale = () => { const b = box(); return Math.max(b.w / b.W, b.h / b.H); };
+    const origin = () => { const b = box(); return `${((b.x + b.w / 2) / b.W) * 100}% ${((b.y + b.h / 2) / b.H) * 100}%`; };
+    const st = { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.5, invalidateOnRefresh: true };
+    gsap.fromTo(media, { clipPath: clip }, { clipPath: 'inset(0px 0px 0px 0px round 0px)', ease: 'none', immediateRender: true, scrollTrigger: st });
+    gsap.fromTo(video, { scale, transformOrigin: origin }, { scale: 1, ease: 'none', immediateRender: true, scrollTrigger: { ...st } });
     gsap.to(root.querySelectorAll('.hero__top, .hero__bottom'), {
       opacity: 0, ease: 'none',
-      scrollTrigger: { trigger: root, start: '15% top', end: '45% top', scrub: true },
+      scrollTrigger: { trigger: root, start: 'top top', end: '14% top', scrub: true },
     });
   }
 </script>
@@ -217,7 +229,7 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     clip-path: inset(31% 30% 36% 30% round 14px);
     will-change: clip-path;
   }
-  .hero:global(.hero--live) .hero__media video { transform: scale(0.42); transform-origin: 50% 47.5%; will-change: transform; }
+  .hero:global(.hero--live) .hero__media video { will-change: transform; }
 
   @media (prefers-reduced-motion: reduce) { .hero__caret { animation: none; } }
 </style>
