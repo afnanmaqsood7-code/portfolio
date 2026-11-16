@@ -174,18 +174,20 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     padding: var(--space-m) var(--container-pad) var(--space-m);
   }
   .hero__top { width: 100%; max-width: calc(var(--container-max) - 2 * var(--container-pad)); margin-inline: auto; display: grid; gap: 1.4rem 3rem; align-items: start; position: relative; z-index: 2; }
-  @media (min-width: 64rem) { .hero__top { grid-template-columns: minmax(0, 1fr) minmax(16rem, 24rem); } .hero__aside { padding-top: .9rem; } }
+  @media (min-width: 64rem) { .hero__top { grid-template-columns: auto minmax(18rem, 26rem); align-items: end; column-gap: clamp(2rem, 5vw, 5rem); } .hero__aside { padding-bottom: .6rem; } }
   .hero__aside { display: grid; gap: 1.1rem; justify-items: start; }
   .hero__title { display: grid; font: inherit; }
   .hero__name {
-    font: 700 clamp(3rem, 1.2rem + 7.4vw, 8.5rem) / 0.92 var(--font-text);
+    font: 700 clamp(2.6rem, 0.8rem + 6vw, 7.5rem) / 0.92 var(--font-text);
     letter-spacing: -0.045em;
     color: var(--color-text);
+    white-space: nowrap;
   }
   .hero__role {
-    font: 700 clamp(3rem, 1.2rem + 7.4vw, 8.5rem) / 0.92 var(--font-text);
+    font: 700 clamp(2.6rem, 0.8rem + 6vw, 7.5rem) / 0.92 var(--font-text);
     letter-spacing: -0.045em;
     color: #9a9a9a;
+    white-space: nowrap;
   }
   .hero__caret {
     display: inline-block; width: 0.06em; height: 0.8em; margin-left: 0.04em;
