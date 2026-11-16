@@ -1,46 +1,157 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PageIntro from '../components/ui/PageIntro.astro';
 import StudioStrip from '../components/home/StudioStrip.astro';
 import Button from '../components/ui/Button.astro';
+import { Image } from 'astro:assets';
 import { site } from '../site.config';
+import dervish from '../assets/studio/whirling-dervish.jpg';
+import axivus from '../assets/projects/axivus/cover.jpg';
+import buildone from '../assets/projects/brand-identity/cover.jpg';
+import web from '../assets/projects/web-saas-design/cover.jpg';
+import amazon from '../assets/projects/amazon/cover.jpg';
+
+const stats = [
+  { n: 5, suffix: '+', label: 'years designing' },
+  { n: 13, suffix: '', label: 'projects on this site' },
+  { n: 4, suffix: '', label: 'disciplines' },
+  { n: 2, suffix: '', label: 'degrees' },
+];
+const does = [
+  { title: 'Product & UX', body: 'Apps and platforms, from flows to final screens.', img: axivus, href: '/work/?cat=product' },
+  { title: 'Brand', body: 'Identities, brand books, packaging and print.', img: buildone, href: '/work/?cat=branding' },
+  { title: 'Web', body: 'Websites and landing pages built to convert.', img: web, href: '/work/?cat=web' },
+  { title: 'Marketing', body: 'E-commerce listings, campaigns and social.', img: amazon, href: '/work/?cat=marketing' },
+];
+const tools = ['Figma', 'Adobe XD', 'Illustrator', 'Photoshop', 'After Effects', 'Premiere Pro', 'Unreal Engine', 'Convai', 'Canva', 'Astro'];
 ---
 
 <BaseLayout title="About" description="About Afnan Maqsood: product, brand and web designer in Canada, painter and illustrator.">
-  <PageIntro eyebrow="About" title="Designer with a painter’s hand" lede="I design products, brands and websites that are clear, useful and considered. Based in Canada, open to work." />
-
-  <section class="about container">
-    <div class="about__grid">
-      <div class="about__text">
-        <p>I have spent 5+ years designing for clients across product, brand, web and marketing: a paperless platform for auto repair shops, a telehealth app, an emergency response app, brand identities, packaging, e-commerce listings and social campaigns.</p>
-        <p>I like problems where the design has to work for people under pressure or new to technology, and I care about the details that make an interface feel calm. Most of my work starts with flows on paper and ends with a system other people can build on.</p>
-        <p>I studied at Toronto Metropolitan University (MDM, Master of Digital Media) and hold a BFA in Graphic Design. Off screen, I paint and illustrate, and that hand shows up in my work.</p>
-        <div class="about__ctas">
+  <section class="ah" data-about-hero>
+    <canvas class="ah__grid" data-about-grid aria-hidden="true"></canvas>
+    <div class="container ah__inner">
+      <div class="ah__text">
+        <p class="dot-label">About</p>
+        <h1 class="ah__title">Designer with a <span class="accent">painter’s</span> hand</h1>
+        <p class="ah__lede">Product, brand and web designer. 5+ years of client work, MDM from Toronto Metropolitan University, BFA in Graphic Design. Based in Canada, open to work.</p>
+        <div class="ah__ctas">
           <Button href={site.resume} download>Resume ↓</Button>
           <Button href={site.linkedin} variant="ghost" external>LinkedIn ↗</Button>
         </div>
       </div>
-      <dl class="about__facts">
-        <div><dt>Roles</dt><dd>Product and UX, brand, web, marketing</dd></div>
-        <div><dt>Tools</dt><dd>Figma, Adobe XD, Illustrator, Photoshop, After Effects, Unreal Engine, Canva</dd></div>
-        <div><dt>Education</dt><dd>MDM, Toronto Metropolitan University<br />BFA Graphic Design</dd></div>
-        <div><dt>Location</dt><dd>{site.location}</dd></div>
-      </dl>
+      <figure class="ah__art" data-tilt>
+        <Image src={dervish} alt="Painting of a whirling dervish in a white robe, mid spin, on warm ochre brushwork." widths={[600, 900]} sizes="(min-width: 64rem) 34rem, 90vw" loading="eager" />
+        <figcaption>Whirling dervish, acrylic. Painted by me.</figcaption>
+      </figure>
     </div>
   </section>
+
+  <section class="stats container" aria-label="In numbers">
+    <ul role="list" class="stats__row">
+      {stats.map((s) => (
+        <li><span class="stats__n"><span data-count={s.n}>{s.n}</span>{s.suffix}</span><span class="stats__l">{s.label}</span></li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="does container" aria-labelledby="does-title">
+    <p class="dot-label">What I do</p>
+    <h2 id="does-title" class="does__h">Four kinds of work, one way of thinking.</h2>
+    <ul role="list" class="does__grid">
+      {does.map((d) => (
+        <li class="does__card">
+          <a href={d.href}>
+            <div class="does__media"><Image src={d.img} alt="" widths={[600, 900]} sizes="(min-width: 64rem) 22rem, 90vw" loading="lazy" /></div>
+            <h3>{d.title} <span aria-hidden="true">→</span></h3>
+            <p>{d.body}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <div class="tools" aria-label="Tools I use">
+    <div class="tools__track">
+      {[0, 1].map((dup) => (
+        <ul role="list" aria-hidden={dup ? 'true' : undefined}>{tools.map((t) => <li>{t}</li>)}</ul>
+      ))}
+    </div>
+  </div>
 
   <StudioStrip />
 </BaseLayout>
 
+<script>
+  import { getTier } from '../scripts/motion/capabilities';
+  import { paintGrid } from '../scripts/paint-grid';
+  const hero = document.querySelector<HTMLElement>('[data-about-hero]');
+  if (hero) {
+    const css = getComputedStyle(document.documentElement);
+    paintGrid(hero, hero.querySelector<HTMLCanvasElement>('[data-about-grid]')!, {
+      band: (w, h, cell) => { const cols = Math.ceil(w / cell), rows = Math.ceil(h / cell); return { cols, rows, x0: Math.round((w - cols * cell) / 2), y0: 0 }; },
+      cell: (w) => (w < 700 ? 44 : 72),
+      line: css.getPropertyValue('--ink').trim() || '#0b0b0b', lineAlpha: 0.07,
+      fill: css.getPropertyValue('--clay-bright').trim() || '#ee5a24', maxAlpha: 0.5, breathe: 1.4,
+    });
+  }
+  const reduce = getTier() === 'none';
+  // Count up once when the numbers scroll into view.
+  const nums = document.querySelectorAll<HTMLElement>('[data-count]');
+  if (nums.length && !reduce) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return; io.unobserve(e.target);
+      const el = e.target as HTMLElement, end = Number(el.dataset.count), t0 = performance.now();
+      const tick = (t: number) => { const k = Math.min(1, (t - t0) / 1100); el.textContent = String(Math.round(end * (1 - Math.pow(1 - k, 3)))); if (k < 1) requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    }), { threshold: 0.6 });
+    nums.forEach((n) => io.observe(n));
+  }
+  // Painting tilts gently toward the cursor.
+  const art = document.querySelector<HTMLElement>('[data-tilt]');
+  if (art && !reduce && matchMedia('(hover: hover)').matches) {
+    art.addEventListener('pointermove', (e) => { const r = art.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; art.style.transform = `perspective(900px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`; });
+    art.addEventListener('pointerleave', () => { art.style.transform = ''; });
+  }
+</script>
+
 <style>
-  .about { padding-bottom: var(--space-2xl); }
-  .about__grid { display: grid; gap: var(--space-xl); }
-  @media (min-width: 56rem) { .about__grid { grid-template-columns: minmax(0, 44rem) minmax(16rem, 22rem); justify-content: space-between; align-items: start; } }
-  .about__text { display: grid; gap: 1em; font-size: var(--step-0); line-height: 1.7; }
-  .about__text p { max-width: 44rem; }
-  .about__ctas { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: var(--space-s); }
-  .about__facts { display: grid; gap: var(--space-s); margin: 0; }
-  .about__facts div { padding-top: var(--space-xs); border-top: 1px solid var(--color-border); }
-  .about__facts dt { font-size: .85rem; color: var(--color-text-muted); margin-bottom: .25rem; }
-  .about__facts dd { margin: 0; line-height: 1.5; }
+  .ah { position: relative; overflow: hidden; }
+  .ah__grid { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .ah__inner { position: relative; display: grid; gap: var(--space-l); padding-block: var(--space-xl) var(--space-2xl); align-items: center; }
+  @media (min-width: 64rem) { .ah__inner { grid-template-columns: minmax(0, 1fr) minmax(20rem, 34rem); gap: var(--space-2xl); } }
+  .ah__text { display: grid; gap: var(--space-s); justify-items: start; }
+  .ah__title { font: 700 clamp(2.6rem, 1rem + 5.5vw, 6rem) / 0.98 var(--font-text); letter-spacing: -0.04em; max-width: 12ch; }
+  .ah__lede { max-width: 34rem; font-size: var(--step-1); line-height: 1.5; color: var(--color-text-muted); }
+  .ah__ctas { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: var(--space-xs); }
+  .ah__art { margin: 0; transition: transform .25s ease; will-change: transform; }
+  .ah__art :global(img) { display: block; width: 100%; height: auto; border-radius: var(--radius-m); box-shadow: 0 40px 80px -40px rgb(11 11 11 / .5); }
+  .ah__art figcaption { margin-top: .6rem; font-size: .85rem; color: var(--color-text-muted); }
+
+  .stats { padding-block: var(--space-m); }
+  .stats__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-m); margin: 0; padding: var(--space-m) 0; list-style: none; border-block: 1px solid var(--color-border); }
+  @media (min-width: 48rem) { .stats__row { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .stats__row li { display: grid; gap: .2rem; }
+  .stats__n { font: 700 clamp(2.4rem, 1.5rem + 3vw, 4.5rem) / 1 var(--font-text); letter-spacing: -0.04em; }
+  .stats__l { color: var(--color-text-muted); }
+
+  .does { padding-block: var(--space-xl); display: grid; gap: var(--space-s); }
+  .does__h { max-width: 22ch; font: 600 clamp(1.6rem, 1.1rem + 1.6vw, 2.4rem) / 1.12 var(--font-text); letter-spacing: -0.03em; margin-bottom: var(--space-m); }
+  .does__grid { display: grid; gap: var(--space-m); margin: 0; padding: 0; list-style: none; }
+  @media (min-width: 40rem) { .does__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .does__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .does__card a { display: grid; gap: .5rem; text-decoration: none; color: var(--color-text); }
+  .does__media { aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--radius-m); background: var(--color-surface); }
+  .does__media :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .8s var(--ease-out); }
+  .does__card:hover .does__media :global(img) { transform: scale(1.06); }
+  .does__card h3 { margin-top: .4rem; font: 600 1.15rem / 1.2 var(--font-text); letter-spacing: -0.02em; }
+  .does__card h3 span { display: inline-block; transition: transform .3s; }
+  .does__card:hover h3 span { transform: translateX(4px); color: var(--color-accent); }
+  .does__card p { color: var(--color-text-muted); }
+
+  .tools { overflow: hidden; border-block: 1px solid var(--color-border); padding: 1rem 0; margin-block: var(--space-m) var(--space-xl); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .tools__track { display: flex; width: max-content; animation: tools 40s linear infinite; }
+  .tools ul { display: flex; gap: 2.5rem; margin: 0; padding: 0 1.25rem; list-style: none; font: 600 clamp(1.4rem, 1rem + 1.5vw, 2.4rem) var(--font-text); letter-spacing: -0.03em; color: var(--color-text-muted); white-space: nowrap; }
+  .tools li::after { content: '·'; margin-left: 2.5rem; color: var(--clay-bright); }
+  .tools:hover .tools__track { animation-play-state: paused; }
+  @keyframes tools { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .tools__track { animation: none; } .tools ul[aria-hidden] { display: none; } .does__media :global(img), .ah__art { transition: none; } }
 </style>
