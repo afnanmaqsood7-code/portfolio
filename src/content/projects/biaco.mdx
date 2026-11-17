@@ -19,6 +19,7 @@ featured: true
 order: 3
 ---
 
+import Impact from '../../components/mdx/Impact.astro';
 import Phones from '../../components/mdx/Phones.astro';
 import Showcase from '../../components/mdx/Showcase.astro';
 import Feature from '../../components/mdx/Feature.astro';
@@ -208,6 +209,25 @@ A warm red to purple gradient makes the brand feel caring rather than clinical, 
 />
 
 <Quote text="It should feel as easy as calling your family doctor." accent="calling your family doctor." />
+
+## Stakeholders and constraints
+
+I worked with the Biaaco team, who knew their patients and call centre, and with developers building for Android and iOS. The biggest constraint was the audience: many patients were older or new to smartphones, so every decision was tested against "could my parents do this?".
+
+- Kept the phone call as a first class path instead of forcing app sign up
+- Split sign up into five skippable steps so no one is blocked from care
+- Reused one card and one button style across doctors, pharmacy and labs to keep the build small
+
+## Impact and scale
+
+<Impact
+  items={[
+    { value: '64', label: 'Screens designed end to end in Adobe XD', basis: 'Scope' },
+    { value: '5', label: 'Short sign up steps, each optional after the first', basis: 'By design' },
+    { value: '3', label: 'Ways to consult: call, voice note or video', basis: 'By design' },
+    { value: '1 tap', label: 'From home to a facilitator with Connect Online', basis: 'By design' },
+  ]}
+/>
 
 ## What I learned
 

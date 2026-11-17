@@ -25,6 +25,7 @@ lensOrder:
   brand: 2
 ---
 
+import Impact from '../../components/mdx/Impact.astro';
 import Site from '../../components/mdx/Site.astro';
 import Points from '../../components/mdx/Points.astro';
 import Figure from '../../components/mdx/Figure.astro';
@@ -158,6 +159,21 @@ A simple, clean site for a construction company. Strong photos of real work, cle
     { src: buildServices, label: 'Services' },
     { src: buildWork, label: 'Project' },
     { src: buildContact, label: 'Contact' },
+  ]}
+/>
+
+## Stakeholders and constraints
+
+Every site was for a different freelance client, usually working directly with the founder. I agreed the homepage first, because once the first screen was right, the rest of the pages followed quickly with fewer rounds of changes.
+
+## Impact and scale
+
+<Impact
+  items={[
+    { value: '5', label: 'Client websites in five industries', basis: 'Scope' },
+    { value: '30+', label: 'Desktop pages, plus mobile layouts', basis: 'Scope' },
+    { value: '1', label: 'Shared component set per site', basis: 'By design' },
+    { value: '2', label: 'Countries outside Pakistan: France and Germany', basis: 'Scope' },
   ]}
 />
 

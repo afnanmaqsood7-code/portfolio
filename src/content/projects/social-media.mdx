@@ -19,6 +19,7 @@ featured: true
 order: 11
 ---
 
+import Impact from '../../components/mdx/Impact.astro';
 import Marquee from '../../components/mdx/Marquee.astro';
 import FeedPhone from '../../components/mdx/FeedPhone.astro';
 import Points from '../../components/mdx/Points.astro';
@@ -61,6 +62,17 @@ Daily crypto insights on a dark, high contrast layout: big numbers, simple gauge
 </FeedPhone>
 
 <Quote text="One post, one message, one second." accent="one second." />
+
+## Impact and scale
+
+<Impact
+  items={[
+    { value: '40+', label: 'Posts across health, education, finance and events', basis: 'Scope' },
+    { value: '6', label: 'Clients, each with its own consistent feed', basis: 'Scope' },
+    { value: '30', label: 'Day countdown series for AfCFTA', basis: 'Scope' },
+    { value: '1', label: 'Message per post, readable in a second', basis: 'By design' },
+  ]}
+/>
 
 ## What I learned
 

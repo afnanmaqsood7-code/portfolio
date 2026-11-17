@@ -22,6 +22,7 @@ featured: true
 order: 3
 ---
 
+import Impact from '../../components/mdx/Impact.astro';
 import Figure from '../../components/mdx/Figure.astro';
 import FigurePair from '../../components/mdx/FigurePair.astro';
 import Feature from '../../components/mdx/Feature.astro';
@@ -156,6 +157,17 @@ He moved from robotic scripts to a recognisable comedic personality, with better
 <Figure src={evolution} alt="Audience in a cinema watching, beside a summary of Glitchard's performance results." caption="Glitchard's evolution." framed />
 
 <Quote text="Goodnight, humans. Don't forget to reboot your emotions." accent="reboot your emotions." />
+
+## Impact and scale
+
+<Impact
+  items={[
+    { value: '1.6 → 4.8', label: 'Humour score in developer testing', basis: 'Measured' },
+    { value: '70%', label: 'Fewer repeated catchphrases', basis: 'Measured' },
+    { value: '9 months', label: 'Of building, testing and training', basis: 'Scope' },
+    { value: '8', label: 'Card topics on stage, from one character', basis: 'Scope' },
+  ]}
+/>
 
 ## What's next
 

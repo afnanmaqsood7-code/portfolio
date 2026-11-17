@@ -25,6 +25,7 @@ lensOrder:
   brand: 4
 ---
 
+import Impact from '../../components/mdx/Impact.astro';
 import Band from '../../components/mdx/Band.astro';
 import Video from '../../components/mdx/Video.astro';
 import Figure from '../../components/mdx/Figure.astro';
@@ -117,6 +118,17 @@ Packaging and a printed product catalogue for two cigarette brands, Canvas and M
     { src: canvasSpec, alt: 'Catalogue page for a Canvas variant with open pack, carton and product description.' },
   ]}
   caption="Catalogue spreads with pack, carton and specs."
+/>
+
+## Impact and scale
+
+<Impact
+  items={[
+    { value: '2', label: 'Product ranges, natural and premium', basis: 'Scope' },
+    { value: '8', label: 'Pack variants colour coded at a glance', basis: 'By design' },
+    { value: '4+', label: 'Skincare products in one family', basis: 'Scope' },
+    { value: '1', label: 'Catalogue with specs for every pack', basis: 'Scope' },
+  ]}
 />
 
 ## What I learned

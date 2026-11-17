@@ -20,6 +20,7 @@ featured: true
 order: 13
 ---
 
+import Impact from '../../components/mdx/Impact.astro';
 import Figure from '../../components/mdx/Figure.astro';
 import FigurePair from '../../components/mdx/FigurePair.astro';
 import Points from '../../components/mdx/Points.astro';
@@ -75,6 +76,17 @@ A recycling campaign printed on reusable tote bags, so the message travels with 
 />
 
 <Quote text="The best campaign for recycling is a bag you keep using." accent="keep using." />
+
+## Impact and scale
+
+<Impact
+  items={[
+    { value: '1', label: 'Logo that becomes a full pattern system', basis: 'By design' },
+    { value: '4', label: 'Campaign lines on reusable tote bags', basis: 'Scope' },
+    { value: '4', label: 'Stationery pieces in one system', basis: 'Scope' },
+    { value: '4', label: 'Brand colours with one shape', basis: 'By design' },
+  ]}
+/>
 
 ## What I learned
 

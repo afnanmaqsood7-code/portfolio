@@ -22,6 +22,7 @@ featured: true
 order: 10
 ---
 
+import Impact from '../../components/mdx/Impact.astro';
 import Band from '../../components/mdx/Band.astro';
 import Video from '../../components/mdx/Video.astro';
 import LoopGrid from '../../components/mdx/LoopGrid.astro';
@@ -91,6 +92,17 @@ Short animated stories that explain a service or a public message clearly, with 
 />
 
 <Quote text="Good motion explains first and entertains second." accent="entertains second." />
+
+## Impact and scale
+
+<Impact
+  items={[
+    { value: '46 s', label: 'Showreel across nine projects', basis: 'Scope' },
+    { value: '4', label: 'Kinds of motion: explainers, characters, product and logo', basis: 'Scope' },
+    { value: '3D', label: 'Exploded view and product turns', basis: 'Scope' },
+    { value: 'Silent', label: 'Designed to work without sound', basis: 'By design' },
+  ]}
+/>
 
 ## How I work
 

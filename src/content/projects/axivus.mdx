@@ -31,6 +31,7 @@ import Phones from '../../components/mdx/Phones.astro';
 import Split from '../../components/mdx/Split.astro';
 import Cards from '../../components/mdx/Cards.astro';
 import Stats from '../../components/mdx/Stats.astro';
+import Impact from '../../components/mdx/Impact.astro';
 import Quote from '../../components/mdx/Quote.astro';
 
 import cover from '../../assets/projects/axivus/cover.jpg';
@@ -196,6 +197,60 @@ Where the owner starts every shift. The brief was strict: answer "what do I do n
     { src: webPayments, alt: 'Payments view with totals for waiting payment and collected this week above a table of repair orders.' },
   ]}
   caption="Calendar and payments."
+/>
+
+## Aligning stakeholders
+
+Axivus had four groups who wanted different things: the founders wanted a product they could sell to shops quickly, developers needed specs they could build in two months, shop owners wanted control over money and staff, and mechanics wanted fewer calls and faster payment.
+
+<Points
+  items={[
+    { title: 'One shared map', body: 'I turned the founders\' briefs into a single journey map of a repair, from check in to payment, and used it in every review so discussions stayed on the same picture.' },
+    { title: 'Roles written down', body: 'A one page table of what each role does, owns and never sees. It settled most arguments before they reached design.' },
+    { title: 'Short review loops', body: 'Flows were reviewed with the founders before any high fidelity work, so changes were cheap and decisions were recorded.' },
+    { title: 'Developer handoff', body: 'Annotated Figma files with states, edge cases and component names, so developers could build without waiting on me.' },
+  ]}
+/>
+
+## Decisions with limited time and people
+
+One designer, a small development team and two months to V1 meant every screen had to earn its place.
+
+<Points
+  items={[
+    { title: 'Reuse before invent', body: 'The mechanic app already existed, so I extended its patterns instead of redesigning them, and spent the time on the two new apps.' },
+    { title: 'One system, three apps', body: 'A shared set of components and nine repair order states meant each new screen was mostly assembly, not new design.' },
+    { title: 'Edge cases first', body: 'Scope changes, top ups and objections were designed early, because they are where real jobs break and they are expensive to add later.' },
+    { title: 'Cut what can wait', body: 'Reports and deeper analytics were kept simple in V1 so approvals, payments and the command centre could ship complete.' },
+  ]}
+/>
+
+## Iterating on a live product
+
+The mechanic app was already in use when I joined, so part of the work was improving it without disrupting mechanics mid job.
+
+- Rebuilt the home screen around the job in progress and what cannot wait
+- Added the five step job tracker so mechanics always know the next action
+- Added guest approval by link, removing the account step that stalled approvals
+- Moved estimates to a live builder with take home pay and Axi Touch review
+
+## Leading design
+
+As the only designer I set how design worked on the team: the journey map, the role rules, the component library, review rituals with the founders and the handoff format for developers. Those became the shared language the whole team used to talk about the product.
+
+## Impact and scale
+
+<Impact
+  items={[
+    { value: '3', label: 'Apps on one design system: phone, iPad and web', basis: 'Scope' },
+    { value: '106', label: 'Mechanic app screens across 20+ end to end flows', basis: 'Scope' },
+    { value: '2 months', label: 'From briefs to V1 handoff, as the only designer', basis: 'Scope' },
+    { value: '1 tap', label: 'Customer approval by link, down from a phone call and an account', basis: 'By design' },
+    { value: '9', label: 'Repair order states, worded the same on every device', basis: 'By design' },
+    { value: '2 stage', label: 'Escrow release, protecting both mechanic and customer', basis: 'By design' },
+    { value: '< 3 s', label: 'Target for an owner to see what to do next on the command centre', basis: 'By design' },
+    { value: '5 steps', label: 'One job tracker shared by every active repair', basis: 'By design' },
+  ]}
 />
 
 ## One design system

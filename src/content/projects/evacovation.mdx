@@ -19,6 +19,7 @@ featured: true
 order: 4
 ---
 
+import Impact from '../../components/mdx/Impact.astro';
 import Showcase from '../../components/mdx/Showcase.astro';
 import Phones from '../../components/mdx/Phones.astro';
 import Feature from '../../components/mdx/Feature.astro';
@@ -197,6 +198,25 @@ In an emergency, colour has to mean the same thing every time. Red is danger or 
 The launch posts turn everyday safety equipment, a fire extinguisher, a gas cylinder and a life raft, into rockets: saving lives, ready for lift off.
 
 <Quote text="In an emergency, the right instruction is the one people understand instantly." accent="understand instantly." />
+
+## Stakeholders and constraints
+
+Safety apps are judged in the worst moment, so the client's priority was speed and zero ambiguity. I aligned the flows with how their wardens already ran drills, then removed every step that did not help someone get out safely.
+
+- One emergency flow shared by every emergency type, so wardens learn it once
+- Confirmation only on actions that affect other people
+- A strict colour code agreed with the client and used on every screen
+
+## Impact and scale
+
+<Impact
+  items={[
+    { value: '7', label: 'Emergency types in one shared flow', basis: 'Scope' },
+    { value: '4', label: 'Roles, each with its own view', basis: 'Scope' },
+    { value: '1', label: 'Instruction per screen for wardens and staff', basis: 'By design' },
+    { value: 'Live', label: 'Floor by floor status for the chief warden', basis: 'By design' },
+  ]}
+/>
 
 ## What I learned
 
