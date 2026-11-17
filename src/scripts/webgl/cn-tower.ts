@@ -51,7 +51,7 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
   const scene = new THREE.Scene();
   scene.fog = new THREE.Fog(0x2a1a4a, 14, 34);
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-  camera.position.set(0, -0.6, 10.5); camera.lookAt(0, 0.8, 0);
+  camera.position.set(0, -0.4, 12.6); camera.lookAt(0, 1.3, 0);
   let mx = 0, my = 0, cx = 0, cy = 0;
   addEventListener('pointermove', (e) => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; }, { passive: true });
 
@@ -61,25 +61,61 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
   const warm = new THREE.PointLight(0xff8a50, 18, 12); warm.position.set(0, -0.5, 3.5); scene.add(warm);
 
   const tower = new THREE.Group(); scene.add(tower);
-  const shaftMat = new THREE.MeshStandardMaterial({ color: 0x9a8cc4, roughness: .55, metalness: .25 });
-  const lilac = new THREE.MeshStandardMaterial({ color: 0xc9b8ef, roughness: .4, metalness: .35 });
-  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.95, 12, 3, 1), shaftMat); shaftMat.flatShading = true; shaft.position.y = -6.3; tower.add(shaft);
-  // Pod: stacked discs.
-  const podBody = new THREE.Mesh(new THREE.CylinderGeometry(1.55, 1.25, 1.25, 64), lilac); podBody.position.y = 0.2; tower.add(podBody);
-  const podTop = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.7, 0.32, 64), new THREE.MeshStandardMaterial({ color: 0xf2b6e6, roughness: .35, metalness: .3, emissive: 0x6a1d5a, emissiveIntensity: .4 })); podTop.position.y = 1.0; tower.add(podTop);
-  const podBot = new THREE.Mesh(new THREE.CylinderGeometry(1.75, 1.1, 0.42, 64), new THREE.MeshStandardMaterial({ color: 0xff6a3d, roughness: .4, emissive: 0xff4a1a, emissiveIntensity: .35 })); podBot.position.y = -0.62; tower.add(podBot);
-  // Upper sky pod + antenna.
-  const sky = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.5, 0.5, 32), lilac); sky.position.y = 3.0; tower.add(sky);
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.32, 2.0, 24), shaftMat); neck.position.y = 1.95; tower.add(neck);
-  const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.12, 3.6, 12), new THREE.MeshStandardMaterial({ color: 0xe9e2ff, metalness: .6, roughness: .3 })); antenna.position.y = 5.0; tower.add(antenna);
-  const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 16), new THREE.MeshBasicMaterial({ color: 0xff3b3b })); beacon.position.y = 6.85; tower.add(beacon);
+  // CN Tower, stylised but true to its shape: a Y-shaped concrete shaft
+  // with three fins, the main pod (curved underside, dark window band,
+  // white "donut" deck), a narrower upper shaft, the small SkyPod and the
+  // tall stepped antenna. Pod proportions are exaggerated so the cards fit.
+  const concrete = new THREE.MeshStandardMaterial({ color: 0xb9b0d6, roughness: .7, metalness: .1, flatShading: true });
+  const deck = new THREE.MeshStandardMaterial({ color: 0xf1ecfb, roughness: .45, metalness: .15 });
+  const glass = new THREE.MeshStandardMaterial({ color: 0x2b2148, roughness: .2, metalness: .6, emissive: 0x3a1f66, emissiveIntensity: .35 });
+  const steel = new THREE.MeshStandardMaterial({ color: 0xdcd6ee, roughness: .35, metalness: .7 });
+  const led = new THREE.MeshBasicMaterial({ color: 0xff7a45 });
+  const lathe = (pts: [number, number][], mat: THREE.Material, y = 0) => {
+    const m = new THREE.Mesh(new THREE.LatheGeometry(pts.map(([r, h]) => new THREE.Vector2(r, h)), 96), mat); m.position.y = y; tower.add(m); return m;
+  };
+  // Main shaft: hexagonal core plus three tapering fins at 120 degrees.
+  const SB = -14, ST = -1.45, coreB = 0.62, coreT = 0.42;
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(coreT, coreB, ST - SB, 6), concrete); core.position.y = (SB + ST) / 2; tower.add(core);
+  const finGeo = (() => {
+    const g = new THREE.BoxGeometry(1, ST - SB, 0.34), pos = g.attributes.position as THREE.BufferAttribute;
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i), y = pos.getY(i), t = (y + (ST - SB) / 2) / (ST - SB); // 0 bottom .. 1 top
+      const reach = 1.7 * (1 - t) + 0.55 * t, base = coreB * (1 - t) + coreT * t;
+      pos.setX(i, x < 0 ? base * 0.6 : reach); pos.setZ(i, pos.getZ(i) * (1 - t * 0.35));
+    }
+    g.computeVertexNormals(); return g;
+  })();
+  for (let k = 0; k < 3; k++) {
+    const fin = new THREE.Mesh(finGeo, concrete); fin.position.y = (SB + ST) / 2; fin.rotation.y = k * (Math.PI * 2 / 3) + Math.PI / 6; tower.add(fin);
+    // A thin warm light along each fin edge, like the tower's night lighting.
+    const strip = new THREE.Mesh(new THREE.BoxGeometry(0.04, ST - SB, 0.04), led);
+    strip.geometry.translate(0, 0, 0); const sp = finGeo.attributes.position as THREE.BufferAttribute;
+    const edge = new THREE.Group(); edge.rotation.y = fin.rotation.y; edge.position.y = fin.position.y; tower.add(edge);
+    const pts: THREE.Vector3[] = []; for (let i = 0; i < sp.count; i++) if (sp.getX(i) > 0.5 && sp.getZ(i) > 0) pts.push(new THREE.Vector3(sp.getX(i) + 0.02, sp.getY(i), 0));
+    pts.sort((p1, p2) => p1.y - p2.y);
+    if (pts.length >= 2) edge.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([pts[0], pts[pts.length - 1]]), new THREE.LineBasicMaterial({ color: 0xff8a5c })));
+  }
+  // Main pod: curved underside, dark window band, white donut deck.
+  lathe([[0.42, -1.5], [0.75, -1.25], [1.1, -0.95], [1.38, -0.7], [1.45, -0.6]], concrete);
+  lathe([[1.45, -0.6], [1.5, -0.3], [1.5, 0.3], [1.45, 0.62]], glass);
+  lathe([[1.45, 0.62], [1.62, 0.72], [1.72, 0.86], [1.68, 1.0], [1.5, 1.08], [0.9, 1.12], [0.55, 1.2], [0.4, 1.3]], deck);
+  // Upper shaft to the SkyPod.
+  const upper = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.38, 1.4, 6), concrete); upper.position.y = 2.0; tower.add(upper);
+  // SkyPod: small drum with its own window band.
+  lathe([[0.26, 2.68], [0.52, 2.74], [0.56, 2.82]], deck);
+  lathe([[0.56, 2.82], [0.58, 2.98], [0.56, 3.12]], glass);
+  lathe([[0.56, 3.12], [0.46, 3.2], [0.2, 3.24]], deck);
+  // Antenna: three stepped sections, then the beacon.
+  const seg = (rb: number, rt: number, y0: number, y1: number) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, y1 - y0, 12), steel); m.position.y = (y0 + y1) / 2; tower.add(m); };
+  seg(0.2, 0.16, 3.24, 4.0); seg(0.12, 0.09, 4.0, 4.9); seg(0.07, 0.03, 4.9, 5.9);
+  const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.08, 16, 16), new THREE.MeshBasicMaterial({ color: 0xff3b3b })); beacon.position.y = 5.96; tower.add(beacon);
   // Halo rings in the sky.
-  const halo = (r: number, y: number) => { const m = new THREE.Mesh(new THREE.TorusGeometry(r, 0.012, 8, 128), new THREE.MeshBasicMaterial({ color: 0xd8c8ff, transparent: true, opacity: .35 })); m.rotation.x = Math.PI / 2; m.position.y = y; tower.add(m); };
-  halo(1.4, 5.6); halo(2.4, 5.3);
+  const halo = (r: number, y: number) => { const m = new THREE.Mesh(new THREE.TorusGeometry(r, 0.012, 8, 128), new THREE.MeshBasicMaterial({ color: 0xd8c8ff, transparent: true, opacity: .3 })); m.rotation.x = Math.PI / 2; m.position.y = y; tower.add(m); };
+
   // Bulbs around the pod rim.
   const bulbs = new THREE.InstancedMesh(new THREE.SphereGeometry(0.055, 10, 10), new THREE.MeshBasicMaterial({ color: 0xfff1c9 }), 64);
   const m4 = new THREE.Matrix4();
-  for (let i = 0; i < 64; i++) { const a = (i / 64) * Math.PI * 2; m4.makeTranslation(Math.cos(a) * 1.62, 1.12, Math.sin(a) * 1.62); bulbs.setMatrixAt(i, m4); }
+  for (let i = 0; i < 64; i++) { const a = (i / 64) * Math.PI * 2; m4.makeTranslation(Math.cos(a) * 1.74, 0.88, Math.sin(a) * 1.74); bulbs.setMatrixAt(i, m4); }
   tower.add(bulbs);
 
   // Curved card band (spins) + ribbon below (spins the other way).
@@ -139,8 +175,8 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
     angle += (reduce ? 0 : 0.0016) + vel; vel *= 0.92;
     band.rotation.y = -angle; ribbon.rotation.y = angle * 0.6; ribTex.offset.x = (t - t0) * 0.00002;
     cx += (mx - cx) * 0.05; cy += (my - cy) * 0.05;
-    camera.position.x = Math.sin(cx * 1.2) * 10.5; camera.position.z = Math.cos(cx * 1.2) * 10.5; camera.position.y = -0.6 - cy * 2.2;
-    camera.lookAt(0, 0.8, 0);
+    camera.position.x = Math.sin(cx * 1.2) * 12.6; camera.position.z = Math.cos(cx * 1.2) * 12.6; camera.position.y = -0.4 - cy * 2.2;
+    camera.lookAt(0, 1.3, 0);
     tower.rotation.y = Math.sin((t - t0) * 0.00025) * 0.08;
     bulbs.rotation.y = -angle * .3;
     renderer.render(scene, camera);
@@ -151,7 +187,7 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
   if (canvas.dataset.capture) {
     (canvas as unknown as { __shot: (a: number) => string }).__shot = (a: number) => {
       cancelAnimationFrame(raf); stars.visible = false; band.rotation.y = -a; ribbon.rotation.y = a * 0.6; bulbs.rotation.y = -a * .3; tower.rotation.y = 0;
-      camera.position.set(0, -0.6, 10.5); camera.lookAt(0, 0.8, 0); renderer.render(scene, camera); return canvas.toDataURL('image/png');
+      camera.position.set(0, -0.4, 12.6); camera.lookAt(0, 1.3, 0); renderer.render(scene, camera); return canvas.toDataURL('image/png');
     };
   }
   const onVis = () => { if (!document.hidden && visible && !raf && !reduce) raf = requestAnimationFrame(tick); };
