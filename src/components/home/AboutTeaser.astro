@@ -1,17 +1,25 @@
 ---
-/** One line about Afnan between the work and the contact block. */
+/** Home: a short row with Afnan's photo, one line and a link to About. */
+import { Image } from 'astro:assets';
+import photo from '../../assets/about/afnan.jpg';
 ---
 <section class="teaser" aria-label="About Afnan">
   <div class="container teaser__inner">
-    <p class="dot-label">About</p>
-    <p class="teaser__line">Product, brand and web designer with 5+ years of client work, an MDM from Toronto Metropolitan University and a BFA in Graphic Design. Off screen, I paint and illustrate.</p>
-    <a class="teaser__link" href="/about/">More about me <span aria-hidden="true">→</span></a>
+    <Image class="teaser__photo" src={photo} alt="Portrait of Afnan Maqsood." widths={[240, 400]} sizes="12rem" loading="lazy" />
+    <div class="teaser__text">
+      <p class="dot-label">About</p>
+      <p class="teaser__line">Product, brand and web designer in Canada. I also paint.</p>
+      <a class="teaser__link" href="/about/">More about me <span aria-hidden="true">→</span></a>
+    </div>
   </div>
 </section>
 <style>
   .teaser { border-top: 1px solid var(--color-border); }
-  .teaser__inner { display: grid; gap: var(--space-s); padding-block: var(--space-2xl); justify-items: start; }
-  .teaser__line { max-width: 44rem; font: 500 clamp(1.3rem, 1rem + 1.4vw, 2.1rem) / 1.3 var(--font-text); letter-spacing: -0.02em; }
+  .teaser__inner { display: grid; gap: var(--space-m); align-items: center; padding-block: var(--space-2xl); }
+  @media (min-width: 40rem) { .teaser__inner { grid-template-columns: auto 1fr; gap: var(--space-xl); } }
+  .teaser__inner :global(.teaser__photo) { width: clamp(8rem, 6rem + 6vw, 12rem); height: auto; aspect-ratio: 1; object-fit: cover; object-position: 50% 20%; border-radius: 50%; }
+  .teaser__text { display: grid; gap: var(--space-xs); justify-items: start; }
+  .teaser__line { max-width: 30rem; font: 600 clamp(1.5rem, 1.1rem + 1.6vw, 2.4rem) / 1.15 var(--font-text); letter-spacing: -0.03em; }
   .teaser__link { min-height: 44px; display: inline-flex; align-items: center; gap: .4rem; font-weight: 500; color: var(--color-text); text-decoration: none; }
   .teaser__link:hover { color: var(--color-accent); }
 </style>
