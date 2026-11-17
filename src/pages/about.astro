@@ -121,9 +121,11 @@ const tools = ['Figma', 'Adobe XD', 'Illustrator', 'Photoshop', 'After Effects',
   // the fallback when WebGL is unavailable.
   const cnBox = document.querySelector<HTMLElement>('[data-cn]');
   const cnCanvas = document.querySelector<HTMLCanvasElement>('[data-cn-canvas]');
-  if (cnBox && cnCanvas && !!document.createElement('canvas').getContext('webgl2')) {
+  const gl = document.createElement('canvas').getContext('webgl2');
+  if (!gl) console.info('About: WebGL2 unavailable, showing the flat tower.');
+  if (cnBox && cnCanvas && gl) {
     const cards = Array.from(cnBox.querySelectorAll<HTMLAnchorElement>('.cn__card a')).map((a) => ({ k: a.querySelector('.cn__k')!.textContent!, t: a.querySelector('strong')!.textContent!, href: a.getAttribute('href')! }));
-    import('../scripts/webgl/cn-tower').then(async ({ cnTower }) => { await cnTower(cnCanvas, cards, reduce); cnBox.classList.add('is-3d'); }).catch(() => {});
+    import('../scripts/webgl/cn-tower').then(async ({ cnTower }) => { await cnTower(cnCanvas, cards, reduce); cnBox.classList.add('is-3d'); }).catch((e) => console.warn('About 3D tower failed', e));
   }
   // Fallback ring of cards around the tower pod: drifts slowly, spins with scroll and drag.
   const ring = document.querySelector<HTMLElement>('[data-ring]');

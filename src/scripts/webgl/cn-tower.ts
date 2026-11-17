@@ -13,7 +13,7 @@ function bandTexture(cards: Card[]) {
   const n = cards.length, cw = W / n;
   g.clearRect(0, 0, W, H);
   cards.forEach((card, i) => {
-    const x = i * cw + 22, y = 40, w = cw - 44, h = H - 80, r = 36;
+    const x = i * cw + 6, y = 6, w = cw - 12, h = H - 12, r = 40;
     const grd = g.createLinearGradient(x, y, x + w, y + h);
     if (i % 2) { grd.addColorStop(0, '#ff8f5e'); grd.addColorStop(1, '#ee4f1c'); } else { grd.addColorStop(0, '#d9fbf1'); grd.addColorStop(1, '#a9e9dc'); }
     g.fillStyle = grd; g.beginPath(); g.roundRect(x, y, w, h, r); g.fill();
@@ -45,17 +45,19 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
   const scene = new THREE.Scene();
   scene.fog = new THREE.Fog(0x2a1a4a, 14, 34);
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-  camera.position.set(0, 1.2, 12.5); camera.lookAt(0, 0.6, 0);
+  camera.position.set(0, -0.6, 10.5); camera.lookAt(0, 0.8, 0);
+  let mx = 0, my = 0, cx = 0, cy = 0;
+  addEventListener('pointermove', (e) => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; }, { passive: true });
 
   scene.add(new THREE.HemisphereLight(0xcab8ff, 0x2a1440, 1.1));
-  const key = new THREE.DirectionalLight(0xfff1e6, 1.6); key.position.set(-5, 6, 8); scene.add(key);
-  const rim = new THREE.PointLight(0xff5fb0, 30, 20); rim.position.set(4, 2, -3); scene.add(rim);
+  const key = new THREE.DirectionalLight(0xfff1e6, 2.4); key.position.set(-6, 5, 6); scene.add(key);
+  const rim = new THREE.PointLight(0xff5fb0, 60, 20); rim.position.set(5, 2, -2); scene.add(rim);
   const warm = new THREE.PointLight(0xff8a50, 18, 12); warm.position.set(0, -0.5, 3.5); scene.add(warm);
 
   const tower = new THREE.Group(); scene.add(tower);
   const shaftMat = new THREE.MeshStandardMaterial({ color: 0x9a8cc4, roughness: .55, metalness: .25 });
   const lilac = new THREE.MeshStandardMaterial({ color: 0xc9b8ef, roughness: .4, metalness: .35 });
-  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.95, 12, 3, 1), shaftMat); shaft.position.y = -6.3; tower.add(shaft);
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.95, 12, 3, 1), shaftMat); shaftMat.flatShading = true; shaft.position.y = -6.3; tower.add(shaft);
   // Pod: stacked discs.
   const podBody = new THREE.Mesh(new THREE.CylinderGeometry(1.55, 1.25, 1.25, 64), lilac); podBody.position.y = 0.2; tower.add(podBody);
   const podTop = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.7, 0.32, 64), new THREE.MeshStandardMaterial({ color: 0xf2b6e6, roughness: .35, metalness: .3, emissive: 0x6a1d5a, emissiveIntensity: .4 })); podTop.position.y = 1.0; tower.add(podTop);
@@ -76,8 +78,25 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
 
   // Curved card band (spins) + ribbon below (spins the other way).
   const bandTex = bandTexture(cards);
-  const band = new THREE.Mesh(new THREE.CylinderGeometry(1.95, 1.95, 1.05, 128, 1, true), new THREE.MeshStandardMaterial({ map: bandTex, transparent: true, side: THREE.DoubleSide, roughness: .45, metalness: .05, emissive: 0xffffff, emissiveMap: bandTex, emissiveIntensity: .25 }));
-  band.position.y = 0.22; tower.add(band);
+  // Each card is its own thick, curved panel standing off the pod, so the
+  // ring reads as real objects in space (front cards big, back cards small).
+  const band = new THREE.Group(); band.position.y = 0.22; tower.add(band);
+  const n = cards.length, R = 2.35, arc = (Math.PI * 2) / n * 0.82;
+  const edge = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .3, metalness: .1 });
+  const panels: THREE.Mesh[] = [];
+  for (let i = 0; i < n; i++) {
+    const tex = bandTex.clone(); tex.needsUpdate = true; tex.repeat.set(1 / n, 1); tex.offset.set(i / n, 0);
+    const face = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, map: tex, transparent: true, alphaTest: 0.5, roughness: .35, metalness: .05, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: .22 });
+    const g = new THREE.CylinderGeometry(R, R, 1.15, 24, 1, true, 0, arc);
+    const front = new THREE.Mesh(g, face); front.userData.i = i;
+    const back = new THREE.Mesh(new THREE.CylinderGeometry(R - 0.09, R - 0.09, 1.15, 24, 1, true, 0, arc), edge);
+    const top = new THREE.Mesh(new THREE.RingGeometry(R - 0.09, R, 24, 1, 0, arc), edge); top.rotation.x = -Math.PI / 2; top.position.y = 0.575;
+    const bot = top.clone(); bot.position.y = -0.575;
+    const card = new THREE.Group(); card.add(front);
+    const shadowBack = new THREE.Mesh(new THREE.CylinderGeometry(R - 0.06, R - 0.06, 1.05, 24, 1, true, 0.02, arc - 0.04), new THREE.MeshBasicMaterial({ color: 0x2a1a44, side: THREE.BackSide })); card.add(shadowBack);
+    card.rotation.y = (i / n) * Math.PI * 2;
+    band.add(card); panels.push(front);
+  }
   const ribTex = ribbonTexture('AFNAN MAQSOOD · PRODUCT · BRAND · WEB'); ribTex.repeat.set(2, 1);
   const ribbon = new THREE.Mesh(new THREE.CylinderGeometry(1.86, 1.86, 0.3, 128, 1, true), new THREE.MeshStandardMaterial({ map: ribTex, side: THREE.DoubleSide, emissive: 0xff5a2a, emissiveMap: ribTex, emissiveIntensity: .5 }));
   ribbon.position.y = -0.62; tower.add(ribbon);
@@ -96,8 +115,8 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
   const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
   const pick = (e: PointerEvent) => {
     const r = canvas.getBoundingClientRect(); ptr.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
-    ray.setFromCamera(ptr, camera); const hit = ray.intersectObject(band)[0];
-    if (!hit || !hit.uv) return null; const i = Math.floor(hit.uv.x * cards.length) % cards.length; return cards[i];
+    ray.setFromCamera(ptr, camera); const hit = ray.intersectObjects(panels)[0];
+    return hit ? cards[hit.object.userData.i as number] : null;
   };
   const hover = (e: PointerEvent) => { canvas.style.cursor = drag !== null ? 'grabbing' : pick(e) ? 'pointer' : 'grab'; };
   const onUp = (e: PointerEvent) => { if (drag !== null && moved < 6) { const c = pick(e); if (c) location.href = c.href; } drag = null; };
@@ -113,6 +132,9 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
     raf = 0;
     angle += (reduce ? 0 : 0.0016) + vel; vel *= 0.92;
     band.rotation.y = -angle; ribbon.rotation.y = angle * 0.6; ribTex.offset.x = (t - t0) * 0.00002;
+    cx += (mx - cx) * 0.05; cy += (my - cy) * 0.05;
+    camera.position.x = Math.sin(cx * 1.2) * 10.5; camera.position.z = Math.cos(cx * 1.2) * 10.5; camera.position.y = -0.6 - cy * 2.2;
+    camera.lookAt(0, 0.8, 0);
     tower.rotation.y = Math.sin((t - t0) * 0.00025) * 0.08;
     bulbs.rotation.y = -angle * .3;
     renderer.render(scene, camera);
@@ -124,6 +146,6 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
 
   return () => {
     cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); removeEventListener('scroll', onScroll); document.removeEventListener('visibilitychange', onVis);
-    renderer.dispose(); bandTex.dispose(); ribTex.dispose();
+    renderer.dispose(); bandTex.dispose(); ribTex.dispose(); panels.forEach((p) => (p.material as THREE.MeshStandardMaterial).map?.dispose());
   };
 }
