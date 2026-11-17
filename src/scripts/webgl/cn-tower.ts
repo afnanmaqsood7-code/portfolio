@@ -28,15 +28,18 @@ function bandTexture(cards: Card[]) {
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 16; t.generateMipmaps = true; t.minFilter = THREE.LinearMipmapLinearFilter; return t;
 }
 
-function ribbonTexture(text: string) {
+function ribbonTexture(words: string[]) {
+  // Words keep their natural shape: a whole number of repeats fills the
+  // circle, and the leftover width goes into the gaps, never into the glyphs.
   const c = document.createElement('canvas'); c.width = 8192; c.height = 320; const g = c.getContext('2d')!;
   g.fillStyle = '#ff6a3d'; g.fillRect(0, 0, c.width, c.height);
-  g.fillStyle = '#2a0f20'; g.font = '800 190px Archivo, Arial, sans-serif'; g.textBaseline = 'middle';
-  const unit = text + '   ✦   ';
-  const uw = g.measureText(unit).width, copies = Math.max(1, Math.round(c.width / uw)), sx = c.width / (copies * uw);
-  g.save(); g.scale(sx, 1);
-  for (let i = 0; i < copies; i++) g.fillText(unit, i * uw, 168);
-  g.restore();
+  g.fillStyle = '#2a0f20'; g.font = '800 170px Archivo, Arial, sans-serif'; g.textBaseline = 'middle';
+  const items = [...words, '✦'];
+  const minGap = 90, wsum = items.reduce((n, w) => n + g.measureText(w).width, 0);
+  const copies = Math.max(1, Math.floor(c.width / (wsum + minGap * items.length)));
+  const gap = (c.width - copies * wsum) / (copies * items.length);
+  let x = gap / 2;
+  for (let k = 0; k < copies; k++) for (const w of items) { g.fillText(w, x, 168); x += g.measureText(w).width + gap; }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = THREE.RepeatWrapping; t.anisotropy = 16; return t;
 }
 
@@ -100,7 +103,7 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
     card.rotation.y = (i / n) * Math.PI * 2;
     band.add(card); panels.push(front);
   }
-  const ribTex = ribbonTexture('AFNAN MAQSOOD  ·  PRODUCT  ·  BRAND  ·  WEB');
+  const ribTex = ribbonTexture(['AFNAN MAQSOOD', 'PRODUCT', 'BRAND', 'WEB']);
   const ribbon = new THREE.Mesh(new THREE.CylinderGeometry(1.86, 1.86, 0.3, 128, 1, true), new THREE.MeshStandardMaterial({ map: ribTex, side: THREE.DoubleSide, emissive: 0xffffff, emissiveMap: ribTex, emissiveIntensity: .45, roughness: .9 }));
   ribbon.position.y = -0.62; tower.add(ribbon);
 
