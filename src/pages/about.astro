@@ -70,7 +70,7 @@ const tools = ['Figma', 'Adobe XD', 'Illustrator', 'Photoshop', 'After Effects',
           </ul>
           <span class="cn__pod" aria-hidden="true"></span>
         </div>
-        <img class="cn__seq" src="/about/tower/00.webp" alt="" aria-hidden="true" data-cn-seq hidden />
+        <div class="cn__seq" data-cn-seq hidden aria-hidden="true"><img src="/about/tower/00.webp" alt="" /><img src="/about/tower/01.webp" alt="" /></div>
         <div class="cn__hints" aria-hidden="true"><span>Scroll to spin</span><span>Click to explore</span></div>
       </div>
     </div>
@@ -127,19 +127,28 @@ const tools = ['Figma', 'Adobe XD', 'Illustrator', 'Photoshop', 'After Effects',
   if (!gl && cnBox) {
     // No WebGL: play a pre-rendered 36-frame turn of the same 3D tower,
     // scrubbed by scroll and drag, so the scene still looks and moves in 3D.
-    const img = cnBox.querySelector<HTMLImageElement>('[data-cn-seq]')!;
-    const N = 36, frames = Array.from({ length: N }, (_, i) => `/about/tower/${String(i).padStart(2, '0')}.webp`);
-    frames.forEach((f) => { const im = new Image(); im.src = f; });
-    img.hidden = false; cnBox.classList.add('is-seq');
-    let pos = 0, vel = 0, lastY = scrollY, drag: number | null = null, moved = 0, shown = -1;
+    // Two stacked frames cross-fade by the fractional position, so the turn
+    // is continuous rather than stepped.
+    const box = cnBox.querySelector<HTMLElement>('[data-cn-seq]')!;
+    const [A, B] = Array.from(box.querySelectorAll('img'));
+    const N = 60, frames = Array.from({ length: N }, (_, i) => `/about/tower/${String(i).padStart(2, '0')}.webp`);
+    const cache = frames.map((f) => { const im = new Image(); im.decoding = 'async'; im.src = f; return im; });
+    box.hidden = false; cnBox.classList.add('is-seq');
+    let pos = 0, vel = 0, lastY = scrollY, drag: number | null = null, moved = 0, a = -1, b = -1;
+    const draw = () => {
+      const p = ((pos % N) + N) % N, i = Math.floor(p), j = (i + 1) % N, k = p - i;
+      if (i !== a && cache[i].complete) { A.src = frames[i]; a = i; }
+      if (j !== b && cache[j].complete) { B.src = frames[j]; b = j; }
+      B.style.opacity = String(k);
+    };
     if (!reduce) {
-      addEventListener('scroll', () => { vel += (scrollY - lastY) * 0.02; lastY = scrollY; }, { passive: true });
-      img.addEventListener('pointerdown', (e) => { drag = e.clientX; moved = 0; img.setPointerCapture(e.pointerId); });
-      img.addEventListener('pointermove', (e) => { if (drag === null) return; const d = e.clientX - drag; moved += Math.abs(d); vel -= d * 0.03; drag = e.clientX; });
-      img.addEventListener('pointerup', () => { if (moved < 6) location.href = '/work/'; drag = null; });
-      const tick = () => { pos += 0.05 + vel; vel *= 0.9; const f = ((Math.round(pos) % N) + N) % N; if (f !== shown) { img.src = frames[f]; shown = f; } requestAnimationFrame(tick); };
+      addEventListener('scroll', () => { vel += (scrollY - lastY) * 0.01; lastY = scrollY; }, { passive: true });
+      box.addEventListener('pointerdown', (e) => { drag = e.clientX; moved = 0; box.setPointerCapture(e.pointerId); });
+      box.addEventListener('pointermove', (e) => { if (drag === null) return; const d = e.clientX - drag; moved += Math.abs(d); vel -= d * 0.012; drag = e.clientX; });
+      box.addEventListener('pointerup', () => { if (moved < 6) location.href = '/work/'; drag = null; });
+      const tick = () => { pos += 0.035 + vel; vel *= 0.92; draw(); requestAnimationFrame(tick); };
       requestAnimationFrame(tick);
-    }
+    } else draw();
   }
   if (cnBox && cnCanvas && gl) {
     const cards = Array.from(cnBox.querySelectorAll<HTMLAnchorElement>('.cn__card a')).map((a) => ({ k: a.querySelector('.cn__k')!.textContent!, t: a.querySelector('strong')!.textContent!, href: a.getAttribute('href')! }));
@@ -203,7 +212,8 @@ const tools = ['Figma', 'Adobe XD', 'Illustrator', 'Photoshop', 'After Effects',
   .cn:global(.is-3d) .cn__canvas { opacity: 1; }
   .cn:global(.is-3d) .cn__tower, .cn:global(.is-3d) .cn__stage { display: none; }
   .cn__hints { pointer-events: none; }
-  .cn__seq { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 0; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-drag: none; }
+  .cn__seq { position: absolute; inset: 0; cursor: grab; touch-action: pan-y; user-select: none; }
+  .cn__seq img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 0; -webkit-user-drag: none; pointer-events: none; }
   .cn__seq[hidden] { display: none; }
   .cn:global(.is-seq) .cn__tower, .cn:global(.is-seq) .cn__stage { display: none; }
   .cn__tower { position: absolute; left: 50%; bottom: calc(-1 * var(--space-m) - 3rem); height: calc(100% + var(--space-m) + 3rem); translate: -50% 0; }

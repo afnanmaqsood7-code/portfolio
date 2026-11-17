@@ -8,24 +8,24 @@ import * as THREE from 'three';
 export interface Card { k: string; t: string; href: string }
 
 function bandTexture(cards: Card[]) {
-  const W = 4096, H = 512, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const W = 8192, H = 1024, c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d')!;
   const n = cards.length, cw = W / n;
   g.clearRect(0, 0, W, H);
   cards.forEach((card, i) => {
-    const x = i * cw + 6, y = 6, w = cw - 12, h = H - 12, r = 40;
+    const x = i * cw + 12, y = 12, w = cw - 24, h = H - 24, r = 80;
     const grd = g.createLinearGradient(x, y, x + w, y + h);
     if (i % 2) { grd.addColorStop(0, '#ff8f5e'); grd.addColorStop(1, '#ee4f1c'); } else { grd.addColorStop(0, '#d9fbf1'); grd.addColorStop(1, '#a9e9dc'); }
     g.fillStyle = grd; g.beginPath(); g.roundRect(x, y, w, h, r); g.fill();
-    g.strokeStyle = 'rgba(255,255,255,.7)'; g.lineWidth = 4; g.stroke();
+    g.strokeStyle = 'rgba(255,255,255,.7)'; g.lineWidth = 8; g.stroke();
     const ink = i % 2 ? '#ffffff' : '#162a3a';
-    g.fillStyle = ink; g.globalAlpha = .7; g.font = '600 38px Archivo, Arial, sans-serif'; g.fillText(card.k, x + 34, y + 70); g.globalAlpha = 1;
-    g.font = '700 62px Archivo, Arial, sans-serif';
-    let size = 62; while (g.measureText(card.t).width > w - 68 && size > 36) { size -= 2; g.font = `700 ${size}px Archivo, Arial, sans-serif`; }
-    g.fillText(card.t, x + 34, y + h - 80);
-    g.font = '500 30px Archivo, Arial, sans-serif'; g.globalAlpha = .75; g.fillText('Explore  →', x + 34, y + h - 34); g.globalAlpha = 1;
+    g.fillStyle = ink; g.globalAlpha = .7; g.font = '600 76px Archivo, Arial, sans-serif'; g.fillText(card.k, x + 68, y + 140); g.globalAlpha = 1;
+    g.font = '700 132px Archivo, Arial, sans-serif';
+    let size = 132; while (g.measureText(card.t).width > w - 136 && size > 72) { size -= 4; g.font = `700 ${size}px Archivo, Arial, sans-serif`; }
+    g.fillText(card.t, x + 68, y + h - 160);
+    g.font = '500 60px Archivo, Arial, sans-serif'; g.globalAlpha = .75; g.fillText('Explore  →', x + 68, y + h - 68); g.globalAlpha = 1;
   });
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 16; t.generateMipmaps = true; t.minFilter = THREE.LinearMipmapLinearFilter; return t;
 }
 
 function ribbonTexture(text: string) {
@@ -93,7 +93,7 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
     const top = new THREE.Mesh(new THREE.RingGeometry(R - 0.09, R, 24, 1, 0, arc), edge); top.rotation.x = -Math.PI / 2; top.position.y = 0.575;
     const bot = top.clone(); bot.position.y = -0.575;
     const card = new THREE.Group(); card.add(front);
-    const shadowBack = new THREE.Mesh(new THREE.CylinderGeometry(R - 0.06, R - 0.06, 1.05, 24, 1, true, 0.02, arc - 0.04), new THREE.MeshBasicMaterial({ color: 0x2a1a44, side: THREE.BackSide })); card.add(shadowBack);
+    const shadowBack = new THREE.Mesh(new THREE.CylinderGeometry(R - 0.06, R - 0.06, 1.05, 24, 1, true, 0.02, arc - 0.04), new THREE.MeshStandardMaterial({ color: 0xd9cff5, roughness: .6, side: THREE.BackSide })); card.add(shadowBack);
     card.rotation.y = (i / n) * Math.PI * 2;
     band.add(card); panels.push(front);
   }
@@ -105,7 +105,7 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
   const starG = new THREE.BufferGeometry(); const pts: number[] = [];
   for (let i = 0; i < 500; i++) pts.push((Math.random() - .5) * 60, Math.random() * 26 - 4, -10 - Math.random() * 20);
   starG.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
-  scene.add(new THREE.Points(starG, new THREE.PointsMaterial({ color: 0xffffff, size: 0.06, transparent: true, opacity: .8 })));
+  const stars = new THREE.Points(starG, new THREE.PointsMaterial({ color: 0xffffff, size: 0.06, transparent: true, opacity: .8 })); scene.add(stars);
 
   // Interaction.
   let angle = 0, vel = 0, lastY = scrollY, drag: number | null = null, moved = 0, visible = true, raf = 0;
@@ -144,7 +144,7 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
   // Build-time capture hook (only with data-capture): render one angle, return a PNG.
   if (canvas.dataset.capture) {
     (canvas as unknown as { __shot: (a: number) => string }).__shot = (a: number) => {
-      cancelAnimationFrame(raf); band.rotation.y = -a; ribbon.rotation.y = a * 0.6; bulbs.rotation.y = -a * .3; tower.rotation.y = 0;
+      cancelAnimationFrame(raf); stars.visible = false; band.rotation.y = -a; ribbon.rotation.y = a * 0.6; bulbs.rotation.y = -a * .3; tower.rotation.y = 0;
       camera.position.set(0, -0.6, 10.5); camera.lookAt(0, 0.8, 0); renderer.render(scene, camera); return canvas.toDataURL('image/png');
     };
   }
