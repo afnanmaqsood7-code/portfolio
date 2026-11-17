@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StudioStrip from '../components/home/StudioStrip.astro';
-import Button from '../components/ui/Button.astro';
 import { Image } from 'astro:assets';
 import { site } from '../site.config';
 import axivus from '../assets/projects/axivus/cover.jpg';
@@ -21,36 +20,61 @@ const does = [
   { title: 'Web', body: 'Websites and landing pages built to convert.', img: web, href: '/work/?cat=web' },
   { title: 'Marketing', body: 'E-commerce listings, campaigns and social.', img: amazon, href: '/work/?cat=marketing' },
 ];
+const ring = [
+  { k: '01', t: 'Product & UX', href: '/work/?cat=product' },
+  { k: '02', t: 'Brand', href: '/work/?cat=branding' },
+  { k: '03', t: 'Web', href: '/work/?cat=web' },
+  { k: '04', t: 'Marketing', href: '/work/?cat=marketing' },
+  { k: '05', t: 'Motion', href: '/work/?cat=motion' },
+  { k: '06', t: 'Games & XR', href: '/work/?cat=games' },
+  { k: '07', t: 'Painting', href: '#studio' },
+  { k: '08', t: 'Contact me', href: '#contact' },
+];
 const tools = ['Figma', 'Adobe XD', 'Illustrator', 'Photoshop', 'After Effects', 'Premiere Pro', 'Unreal Engine', 'Convai', 'Canva', 'Astro'];
 ---
 
 <BaseLayout title="About" description="About Afnan Maqsood: product, brand and web designer in Canada, painter and illustrator.">
   <section class="ah" data-about-hero>
-    <canvas class="ah__grid" data-about-grid aria-hidden="true"></canvas>
+    <div class="ah__sky" aria-hidden="true"><span class="ah__moon"></span></div>
     <div class="container ah__inner">
       <div class="ah__text">
-        <p class="dot-label">About me</p>
+        <p class="dot-label ah__eyebrow">About me</p>
         <h1 class="ah__title">Designer with a <span class="accent">painter’s</span> hand</h1>
         <p class="ah__lede">Product, brand and web designer. 5+ years of client work, MDM from Toronto Metropolitan University, BFA in Graphic Design. Based in Canada, open to work.</p>
         <div class="ah__ctas">
-          <Button href={site.resume} download>Resume ↓</Button>
-          <Button href={site.linkedin} variant="ghost" external>LinkedIn ↗</Button>
+          <a class="ah__btn ah__btn--solid" href={site.resume} download>Resume ↓</a>
+          <a class="ah__btn" href={site.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
         </div>
       </div>
-      <div class="tower" aria-hidden="true">
-        <svg class="tower__svg" viewBox="0 0 200 520" fill="none">
-          <path class="tower__line" pathLength="1" d="M100 8 V120" />
-          <path class="tower__line" pathLength="1" d="M92 120 h16 l4 40 h-24 z" />
-          <path class="tower__line" pathLength="1" d="M88 160 L84 205 M112 160 L116 205" />
-          <ellipse class="tower__line tower__pod" pathLength="1" cx="100" cy="222" rx="42" ry="17" />
-          <path class="tower__line" pathLength="1" d="M60 230 q40 14 80 0" />
-          <path class="tower__line" pathLength="1" d="M90 239 L76 500 M110 239 L124 500 M100 239 V500" />
-          <path class="tower__line" pathLength="1" d="M60 500 h80" />
-          <path class="tower__line" pathLength="1" d="M20 512 h60 M120 512 h60" />
+
+      <div class="cn" data-cn>
+        <svg class="cn__tower" viewBox="0 0 240 640" aria-hidden="true">
+          <defs>
+            <linearGradient id="cnS" x1="0" x2="1"><stop offset="0" stop-color="#2a2145"/><stop offset=".5" stop-color="#6b5a92"/><stop offset="1" stop-color="#2a2145"/></linearGradient>
+          </defs>
+          <line x1="120" y1="0" x2="120" y2="120" stroke="#b9acd9" stroke-width="4"/>
+          <circle cx="120" cy="4" r="5" fill="#ff6a3d"/>
+          <path d="M108 118 h24 l8 72 h-40 z" fill="url(#cnS)"/>
+          <ellipse cx="120" cy="198" rx="30" ry="10" fill="#8f7fbf"/>
+          <path d="M100 206 L72 640 H168 L140 206 Z" fill="url(#cnS)"/>
+          <path d="M112 206 L94 640 M128 206 L146 640" stroke="#3a2f5c" stroke-width="2.5"/>
         </svg>
-        <div class="tower__card tower__card--back"><span class="tower__k">Based in</span><strong>Toronto, Canada</strong></div>
-        <div class="tower__card tower__card--front"><span class="tower__k">Hello</span><strong>About me</strong><span class="tower__hint">Product · Brand · Web</span></div>
+        <div class="cn__stage" aria-label="What I do, drag or scroll to spin">
+          <ul class="cn__ring" role="list" data-ring>
+            {ring.map((c, i) => (
+              <li class="cn__card" style={`--i:${i};--n:${ring.length}`}>
+                <a href={c.href}><span class="cn__k">{c.k}</span><strong>{c.t}</strong></a>
+              </li>
+            ))}
+          </ul>
+          <span class="cn__pod" aria-hidden="true"></span>
+        </div>
+        <div class="cn__hints" aria-hidden="true"><span>Scroll to spin</span><span>Click to explore</span></div>
       </div>
+    </div>
+    <div class="container ah__meta" aria-hidden="true">
+      <span>TORONTO, CANADA<br />43.65°N · 79.38°W</span>
+      <span class="ah__clock"><span data-clock>--:--</span><br />LOCAL TIME</span>
     </div>
   </section>
 
@@ -91,19 +115,29 @@ const tools = ['Figma', 'Adobe XD', 'Illustrator', 'Photoshop', 'After Effects',
 
 <script>
   import { getTier } from '../scripts/motion/capabilities';
-  import { paintGrid } from '../scripts/paint-grid';
-  const hero = document.querySelector<HTMLElement>('[data-about-hero]');
-  if (hero) {
-    const css = getComputedStyle(document.documentElement);
-    paintGrid(hero, hero.querySelector<HTMLCanvasElement>('[data-about-grid]')!, {
-      band: (w, h, cell) => { const cols = Math.ceil(w / cell), rows = Math.ceil(h / cell); return { cols, rows, x0: Math.round((w - cols * cell) / 2), y0: 0 }; },
-      cell: (w) => (w < 700 ? 44 : 72),
-      line: css.getPropertyValue('--ink').trim() || '#0b0b0b', lineAlpha: 0.07,
-      fill: css.getPropertyValue('--clay-bright').trim() || '#ee5a24', maxAlpha: 0.5, breathe: 1.4,
-    });
-  }
   const reduce = getTier() === 'none';
-  // Count up once when the numbers scroll into view.
+  // Ring of cards around the tower pod: drifts slowly, spins with scroll and drag.
+  const ring = document.querySelector<HTMLElement>('[data-ring]');
+  if (ring) {
+    let angle = 0, vel = 0, drag: number | null = null, lastY = scrollY;
+    const set = () => ring.style.setProperty('--r', `${angle}deg`);
+    if (!reduce) {
+      addEventListener('scroll', () => { vel += (scrollY - lastY) * 0.12; lastY = scrollY; }, { passive: true });
+      ring.addEventListener('pointerdown', (e) => { drag = e.clientX; ring.setPointerCapture(e.pointerId); });
+      ring.addEventListener('pointermove', (e) => { if (drag === null) return; vel += (e.clientX - drag) * 0.25; drag = e.clientX; });
+      ring.addEventListener('pointerup', () => { drag = null; });
+      const tick = () => { angle -= 0.08 + vel; vel *= 0.9; set(); requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    } else { angle = -20; set(); }
+  }
+  // Live Toronto time.
+  const clock = document.querySelector<HTMLElement>('[data-clock]');
+  if (clock) {
+    const f = new Intl.DateTimeFormat('en-CA', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Toronto' });
+    const up = () => { clock.textContent = f.format(new Date()).toUpperCase(); };
+    up(); setInterval(up, 30000);
+  }
+  // Count up the numbers once.
   const nums = document.querySelectorAll<HTMLElement>('[data-count]');
   if (nums.length && !reduce) {
     const io = new IntersectionObserver((es) => es.forEach((e) => {
@@ -114,44 +148,45 @@ const tools = ['Figma', 'Adobe XD', 'Illustrator', 'Photoshop', 'After Effects',
     }), { threshold: 0.6 });
     nums.forEach((n) => io.observe(n));
   }
-  // Painting tilts gently toward the cursor.
-  const art = document.querySelector<HTMLElement>('[data-tilt]');
-  if (art && !reduce && matchMedia('(hover: hover)').matches) {
-    art.addEventListener('pointermove', (e) => { const r = art.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; art.style.transform = `perspective(900px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`; });
-    art.addEventListener('pointerleave', () => { art.style.transform = ''; });
-  }
 </script>
 
 <style>
-  .ah { position: relative; overflow: hidden; }
-  .ah__grid { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-  .ah__inner { position: relative; display: grid; gap: var(--space-l); padding-block: var(--space-xl) var(--space-2xl); align-items: center; }
-  @media (min-width: 64rem) { .ah__inner { grid-template-columns: minmax(0, 1fr) 22rem; gap: var(--space-2xl); } }
+  .ah { position: relative; overflow: hidden; color: #f4f1fb; background: linear-gradient(180deg, #0d0a1f 0%, #1c1440 55%, #4a2a6a 100%); }
+  .ah__sky { position: absolute; inset: 0; pointer-events: none;
+    background-image: radial-gradient(1.5px 1.5px at 12% 18%, #fff8 50%, transparent 51%), radial-gradient(1px 1px at 28% 62%, #fff6 50%, transparent 51%), radial-gradient(1.5px 1.5px at 44% 12%, #fff9 50%, transparent 51%), radial-gradient(1px 1px at 63% 34%, #fff7 50%, transparent 51%), radial-gradient(1.5px 1.5px at 82% 22%, #fff8 50%, transparent 51%), radial-gradient(1px 1px at 91% 58%, #fff6 50%, transparent 51%), radial-gradient(1px 1px at 55% 80%, #fff5 50%, transparent 51%), radial-gradient(1px 1px at 8% 82%, #fff5 50%, transparent 51%); }
+  .ah__moon { position: absolute; top: 9%; right: 7%; width: 46px; height: 46px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fffbe8, #e8dcc0 60%, #b9a98a); box-shadow: 0 0 40px 8px rgb(255 240 200 / .25); }
+  .ah__inner { position: relative; display: grid; gap: var(--space-l); padding-block: var(--space-xl) var(--space-m); align-items: center; }
+  @media (min-width: 64rem) { .ah__inner { grid-template-columns: minmax(0, 1fr) minmax(24rem, 34rem); min-height: calc(100svh - var(--header-h) - 5rem); } }
   .ah__text { display: grid; gap: var(--space-s); justify-items: start; }
-  .ah__title { font: 700 clamp(2.6rem, 1rem + 5.5vw, 6rem) / 0.98 var(--font-text); letter-spacing: -0.04em; max-width: 12ch; }
-  .ah__lede { max-width: 34rem; font-size: var(--step-1); line-height: 1.5; color: var(--color-text-muted); }
+  .ah__eyebrow { color: #cfc6ea; }
+  .ah__title { font: 700 clamp(2.6rem, 1rem + 5.5vw, 6rem) / 0.98 var(--font-text); letter-spacing: -0.04em; max-width: 12ch; color: #fff; }
+  .ah__title .accent { color: #ff7a45; }
+  .ah__lede { max-width: 34rem; font-size: var(--step-1); line-height: 1.5; color: #cfc6ea; }
   .ah__ctas { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: var(--space-xs); }
-  .tower { position: relative; height: 30rem; display: none; }
-  @media (min-width: 64rem) { .tower { display: block; } }
-  .tower__svg { position: absolute; left: 50%; bottom: 0; height: 100%; translate: -50% 0; overflow: visible; }
-  .tower__line { stroke: var(--color-text); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: tw-draw 1.6s cubic-bezier(.6,0,.2,1) .9s forwards; }
-  .tower__pod { stroke: var(--clay-bright); fill: rgb(238 90 36 / .08); }
-  @keyframes tw-draw { to { stroke-dashoffset: 0; } }
-  .tower__card { position: absolute; width: 13rem; padding: 1.1rem 1.2rem; border-radius: 18px; display: grid; gap: .2rem; box-shadow: 0 24px 50px -24px rgb(11 11 11 / .35); }
-  .tower__card strong { font: 700 1.5rem / 1.1 var(--font-text); letter-spacing: -0.03em; }
-  .tower__k { font-size: .78rem; opacity: .7; }
-  .tower__hint { margin-top: .4rem; font-size: .85rem; opacity: .75; }
-  .tower__card--front { top: 34%; left: 50%; translate: -50% 0; background: var(--color-text); color: var(--color-bg); z-index: 2; animation: tw-away 1s cubic-bezier(.7,0,.2,1) .5s forwards; }
-  .tower__card--back { top: 70%; right: -1rem; background: #fff; color: var(--color-text); border: 1px solid var(--color-border); opacity: 0; animation: tw-in .6s ease 2.2s forwards; }
-  @keyframes tw-away { 60% { rotate: -8deg; } to { translate: -150% 40%; rotate: -14deg; opacity: 0; } }
-  @keyframes tw-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) { .tower__line { animation: none; stroke-dashoffset: 0; } .tower__card--front { display: none; } .tower__card--back { animation: none; opacity: 1; } }
-  .ah__by { display: flex; align-items: center; gap: .7rem; margin: 0; font-size: .95rem; color: var(--color-text-muted); }
-  .ah__by strong { color: var(--color-text); font-weight: 600; }
-  .ah__by :global(.ah__avatar) { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; object-position: 50% 25%; }
-  .ah__art { margin: 0; width: min(11rem, 40vw); justify-self: end; align-self: start; transition: transform .25s ease; will-change: transform; }
-  .ah__art :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 520 / 560; object-fit: cover; border-radius: 24px; box-shadow: 0 40px 80px -40px rgb(11 11 11 / .5); }
-  .ah__art figcaption { margin-top: .6rem; font-size: .85rem; color: var(--color-text-muted); }
+  .ah__btn { min-height: 48px; display: inline-flex; align-items: center; padding: 0 1.4rem; border-radius: 999px; border: 1px solid rgb(255 255 255 / .35); color: #fff; text-decoration: none; font-weight: 500; transition: background .25s, color .25s; }
+  .ah__btn:hover { background: rgb(255 255 255 / .12); }
+  .ah__btn--solid { background: #fff; color: #0d0a1f; border-color: #fff; }
+  .ah__btn--solid:hover { background: #ff7a45; border-color: #ff7a45; color: #fff; }
+  .ah__btn:focus-visible { outline: 2px solid #ff7a45; outline-offset: 3px; }
+
+  .cn { position: relative; height: clamp(28rem, 70vh, 40rem); }
+  .cn__tower { position: absolute; left: 50%; bottom: calc(-1 * var(--space-m) - 3rem); height: calc(100% + var(--space-m) + 3rem); translate: -50% 0; }
+  .cn__stage { position: absolute; left: 50%; top: 31%; width: 0; height: 0; perspective: 1100px; }
+  .cn__ring { position: absolute; left: 0; top: 0; margin: 0; padding: 0; list-style: none; transform-style: preserve-3d; transform: rotateX(-8deg) rotateY(var(--r, 0deg)); }
+  .cn__card { position: absolute; left: -4.6rem; top: -3.2rem; width: 9.2rem; height: 6.4rem; transform: rotateY(calc(var(--i) * 360deg / var(--n))) translateZ(12.5rem); backface-visibility: hidden; }
+  .cn__card a { height: 100%; display: grid; align-content: space-between; padding: .8rem .9rem; border-radius: 14px; background: linear-gradient(160deg, #ffffff, #e9e2ff); color: #1a1238; text-decoration: none; box-shadow: 0 12px 30px -10px rgb(0 0 0 / .5); transition: background .25s, color .25s; }
+  .cn__card:nth-child(odd) a { background: linear-gradient(160deg, #ff8a5c, #ee5a24); color: #fff; }
+  .cn__card a:hover { background: #fff; color: #ee5a24; }
+  .cn__k { font-size: .72rem; font-weight: 600; opacity: .7; }
+  .cn__card strong { font: 700 1.05rem / 1.1 var(--font-text); letter-spacing: -0.02em; }
+  .cn__pod { position: absolute; left: -5.6rem; top: 2.6rem; width: 11.2rem; height: 1.2rem; border-radius: 50%; background: #ff6a3d; box-shadow: 0 0 30px 6px rgb(255 106 61 / .45); transform: translateZ(0); }
+  .cn__ring { cursor: grab; touch-action: pan-y; }
+  .cn__ring:active { cursor: grabbing; }
+  .cn__hints { position: absolute; left: 50%; bottom: 1.2rem; translate: -50% 0; display: flex; gap: .5rem; }
+  .cn__hints span { padding: .35rem .8rem; border-radius: 999px; background: rgb(255 255 255 / .12); font-size: .75rem; color: #e9e2ff; backdrop-filter: blur(6px); white-space: nowrap; }
+  .ah__meta { position: relative; display: flex; justify-content: space-between; padding-block: var(--space-s) var(--space-m); font: 500 .72rem / 1.5 var(--font-text); letter-spacing: .08em; color: #b8aed8; }
+  .ah__clock { text-align: right; }
+  @media (max-width: 63.99rem) { .cn { height: 26rem; } .cn__stage { top: 30%; } .cn__card { transform: rotateY(calc(var(--i) * 360deg / var(--n))) translateZ(9rem); width: 7.6rem; height: 5.4rem; left: -3.8rem; top: -2.7rem; } .cn__pod { width: 8rem; left: -4rem; top: 2.2rem; } }
 
   .stats { padding-block: var(--space-m); }
   .stats__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-m); margin: 0; padding: var(--space-m) 0; list-style: none; border-block: 1px solid var(--color-border); }
