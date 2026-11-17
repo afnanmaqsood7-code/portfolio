@@ -41,7 +41,7 @@ const initial = handle.replace(/[^A-Za-z]/g, '').charAt(0).toUpperCase();
 </div>
 <style>
   .fp { display: grid; gap: var(--space-m); align-items: center; margin-block: var(--space-xl); }
-  @media (min-width: 64rem) { .fp { grid-template-columns: minmax(0, calc(100% - 44rem - var(--space-xl))) minmax(0, 44rem); gap: var(--space-xl); } }
+  @media (min-width: 64rem) { .fp { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-2xl); } }
   .fp__stage { display: grid; place-items: center; padding: var(--space-l) var(--space-m); background: #f3f2ef; border-radius: var(--radius-m); }
   .fp__phone { position: relative; width: min(19rem, 80%); aspect-ratio: 9 / 17.5; padding: 10px; background: #0b0b0b; border-radius: 2.6rem; box-shadow: 0 40px 70px -35px rgb(11 11 11 / .55); }
   .fp__notch { position: absolute; top: 18px; left: 50%; width: 30%; height: 18px; translate: -50% 0; background: #0b0b0b; border-radius: 99px; z-index: 3; }
