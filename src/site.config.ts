@@ -11,7 +11,7 @@ export const site = {
     /** Rotating first word of the role line: "<word> designer". */
     roles: ['Product', 'Brand', 'Web', 'UX/UI', 'Marketing'],
     intro:
-      '5+ years designing digital products, brands and websites that are clear, useful and considered. MDM, Toronto Metropolitan University · BFA Graphic Design. Off-screen, I paint and illustrate.',
+      'I turn messy problems into products people understand on first use. 5+ years shipping apps, websites and brands for startups and clients, often as the only designer, from first sketch to launch.',
     location: 'Based in Canada',
     status: 'Open to work',
   },

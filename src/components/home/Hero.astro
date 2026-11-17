@@ -15,7 +15,7 @@ import { site } from '../../site.config';
 const { roles, intro, status, location } = site.home;
 // Reel chapters: start time (s) → project. Matches public/home/reel.mp4.
 const chapters = [
-  [0.0, 'axivus', 'Axivus'], [2.3, 'biaco', 'Biaaco Med'], [4.6, 'evacovation', 'Evacovation'], [6.9, 'web-saas-design', 'Website Design'], [9.2, 'brand-identity', 'Build One'], [11.5, 'packaging', 'Packaging Design'], [13.8, 'amazon', 'Amazon E-commerce'], [16.1, 'social-media', 'Social Media'], [18.4, 'bridging-divides', 'Bridging Divides'],
+  [0.0, 'axivus', 'Axivus'], [2.1, 'biaco', 'Biaaco Med'], [4.2, 'evacovation', 'Evacovation'], [6.3, 'web-saas-design', 'Website Design'], [8.4, 'bridging-divides', 'Bridging Divides'], [10.5, 'brand-identity', 'Build One'], [12.6, 'packaging', 'Packaging Design'], [14.7, 'rabia-welfare', 'Rabia Welfare Hospital'], [16.8, 'ssr', 'School of Social Responsibility'], [18.9, 'amazon', 'Amazon E-commerce'], [21.0, 'social-media', 'Social Media'],
 ] as const;
 const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`;
 ---
@@ -42,7 +42,7 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     </div>
 
     <div class="hero__media" data-hero-media>
-      <video src="/home/reel.mp4" poster="/home/reel.jpg" muted loop playsinline autoplay preload="metadata" aria-label="Showreel of Afnan's work: app design, websites, branding, packaging, e-commerce and social media." data-reel></video>
+      <video src="/home/reel.mp4" poster="/home/reel.jpg" muted loop playsinline autoplay preload="metadata" aria-label="Showreel of Afnan's work: apps, websites, brand identities, packaging, print, e-commerce and social media." data-reel></video>
       <button type="button" class="hero__pause" data-reel-toggle hidden aria-pressed="false"><span class="visually-hidden" data-reel-label>Pause showreel</span><span aria-hidden="true" data-reel-icon>❚❚</span></button>
     </div>
 
@@ -70,7 +70,6 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
       maxAlpha: 0.5,
       breathe: 1.4,
     });
-    if (tier !== 'none' && matchMedia('(min-width: 48rem)').matches) void grow(hero);
   }
 
   /** Showreel: no autoplay with reduced motion; pause button; pauses off screen. */
@@ -168,9 +167,8 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
   .hero__stage {
     position: relative;
     display: grid;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto;
     gap: var(--space-l);
-    min-height: calc(100svh - var(--header-h));
     padding: var(--space-m) var(--container-pad) var(--space-m);
   }
   .hero__top { width: 100%; max-width: calc(var(--container-max) - 2 * var(--container-pad)); margin-inline: auto; display: grid; gap: 1.4rem 3rem; align-items: start; position: relative; z-index: 2; }
@@ -198,8 +196,8 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
   .hero__status { margin: 0; }
 
   /* Static layout: image card under the name. */
-  .hero__media { border-radius: 14px; overflow: hidden; }
-  .hero__media { position: relative; aspect-ratio: 16 / 9; }
+  /* Reel: full content width, same left edge as the name, 16:9. */
+  .hero__media { position: relative; width: 100%; max-width: calc(var(--container-max) - 2 * var(--container-pad)); margin-inline: auto; aspect-ratio: 16 / 9; border-radius: 20px; overflow: hidden; z-index: 1; box-shadow: 0 40px 80px -50px rgb(11 11 11 / .45); }
   .hero__media video { display: block; width: 100%; height: 100%; object-fit: cover; background: #0b0b0b; }
   .hero__pause { position: absolute; right: 0.75rem; bottom: 0.75rem; z-index: 3; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 50%; background: rgb(11 11 11 / 0.7); color: #fff; font-size: 0.75rem; cursor: pointer; }
   .hero__pause[hidden] { display: none; }
