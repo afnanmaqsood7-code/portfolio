@@ -1,12 +1,22 @@
 ---
-/** Big bold pull quote, left aligned between hairlines. `accent` = a word to colour orange. */
+/**
+ * Big bold pull quote, left aligned between hairlines.
+ * `accent` = words to colour orange. A "|" in `text` marks the line break:
+ * on desktop each line stays on one line, so the quote is always two lines.
+ */
 interface Props { text: string; by?: string; accent?: string }
 const { text, by, accent } = Astro.props;
-const [before, after] = accent && text.includes(accent) ? text.split(accent) : [text, undefined];
+const lines = text.split('|').map((l) => l.trim());
+const parts = (line: string) => (accent && line.includes(accent) ? (([b, a]) => ({ b, a }))(line.split(accent)) : { b: line, a: undefined });
 ---
 
 <figure class="quote cs-wide" data-reveal>
-  <blockquote>{before}{after !== undefined && <><span class="accent">{accent}</span>{after}</>}</blockquote>
+  <blockquote>
+    {lines.map((l, i) => {
+      const { b, a } = parts(l);
+      return <span class="quote__line">{b}{a !== undefined && <><span class="accent">{accent}</span>{a}</>}{i < lines.length - 1 && ' '}</span>;
+    })}
+  </blockquote>
   {by && <figcaption class="mono-label">{by}</figcaption>}
 </figure>
 
@@ -16,11 +26,11 @@ const [before, after] = accent && text.includes(accent) ? text.split(accent) : [
     margin: 0 !important;
     padding: 0 !important;
     border: 0 !important;
-    max-width: 38ch;
-    font: 700 clamp(1.7rem, 0.9rem + 2.4vw, 3.2rem) / 1.1 var(--font-text) !important;
+    font: 700 clamp(1.6rem, 3.4vw, 3.2rem) / 1.1 var(--font-text) !important;
     letter-spacing: -0.04em;
     color: var(--color-text);
     text-wrap: balance;
   }
+  @media (min-width: 48rem) { .quote__line { display: block; white-space: nowrap; } }
   figcaption { margin-top: var(--space-s); color: var(--color-text-muted); }
 </style>
