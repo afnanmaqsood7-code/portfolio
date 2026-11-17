@@ -29,19 +29,22 @@ function bandTexture(cards: Card[]) {
 }
 
 function ribbonTexture(text: string) {
-  const c = document.createElement('canvas'); c.width = 4096; c.height = 160; const g = c.getContext('2d')!;
+  const c = document.createElement('canvas'); c.width = 8192; c.height = 320; const g = c.getContext('2d')!;
   g.fillStyle = '#ff6a3d'; g.fillRect(0, 0, c.width, c.height);
-  g.fillStyle = '#2a0f20'; g.font = '800 96px Archivo, Arial, sans-serif'; g.textBaseline = 'middle';
-  let x = 30; const unit = text + '   ✦   ';
-  while (x < c.width) { g.fillText(unit, x, 84); x += g.measureText(unit).width; }
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = THREE.RepeatWrapping; return t;
+  g.fillStyle = '#2a0f20'; g.font = '800 190px Archivo, Arial, sans-serif'; g.textBaseline = 'middle';
+  const unit = text + '   ✦   ';
+  const uw = g.measureText(unit).width, copies = Math.max(1, Math.round(c.width / uw)), sx = c.width / (copies * uw);
+  g.save(); g.scale(sx, 1);
+  for (let i = 0; i < copies; i++) g.fillText(unit, i * uw, 168);
+  g.restore();
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = THREE.RepeatWrapping; t.anisotropy = 16; return t;
 }
 
 export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: boolean) {
   await document.fonts.ready;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: !!canvas.dataset.capture });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.setPixelRatio(Math.min(Math.max(devicePixelRatio, 1.5), 2));
+  renderer.toneMapping = THREE.NoToneMapping; renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
   scene.fog = new THREE.Fog(0x2a1a4a, 14, 34);
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
@@ -50,8 +53,8 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
   addEventListener('pointermove', (e) => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; }, { passive: true });
 
   scene.add(new THREE.HemisphereLight(0xcab8ff, 0x2a1440, 1.1));
-  const key = new THREE.DirectionalLight(0xfff1e6, 2.4); key.position.set(-6, 5, 6); scene.add(key);
-  const rim = new THREE.PointLight(0xff5fb0, 60, 20); rim.position.set(5, 2, -2); scene.add(rim);
+  const key = new THREE.DirectionalLight(0xfff1e6, 1.8); key.position.set(-6, 5, 6); scene.add(key);
+  const rim = new THREE.PointLight(0xff5fb0, 35, 20); rim.position.set(5, 2, -2); scene.add(rim);
   const warm = new THREE.PointLight(0xff8a50, 18, 12); warm.position.set(0, -0.5, 3.5); scene.add(warm);
 
   const tower = new THREE.Group(); scene.add(tower);
@@ -86,7 +89,7 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
   const panels: THREE.Mesh[] = [];
   for (let i = 0; i < n; i++) {
     const tex = bandTex.clone(); tex.needsUpdate = true; tex.repeat.set(1 / n, 1); tex.offset.set(i / n, 0);
-    const face = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, map: tex, transparent: true, alphaTest: 0.5, roughness: .35, metalness: .05, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: .22 });
+    const face = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, map: tex, transparent: true, alphaTest: 0.5, roughness: .9, metalness: 0, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: .55 });
     const g = new THREE.CylinderGeometry(R, R, 1.15, 24, 1, true, 0, arc);
     const front = new THREE.Mesh(g, face); front.userData.i = i;
     const back = new THREE.Mesh(new THREE.CylinderGeometry(R - 0.09, R - 0.09, 1.15, 24, 1, true, 0, arc), edge);
@@ -97,8 +100,8 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
     card.rotation.y = (i / n) * Math.PI * 2;
     band.add(card); panels.push(front);
   }
-  const ribTex = ribbonTexture('AFNAN MAQSOOD · PRODUCT · BRAND · WEB'); ribTex.repeat.set(2, 1);
-  const ribbon = new THREE.Mesh(new THREE.CylinderGeometry(1.86, 1.86, 0.3, 128, 1, true), new THREE.MeshStandardMaterial({ map: ribTex, side: THREE.DoubleSide, emissive: 0xff5a2a, emissiveMap: ribTex, emissiveIntensity: .5 }));
+  const ribTex = ribbonTexture('AFNAN MAQSOOD  ·  PRODUCT  ·  BRAND  ·  WEB');
+  const ribbon = new THREE.Mesh(new THREE.CylinderGeometry(1.86, 1.86, 0.3, 128, 1, true), new THREE.MeshStandardMaterial({ map: ribTex, side: THREE.DoubleSide, emissive: 0xffffff, emissiveMap: ribTex, emissiveIntensity: .45, roughness: .9 }));
   ribbon.position.y = -0.62; tower.add(ribbon);
 
   // Moon + stars.
