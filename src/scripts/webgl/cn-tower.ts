@@ -39,7 +39,7 @@ function ribbonTexture(text: string) {
 
 export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: boolean) {
   await document.fonts.ready;
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: !!canvas.dataset.capture });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
@@ -141,6 +141,13 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
     if (visible && !document.hidden) raf = requestAnimationFrame(tick);
   }
   if (reduce) { band.rotation.y = -0.3; renderer.render(scene, camera); } else raf = requestAnimationFrame(tick);
+  // Build-time capture hook (only with data-capture): render one angle, return a PNG.
+  if (canvas.dataset.capture) {
+    (canvas as unknown as { __shot: (a: number) => string }).__shot = (a: number) => {
+      cancelAnimationFrame(raf); band.rotation.y = -a; ribbon.rotation.y = a * 0.6; bulbs.rotation.y = -a * .3; tower.rotation.y = 0;
+      camera.position.set(0, -0.6, 10.5); camera.lookAt(0, 0.8, 0); renderer.render(scene, camera); return canvas.toDataURL('image/png');
+    };
+  }
   const onVis = () => { if (!document.hidden && visible && !raf && !reduce) raf = requestAnimationFrame(tick); };
   document.addEventListener('visibilitychange', onVis);
 

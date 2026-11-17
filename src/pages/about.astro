@@ -70,6 +70,7 @@ const tools = ['Figma', 'Adobe XD', 'Illustrator', 'Photoshop', 'After Effects',
           </ul>
           <span class="cn__pod" aria-hidden="true"></span>
         </div>
+        <img class="cn__seq" src="/about/tower/00.webp" alt="" aria-hidden="true" data-cn-seq hidden />
         <div class="cn__hints" aria-hidden="true"><span>Scroll to spin</span><span>Click to explore</span></div>
       </div>
     </div>
@@ -121,8 +122,25 @@ const tools = ['Figma', 'Adobe XD', 'Illustrator', 'Photoshop', 'After Effects',
   // the fallback when WebGL is unavailable.
   const cnBox = document.querySelector<HTMLElement>('[data-cn]');
   const cnCanvas = document.querySelector<HTMLCanvasElement>('[data-cn-canvas]');
+  if (new URLSearchParams(location.search).has('capture')) cnCanvas?.setAttribute('data-capture', '1');
   const gl = document.createElement('canvas').getContext('webgl2');
-  if (!gl) console.info('About: WebGL2 unavailable, showing the flat tower.');
+  if (!gl && cnBox) {
+    // No WebGL: play a pre-rendered 36-frame turn of the same 3D tower,
+    // scrubbed by scroll and drag, so the scene still looks and moves in 3D.
+    const img = cnBox.querySelector<HTMLImageElement>('[data-cn-seq]')!;
+    const N = 36, frames = Array.from({ length: N }, (_, i) => `/about/tower/${String(i).padStart(2, '0')}.webp`);
+    frames.forEach((f) => { const im = new Image(); im.src = f; });
+    img.hidden = false; cnBox.classList.add('is-seq');
+    let pos = 0, vel = 0, lastY = scrollY, drag: number | null = null, moved = 0, shown = -1;
+    if (!reduce) {
+      addEventListener('scroll', () => { vel += (scrollY - lastY) * 0.02; lastY = scrollY; }, { passive: true });
+      img.addEventListener('pointerdown', (e) => { drag = e.clientX; moved = 0; img.setPointerCapture(e.pointerId); });
+      img.addEventListener('pointermove', (e) => { if (drag === null) return; const d = e.clientX - drag; moved += Math.abs(d); vel -= d * 0.03; drag = e.clientX; });
+      img.addEventListener('pointerup', () => { if (moved < 6) location.href = '/work/'; drag = null; });
+      const tick = () => { pos += 0.05 + vel; vel *= 0.9; const f = ((Math.round(pos) % N) + N) % N; if (f !== shown) { img.src = frames[f]; shown = f; } requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    }
+  }
   if (cnBox && cnCanvas && gl) {
     const cards = Array.from(cnBox.querySelectorAll<HTMLAnchorElement>('.cn__card a')).map((a) => ({ k: a.querySelector('.cn__k')!.textContent!, t: a.querySelector('strong')!.textContent!, href: a.getAttribute('href')! }));
     import('../scripts/webgl/cn-tower').then(async ({ cnTower }) => { await cnTower(cnCanvas, cards, reduce); cnBox.classList.add('is-3d'); }).catch((e) => console.warn('About 3D tower failed', e));
@@ -185,6 +203,9 @@ const tools = ['Figma', 'Adobe XD', 'Illustrator', 'Photoshop', 'After Effects',
   .cn:global(.is-3d) .cn__canvas { opacity: 1; }
   .cn:global(.is-3d) .cn__tower, .cn:global(.is-3d) .cn__stage { display: none; }
   .cn__hints { pointer-events: none; }
+  .cn__seq { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 0; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-drag: none; }
+  .cn__seq[hidden] { display: none; }
+  .cn:global(.is-seq) .cn__tower, .cn:global(.is-seq) .cn__stage { display: none; }
   .cn__tower { position: absolute; left: 50%; bottom: calc(-1 * var(--space-m) - 3rem); height: calc(100% + var(--space-m) + 3rem); translate: -50% 0; }
   .cn__stage { position: absolute; left: 50%; top: 31%; width: 0; height: 0; perspective: 1100px; }
   .cn__ring { position: absolute; left: 0; top: 0; margin: 0; padding: 0; list-style: none; transform-style: preserve-3d; transform: rotateX(-8deg) rotateY(var(--r, 0deg)); }
