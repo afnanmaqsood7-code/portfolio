@@ -7,8 +7,9 @@ import * as THREE from 'three';
 
 export interface Card { k: string; t: string; href: string }
 
-function bandTexture(cards: Card[]) {
-  const W = 8192, H = 1024, c = document.createElement('canvas'); c.width = W; c.height = H;
+function bandTexture(cards: Card[], cardAspect: number) {
+  // cardAspect = panel width / height in 3D, so text is never stretched.
+  const W = 8192, H = Math.round((W / cards.length) / cardAspect), c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d')!;
   const n = cards.length, cw = W / n;
   g.clearRect(0, 0, W, H);
@@ -28,18 +29,18 @@ function bandTexture(cards: Card[]) {
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 16; t.generateMipmaps = true; t.minFilter = THREE.LinearMipmapLinearFilter; return t;
 }
 
-function ribbonTexture(words: string[]) {
+function ribbonTexture(words: string[], aspect: number) {
   // Words keep their natural shape: a whole number of repeats fills the
   // circle, and the leftover width goes into the gaps, never into the glyphs.
-  const c = document.createElement('canvas'); c.width = 8192; c.height = 320; const g = c.getContext('2d')!;
+  const c = document.createElement('canvas'); c.width = 12288; c.height = Math.round(12288 / aspect); const g = c.getContext('2d')!;
   g.fillStyle = '#ff6a3d'; g.fillRect(0, 0, c.width, c.height);
-  g.fillStyle = '#2a0f20'; g.font = '800 170px Archivo, Arial, sans-serif'; g.textBaseline = 'middle';
+  g.fillStyle = '#2a0f20'; const fs = Math.round(c.height * 0.56); g.font = `800 ${fs}px Archivo, Arial, sans-serif`; g.textBaseline = 'middle';
   const items = [...words, '✦'];
-  const minGap = 90, wsum = items.reduce((n, w) => n + g.measureText(w).width, 0);
+  const minGap = fs * 0.55, wsum = items.reduce((n, w) => n + g.measureText(w).width, 0);
   const copies = Math.max(1, Math.floor(c.width / (wsum + minGap * items.length)));
   const gap = (c.width - copies * wsum) / (copies * items.length);
   let x = gap / 2;
-  for (let k = 0; k < copies; k++) for (const w of items) { g.fillText(w, x, 168); x += g.measureText(w).width + gap; }
+  for (let k = 0; k < copies; k++) for (const w of items) { g.fillText(w, x, c.height * 0.53); x += g.measureText(w).width + gap; }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = THREE.RepeatWrapping; t.anisotropy = 16; return t;
 }
 
@@ -119,7 +120,8 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
   tower.add(bulbs);
 
   // Curved card band (spins) + ribbon below (spins the other way).
-  const bandTex = bandTexture(cards);
+  const nC = cards.length, RC = 2.35, arcC = (Math.PI * 2) / nC * 0.82;
+  const bandTex = bandTexture(cards, (RC * arcC) / 1.15);
   // Each card is its own thick, curved panel standing off the pod, so the
   // ring reads as real objects in space (front cards big, back cards small).
   const band = new THREE.Group(); band.position.y = 0.22; tower.add(band);
@@ -139,7 +141,7 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
     card.rotation.y = (i / n) * Math.PI * 2;
     band.add(card); panels.push(front);
   }
-  const ribTex = ribbonTexture(['AFNAN MAQSOOD', 'PRODUCT', 'BRAND', 'WEB']);
+  const ribTex = ribbonTexture(['AFNAN MAQSOOD', 'PRODUCT', 'BRAND', 'WEB'], (2 * Math.PI * 1.86) / 0.3);
   const ribbon = new THREE.Mesh(new THREE.CylinderGeometry(1.86, 1.86, 0.3, 128, 1, true), new THREE.MeshStandardMaterial({ map: ribTex, side: THREE.DoubleSide, emissive: 0xffffff, emissiveMap: ribTex, emissiveIntensity: .45, roughness: .9 }));
   ribbon.position.y = -0.62; tower.add(ribbon);
 
