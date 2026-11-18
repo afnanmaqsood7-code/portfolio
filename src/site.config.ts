@@ -4,7 +4,7 @@
  */
 export const site = {
   name: 'Afnan Maqsood',
-  url: 'https://portfolio-lxlk.vercel.app', // TODO: real domain (used for canonical + OG + sitemap)
+  url: 'https://afnanmaqsood-lxlk.vercel.app', // TODO: real domain (used for canonical + OG + sitemap)
   positioning: 'Product, brand and web designer based in Canada.',
   /** Home hero copy. Professional first; painting comes last. */
   home: {
