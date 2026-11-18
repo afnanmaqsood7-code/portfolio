@@ -95,7 +95,7 @@ const facts = [
     letter-spacing: -0.05em;
     text-wrap: balance;
   }
-  .cs-lede { font-size: var(--step-1); line-height: 1.45; color: var(--color-text-muted); max-width: 40rem; text-wrap: pretty; }
+  .cs-lede { font-size: var(--step-1); line-height: 1.45; color: var(--color-text-muted); text-wrap: pretty; }
   /* Desktop: the summary runs the full width under the title,
      from the left edge to the right edge. */
   @media (min-width: 64rem) {
@@ -161,8 +161,10 @@ const facts = [
   /* One left edge for everything: heading, intro, points, figures and
      body text all start on the same line. Running text keeps a readable
      measure (~44rem); wide blocks fill the full width beside it. */
-  .cs-body > :global(h2 + p) { font-size: var(--step-1); line-height: 1.5; color: var(--color-text); max-width: 40rem; }
-  .cs-body > :global(p), .cs-body > :global(ul:not([role])), .cs-body > :global(ol:not([role])) { max-width: 44rem; }
+  .cs-body > :global(h2 + p) { font-size: var(--step-1); line-height: 1.5; color: var(--color-text); }
+  .cs-body > :global(p), .cs-body > :global(ul:not([role])), .cs-body > :global(ol:not([role])) { grid-column: wide; max-width: none; }
+  .cs-body > :global(h2 + p) { grid-column: wide; max-width: none; }
+  @media (min-width: 64rem) { .cs-body > :global(p) { font-size: 1.12rem; line-height: 1.65; } }
 
   /* Headings inside wide components (Split text) keep the reading rhythm. */
   .cs-body :global(.split h2) { margin-top: 0; }

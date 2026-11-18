@@ -1,0 +1,120 @@
+---
+/**
+ * Hero visual: real UI screens from Afnan's projects floating in 3D depth.
+ * - Plain links + <img> (works without JS, keyboard focusable).
+ * - JS (motion tiers only): scene tilts toward the pointer, cards drift
+ *   slowly, and on scroll they spread apart and come forward.
+ * - Reduced motion: static composition.
+ * Positions are % of the stage centre; z is depth in px.
+ */
+import { Image } from 'astro:assets';
+import webCommand from '../../assets/projects/axivus/web-command.jpg';
+import ipadInbox from '../../assets/projects/axivus/ipad-inbox.jpg';
+import axDash from '../../assets/projects/axivus/screen-dashboard.png';
+import axJob from '../../assets/projects/axivus/screen-activejob.png';
+import biHome from '../../assets/projects/biaco/home.png';
+import evMap from '../../assets/projects/evacovation/map.jpg';
+import paymi from '../../assets/projects/web-saas-design/paymi-home.jpg';
+import bola from '../../assets/projects/web-saas-design/bola-home.jpg';
+import forum from '../../assets/projects/bridging-divides/forum-home.jpg';
+
+type Kind = 'web' | 'tab' | 'phone';
+const cards: { src: ImageMetadata; alt: string; slug: string; name: string; kind: Kind; x: number; y: number; z: number; w: number; r: number; m?: boolean }[] = [
+  { src: webCommand, alt: 'Axivus shop command centre web app', slug: 'axivus', name: 'Axivus', kind: 'web', x: 0, y: 0, z: 0, w: 40, r: 0, m: true },
+  { src: ipadInbox, alt: 'Axivus service advisor iPad inbox', slug: 'axivus', name: 'Axivus', kind: 'tab', x: -31, y: 12, z: -140, w: 25, r: -4, m: true },
+  { src: paymi, alt: 'Paymi fintech landing page', slug: 'web-saas-design', name: 'Website Design', kind: 'web', x: 32, y: -8, z: -110, w: 24, r: 3, m: true },
+  { src: axDash, alt: 'Axivus mechanic app dashboard', slug: 'axivus', name: 'Axivus', kind: 'phone', x: -15, y: 22, z: 120, w: 10, r: -5, m: true },
+  { src: biHome, alt: 'Biaaco Med telehealth app home screen', slug: 'biaco', name: 'Biaaco Med', kind: 'phone', x: 17, y: 20, z: 160, w: 10, r: 4, m: true },
+  { src: evMap, alt: 'Evacovation emergency map screen', slug: 'evacovation', name: 'Evacovation', kind: 'phone', x: -42, y: -16, z: -240, w: 9, r: 6 },
+  { src: forum, alt: 'Bridging Divides forum welcome page', slug: 'bridging-divides', name: 'Bridging Divides', kind: 'tab', x: 43, y: 26, z: -220, w: 17, r: -3 },
+  { src: bola, alt: 'Bola SaaS landing page', slug: 'web-saas-design', name: 'Website Design', kind: 'web', x: 4, y: -30, z: -300, w: 22, r: -2 },
+  { src: axJob, alt: 'Axivus mechanic active job screen', slug: 'axivus', name: 'Axivus', kind: 'phone', x: 29, y: -26, z: -60, w: 8, r: -6 },
+];
+---
+
+<div class="fs" data-fs aria-label="Screens from selected projects">
+  <div class="fs__scene" data-fs-scene>
+    {cards.map((c, i) => (
+      <a
+        href={`/work/${c.slug}/`}
+        class:list={['fs__card', `fs__card--${c.kind}`, { 'fs__card--extra': !c.m }]}
+        style={`--x:${c.x};--y:${c.y};--z:${c.z};--w:${c.w};--r:${c.r}deg;--d:${(i * 0.7) % 3}s;--t:${7 + (i % 4)}s`}
+        data-fs-card data-name={c.name}
+        aria-label={`${c.name}: ${c.alt}`}
+      >
+        <span class="fs__float">
+          <Image src={c.src} alt="" widths={c.kind === 'phone' ? [200, 320] : [480, 800, 1200]} sizes={c.kind === 'phone' ? '160px' : '(min-width: 64rem) 40vw, 60vw'} loading={i < 2 ? 'eager' : 'lazy'} />
+        </span>
+      </a>
+    ))}
+  </div>
+</div>
+
+<style>
+  .fs { position: relative; width: 100%; aspect-ratio: 16 / 8; perspective: 1400px; z-index: 1; }
+  @media (max-width: 47.99rem) { .fs { aspect-ratio: 4 / 3.4; } .fs__card--extra { display: none; } }
+  .fs__scene { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
+  .fs__card {
+    --s: 0; /* scroll spread 0..1, set by JS */
+    position: absolute; left: 50%; top: 50%;
+    width: calc(var(--w) * 1%);
+    transform:
+      translate(-50%, -50%)
+      translate3d(calc(var(--x) * 1cqw * (1 + var(--s) * .9)), calc(var(--y) * 1cqh * (1 + var(--s) * .9)), calc((var(--z) + var(--s) * 260) * 1px))
+      rotate(var(--r));
+    transform-style: preserve-3d;
+    border-radius: 12px;
+    outline-offset: 4px;
+  }
+  .fs { container-type: size; }
+  .fs__float { display: block; border-radius: inherit; overflow: hidden; background: #fff; box-shadow: 0 30px 60px -28px rgb(11 11 11 / .45), 0 0 0 1px rgb(11 11 11 / .08); transition: transform .35s ease, box-shadow .35s ease; }
+  .fs__card--phone .fs__float { border-radius: 18px; box-shadow: 0 30px 60px -28px rgb(11 11 11 / .5), 0 0 0 5px #0b0b0b; }
+  .fs__float :global(img) { display: block; width: 100%; height: auto; object-fit: cover; object-position: top; }
+  .fs__card--web :global(img) { aspect-ratio: 16 / 10.5; }
+  .fs__card--tab :global(img) { aspect-ratio: 4 / 3.2; }
+  .fs__card--phone :global(img) { aspect-ratio: 9 / 19.5; }
+  .fs__card:hover .fs__float, .fs__card:focus-visible .fs__float { transform: translateZ(40px) scale(1.04); box-shadow: 0 40px 80px -30px rgb(11 11 11 / .55), 0 0 0 1px var(--color-accent); }
+  .fs__card--phone:hover .fs__float { box-shadow: 0 40px 80px -30px rgb(11 11 11 / .55), 0 0 0 5px var(--color-accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    .fs__float { animation: fs-drift var(--t) ease-in-out var(--d) infinite alternate; }
+    .fs__card:hover .fs__float { animation-play-state: paused; }
+  }
+  @keyframes fs-drift { from { translate: 0 -6px; } to { translate: 0 8px; } }
+</style>
+
+<script>
+  import { getTier } from '../../scripts/motion/capabilities';
+  const root = document.querySelector<HTMLElement>('[data-fs]');
+  if (root && getTier() !== 'none') {
+    const scene = root.querySelector<HTMLElement>('[data-fs-scene]')!;
+    // Tilt toward the pointer (lerped).
+    let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+    const tick = () => {
+      cx += (tx - cx) * 0.08; cy += (ty - cy) * 0.08;
+      scene.style.setProperty('--ry', `${cx * 8}deg`); scene.style.setProperty('--rx', `${-cy * 6}deg`);
+      raf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.001 ? requestAnimationFrame(tick) : 0;
+    };
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      addEventListener('pointermove', (e) => {
+        tx = e.clientX / innerWidth - 0.5; ty = e.clientY / innerHeight - 0.5;
+        if (!raf) raf = requestAnimationFrame(tick);
+      }, { passive: true });
+    }
+    // Spread apart as the hero scrolls away.
+    const cards = root.querySelectorAll<HTMLElement>('[data-fs-card]');
+    let pending = false;
+    const onScroll = () => {
+      if (pending) return; pending = true;
+      requestAnimationFrame(() => {
+        pending = false;
+        const r = root.getBoundingClientRect();
+        const s = Math.min(1, Math.max(0, (innerHeight * 0.55 - r.top) / (innerHeight * 0.9)));
+        cards.forEach((c) => c.style.setProperty('--s', s.toFixed(3)));
+      });
+    };
+    addEventListener('scroll', onScroll, { passive: true }); onScroll();
+    // Hover/focus tells the hero which project is under the pointer.
+    root.addEventListener('pointerover', (e) => { const c = (e.target as HTMLElement).closest<HTMLElement>('[data-fs-card]'); if (c) document.dispatchEvent(new CustomEvent('fs:hover', { detail: { name: c.dataset.name, href: c.getAttribute('href') } })); });
+    root.addEventListener('focusin', (e) => { const c = (e.target as HTMLElement).closest<HTMLElement>('[data-fs-card]'); if (c) document.dispatchEvent(new CustomEvent('fs:hover', { detail: { name: c.dataset.name, href: c.getAttribute('href') } })); });
+  }
+</script>
