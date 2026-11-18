@@ -143,9 +143,9 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
       const S = stage.getBoundingClientRect(), T = top.getBoundingClientRect();
       const B = { top: S.bottom - 40 };
       const gap = 24, y0 = T.bottom - S.top + gap, y1 = B.top - S.top - gap;
-      let h = Math.max(0, y1 - y0), w = h * 16 / 9;
-      const maxW = S.width * 0.46;
-      if (w > maxW) { w = maxW; h = w * 9 / 16; }
+      // A wide, cinematic card (2 : 1), as wide as half the screen when space allows.
+      let w = S.width * 0.5, h = w / 2;
+      if (h > y1 - y0) { h = Math.max(0, y1 - y0); w = h * 2; }
       const x = (S.width - w) / 2, y = y0 + (y1 - y0 - h) / 2;
       return { x, y, w, h, W: S.width, H: S.height };
     };
@@ -174,7 +174,7 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     padding: var(--space-m) var(--container-pad) var(--space-m);
   }
   .hero__top { width: 100%; max-width: calc(var(--container-max) - 2 * var(--container-pad)); margin-inline: auto; display: grid; gap: 1.4rem 3rem; align-items: start; position: relative; z-index: 2; }
-  @media (min-width: 64rem) { .hero__top { grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem); align-items: end; column-gap: clamp(2rem, 5vw, 5rem); } .hero__aside { padding-bottom: .6rem; } }
+  @media (min-width: 64rem) { .hero__top { grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem); align-items: center; column-gap: clamp(2rem, 5vw, 5rem); } .hero__aside { padding: 0; } }
   .hero__aside { display: grid; gap: 1.1rem; justify-items: start; }
   .hero__title { display: grid; font: inherit; }
   .hero__name {
@@ -222,6 +222,7 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
   .hero:global(.hero--live) { height: 230vh; }
   .hero:global(.hero--live) .hero__stage { position: sticky; top: 0; height: 100svh; min-height: 0; }
   .hero:global(.hero--live) .hero__media {
+    max-width: none; width: auto; margin: 0; box-shadow: none;
     position: absolute; inset: 0; border-radius: 0; z-index: 1; aspect-ratio: auto;
     clip-path: inset(31% 30% 36% 30% round 14px);
     will-change: clip-path;
