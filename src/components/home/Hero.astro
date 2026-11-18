@@ -28,6 +28,7 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
       <h1 id="hero-title" class="hero__title">
         <span class="hero__name">{site.name}</span>
         <span class="hero__role" aria-hidden="true">_<span data-typed data-words={JSON.stringify(roles)}>{roles[0]}</span><span class="hero__caret"></span> designer</span>
+        <span class="hero__role hero__ghost" aria-hidden="true">_{[...roles].sort((a, b) => b.length - a.length)[0]}<span class="hero__caret"></span> designer</span>
         <span class="visually-hidden">, {roleList.toLowerCase()}</span>
       </h1>
       <div class="hero__aside">
@@ -111,20 +112,12 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     const el = root.querySelector<HTMLElement>('[data-typed]');
     if (!el) return;
     const words: string[] = JSON.parse(el.dataset.words || '[]');
-    let w = 0, i = words[0].length, erasing = true;
-    const step = () => {
-      const word = words[w];
-      if (!erasing) {
-        el.textContent = word.slice(0, ++i);
-        if (i >= word.length) { erasing = true; return void setTimeout(step, 1800); }
-        setTimeout(step, 85);
-      } else {
-        el.textContent = word.slice(0, --i);
-        if (i <= 0) { erasing = false; w = (w + 1) % words.length; return void setTimeout(step, 260); }
-        setTimeout(step, 45);
-      }
-    };
-    setTimeout(step, 2200);
+    // Swap whole words (never an empty gap): fade out, change, fade in.
+    let w = 0;
+    setInterval(() => {
+      el.style.opacity = '0';
+      setTimeout(() => { w = (w + 1) % words.length; el.textContent = words[w]; el.style.opacity = '1'; }, 250);
+    }, 2400);
   }
 
   /** The image card grows from a small centred card to full-bleed. */
@@ -173,7 +166,12 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     padding: var(--space-m) var(--container-pad) var(--space-m);
   }
   .hero__top { width: 100%; max-width: calc(var(--container-max) - 2 * var(--container-pad)); margin-inline: auto; display: grid; gap: 1.4rem 3rem; align-items: start; position: relative; z-index: 2; }
-  @media (min-width: 64rem) { .hero__top { grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem); align-items: center; column-gap: clamp(2rem, 5vw, 5rem); } .hero__aside { padding: 0; } }
+  @media (min-width: 64rem) { .hero__top { grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: clamp(2rem, 4vw, 4rem); }
+    /* the role line never widens the column, so nothing shifts */
+    .hero__aside { padding: 0; } }
+  /* invisible longest role: reserves the column width so nothing moves */
+  .hero__ghost { visibility: hidden; height: 0; overflow: hidden; }
+  [data-typed] { transition: opacity .25s ease; }
   .hero__aside { display: grid; gap: 1.1rem; justify-items: start; }
   .hero__title { display: grid; font: inherit; }
   .hero__name {
