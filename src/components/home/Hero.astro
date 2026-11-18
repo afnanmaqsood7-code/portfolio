@@ -208,14 +208,18 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
   @media (min-width: 56rem) { .hero__line { display: block; position: absolute; top: 0; bottom: 6%; left: 50%; width: 1px; background: var(--color-border); z-index: 0; } }
 
   .hero__intro { margin: 0; font-size: 1.02rem; line-height: 1.55; color: var(--color-text-muted); }
-  .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1.4rem; }
-  .hero__now { display: inline-flex; align-items: center; gap: .45rem; width: fit-content; min-height: 44px; padding: 0 1rem; border-radius: 999px; background: #0b0b0b; color: #fff; text-decoration: none; font-size: .95rem; font-weight: 500; transition: background .3s; }
+  /* One fixed row: long project names are truncated, never wrapped, so the
+     right column keeps the same height and the name never moves. */
+  .hero__actions { display: flex; flex-wrap: nowrap; align-items: center; gap: 1.2rem; }
+  .hero__now [data-reel-title] { display: inline-block; max-width: 11.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+  @media (max-width: 63.99rem) { .hero__actions { gap: .8rem; } .hero__now [data-reel-title] { max-width: 6.5rem; } }
+  .hero__now { flex: none; white-space: nowrap; display: inline-flex; align-items: center; gap: .45rem; width: fit-content; min-height: 44px; padding: 0 1rem; border-radius: 999px; background: #0b0b0b; color: #fff; text-decoration: none; font-size: .95rem; font-weight: 500; transition: background .3s; }
   .hero__now:hover { background: var(--clay-bright); }
   .hero__now-k { color: #ff9a6b; font-size: .78rem; }
   .hero__now:global(.is-in) [data-reel-title] { animation: now-in .45s ease both; }
   @keyframes now-in { from { opacity: 0; transform: translateY(6px); } }
   @media (prefers-reduced-motion: reduce) { .hero__now:global(.is-in) [data-reel-title] { animation: none; } }
-  .hero__scroll { min-height: 44px; display: inline-flex; align-items: center; font-size: .9rem; font-weight: 500; color: var(--color-text); text-decoration: none; }
+  .hero__scroll { flex: none; white-space: nowrap; min-height: 44px; display: inline-flex; align-items: center; font-size: .9rem; font-weight: 500; color: var(--color-text); text-decoration: none; }
   .hero__scroll:hover { color: var(--color-accent); }
 
   /* Live (motion, ≥48rem): sticky stage; the card is clipped and grows. */

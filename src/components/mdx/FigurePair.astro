@@ -6,11 +6,11 @@
 import { Image } from 'astro:assets';
 
 interface Item { src: ImageMetadata; alt: string; label?: string }
-interface Props { items: [Item, Item]; caption?: string }
-const { items, caption } = Astro.props;
+interface Props { items: Item[]; caption?: string; natural?: boolean }
+const { items, caption, natural = false } = Astro.props;
 ---
 
-<figure class="pair cs-wide" data-reveal>
+<figure class:list={["pair cs-wide", { "pair--natural": natural }]} style={`--n:${items.length}`} data-reveal>
   <div class="pair__grid">
     {items.map((it) => (
       <div class="pair__item">
@@ -30,5 +30,10 @@ const { items, caption } = Astro.props;
   .pair__item .dot-label { margin: 0 !important; }
   .pair__frame { aspect-ratio: 16 / 10; overflow: hidden; border: 1px solid var(--color-border); border-radius: var(--radius-m); background: #fff; }
   .pair__frame :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+  /* natural: whole image, no crop; up to --n columns */
+  @media (min-width: 48rem) { .pair--natural .pair__grid { grid-template-columns: repeat(var(--n), minmax(0, 1fr)); } }
+  .pair--natural .pair__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pair--natural .pair__frame { aspect-ratio: auto; }
+  .pair--natural .pair__frame :global(img) { height: auto; }
   figcaption { margin-top: 0.8rem; font-size: var(--step--1); color: var(--color-text-muted); }
 </style>
