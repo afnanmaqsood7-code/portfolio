@@ -11,7 +11,6 @@
  * role list in visually-hidden text.
  */
 import { site } from '../../site.config';
-import FloatingScreens from './FloatingScreens.astro';
 
 const { roles, intro, status, location } = site.home;
 // Reel chapters: start time (s) → project. Matches public/home/reel.mp4.
@@ -36,13 +35,16 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
         <p class="hero__intro">{intro}</p>
         <div class="hero__actions">
           <a class="hero__now" href={`/work/${chapters[0][1]}/`} data-reel-now data-chapters={JSON.stringify(chapters)}>
-            <span class="hero__now-k">Featured</span> <span data-reel-title>{chapters[0][2]}</span> <span aria-hidden="true">↗</span>
+            <span class="hero__now-k">Now playing</span> <span data-reel-title>{chapters[0][2]}</span> <span aria-hidden="true">↗</span>
           </a>
         </div>
       </div>
     </div>
 
-    <FloatingScreens />
+    <div class="hero__media" data-hero-media>
+      <video src="/home/reel.mp4" poster="/home/reel.jpg" muted loop playsinline autoplay preload="metadata" aria-label="Showreel of Afnan's work: apps, websites, brand identities, packaging, print, e-commerce and social media." data-reel></video>
+      <button type="button" class="hero__pause" data-reel-toggle hidden aria-pressed="false"><span class="visually-hidden" data-reel-label>Pause showreel</span><span aria-hidden="true" data-reel-icon>❚❚</span></button>
+    </div>
 
   </div>
 </section>
@@ -55,15 +57,8 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
   if (hero) {
     const tier = getTier();
     if (tier !== 'none') typeRoles(hero);
-    // The pill names the screen under the pointer.
-    const now = hero.querySelector<HTMLAnchorElement>('[data-reel-now]');
-    const title = now?.querySelector<HTMLElement>('[data-reel-title]');
-    document.addEventListener('fs:hover', (e) => {
-      const d = (e as CustomEvent<{ name: string; href: string }>).detail;
-      if (!now || !title || title.textContent === d.name) return;
-      title.textContent = d.name; now.href = d.href;
-      now.classList.remove('is-in'); void now.offsetWidth; now.classList.add('is-in');
-    });
+    initReel(hero, tier === 'none');
+    if (tier !== 'none' && matchMedia('(min-width: 48rem)').matches) void grow(hero);
     // Background: the painted grid — cells light orange under the cursor.
     const stage = hero.querySelector<HTMLElement>('.hero__stage')!;
     const css = getComputedStyle(document.documentElement);
@@ -76,6 +71,40 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
       maxAlpha: 0.5,
       breathe: 1.4,
     });
+  }
+
+  /** Showreel: no autoplay with reduced motion; pause button; pauses off screen. */
+  function initReel(root: HTMLElement, reduce: boolean) {
+    const v = root.querySelector<HTMLVideoElement>('[data-reel]');
+    const btn = root.querySelector<HTMLButtonElement>('[data-reel-toggle]');
+    if (!v || !btn) return;
+    let paused = reduce, onScreen = true;
+    const label = btn.querySelector<HTMLElement>('[data-reel-label]')!;
+    const icon = btn.querySelector<HTMLElement>('[data-reel-icon]')!;
+    const sync = () => {
+      if (!paused && onScreen) void v.play().catch(() => {}); else v.pause();
+      btn.setAttribute('aria-pressed', String(paused));
+      label.textContent = paused ? 'Play showreel' : 'Pause showreel';
+      icon.textContent = paused ? '▶' : '❚❚';
+    };
+    if (reduce) v.removeAttribute('autoplay');
+    btn.hidden = false;
+    btn.addEventListener('click', () => { paused = !paused; sync(); });
+    // "Now playing" link follows the reel.
+    const now = root.querySelector<HTMLAnchorElement>('[data-reel-now]');
+    const title = now?.querySelector<HTMLElement>('[data-reel-title]');
+    if (now && title) {
+      const ch: [number, string, string][] = JSON.parse(now.dataset.chapters || '[]');
+      let last = -1;
+      v.addEventListener('timeupdate', () => {
+        let i = 0; while (i + 1 < ch.length && v.currentTime >= ch[i + 1][0]) i++;
+        if (i === last) return; last = i;
+        now.classList.remove('is-in'); void now.offsetWidth; now.classList.add('is-in');
+        title.textContent = ch[i][2]; now.href = `/work/${ch[i][1]}/`;
+      });
+    }
+    new IntersectionObserver((e) => { onScreen = e[0].isIntersecting; sync(); }).observe(root);
+    sync();
   }
 
   /** Type, hold, erase, next word. */
@@ -91,10 +120,42 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     }, 2400);
   }
 
+  /** The image card grows from a small centred card to full-bleed. */
+  async function grow(root: HTMLElement) {
+    const [{ gsap }, { ScrollTrigger }] = await Promise.all([import('gsap'), import('gsap/ScrollTrigger')]);
+    gsap.registerPlugin(ScrollTrigger);
+    root.classList.add('hero--live');
+    const media = root.querySelector<HTMLElement>('[data-hero-media]')!;
+    const video = media.querySelector('video')!;
+    const stage = root.querySelector<HTMLElement>('.hero__stage')!;
+    const top = root.querySelector<HTMLElement>('.hero__top')!;
+    // Fit the small card into the real gap between the name and the intro,
+    // measured on this screen, so text and video never overlap.
+    const box = () => {
+      const S = stage.getBoundingClientRect(), T = top.getBoundingClientRect();
+      const B = { top: S.bottom - 40 };
+      const gap = 24, y0 = T.bottom - S.top + gap, y1 = B.top - S.top - gap;
+      // A wide, cinematic card (2 : 1), as wide as half the screen when space allows.
+      let w = S.width * 0.5, h = w / 2;
+      if (h > y1 - y0) { h = Math.max(0, y1 - y0); w = h * 2; }
+      const x = (S.width - w) / 2, y = y0 + (y1 - y0 - h) / 2;
+      return { x, y, w, h, W: S.width, H: S.height };
+    };
+    const clip = () => { const b = box(); return `inset(${b.y}px ${b.W - b.x - b.w}px ${b.H - b.y - b.h}px ${b.x}px round 14px)`; };
+    const scale = () => { const b = box(); return Math.max(b.w / b.W, b.h / b.H); };
+    const origin = () => { const b = box(); return `${((b.x + b.w / 2) / b.W) * 100}% ${((b.y + b.h / 2) / b.H) * 100}%`; };
+    const st = { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.5, invalidateOnRefresh: true };
+    gsap.fromTo(media, { clipPath: clip }, { clipPath: 'inset(0px 0px 0px 0px round 0px)', ease: 'none', immediateRender: true, scrollTrigger: st });
+    gsap.fromTo(video, { scale, transformOrigin: origin }, { scale: 1, ease: 'none', immediateRender: true, scrollTrigger: { ...st } });
+    gsap.to(root.querySelectorAll('.hero__top, .hero__bottom'), {
+      opacity: 0, ease: 'none',
+      scrollTrigger: { trigger: root, start: 'top top', end: '14% top', scrub: true },
+    });
+  }
 </script>
 
 <style>
-  .hero { position: relative; overflow-x: clip; }
+  .hero { position: relative; }
   .hero__grid { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
   .hero__stage {
     position: relative;
@@ -137,6 +198,11 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
   .hero__status { margin: 0; }
 
   /* Static layout: image card under the name. */
+  /* Reel: full content width, same left edge as the name, 16:9. */
+  .hero__media { position: relative; width: 100%; max-width: calc(var(--container-max) - 2 * var(--container-pad)); margin-inline: auto; aspect-ratio: 16 / 9; border-radius: 20px; overflow: hidden; z-index: 1; box-shadow: 0 40px 80px -50px rgb(11 11 11 / .45); }
+  .hero__media video { display: block; width: 100%; height: 100%; object-fit: cover; background: #0b0b0b; }
+  .hero__pause { position: absolute; right: 0.75rem; bottom: 0.75rem; z-index: 3; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 50%; background: rgb(11 11 11 / 0.7); color: #fff; font-size: 0.75rem; cursor: pointer; }
+  .hero__pause[hidden] { display: none; }
   /* Thin vertical centre line (desktop). */
   .hero__line { display: none; }
   @media (min-width: 56rem) { .hero__line { display: block; position: absolute; top: 0; bottom: 6%; left: 50%; width: 1px; background: var(--color-border); z-index: 0; } }
@@ -154,6 +220,16 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
   @keyframes now-in { from { opacity: 0; transform: translateY(6px); } }
   @media (prefers-reduced-motion: reduce) { .hero__now:global(.is-in) [data-reel-title] { animation: none; } }
 
+  /* Live (motion, ≥48rem): sticky stage; the card is clipped and grows. */
+  .hero:global(.hero--live) { height: 230vh; }
+  .hero:global(.hero--live) .hero__stage { position: sticky; top: 0; height: 100svh; min-height: 0; }
+  .hero:global(.hero--live) .hero__media {
+    max-width: none; width: auto; margin: 0; box-shadow: none;
+    position: absolute; inset: 0; border-radius: 0; z-index: 1; aspect-ratio: auto;
+    clip-path: inset(31% 30% 36% 30% round 14px);
+    will-change: clip-path;
+  }
+  .hero:global(.hero--live) .hero__media video { will-change: transform; }
 
   @media (prefers-reduced-motion: reduce) { .hero__caret { animation: none; } }
 </style>
