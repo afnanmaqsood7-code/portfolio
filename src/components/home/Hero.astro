@@ -166,7 +166,10 @@ const roleList = `${roles.slice(0, -1).join(', ')} and ${roles.at(-1)} designer`
     padding: var(--space-m) var(--container-pad) var(--space-m);
   }
   .hero__top { width: 100%; max-width: calc(var(--container-max) - 2 * var(--container-pad)); margin-inline: auto; display: grid; gap: 1.4rem 3rem; align-items: start; position: relative; z-index: 2; }
-  @media (min-width: 64rem) { .hero__top { grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: clamp(2rem, 4vw, 4rem); }
+  @media (min-width: 64rem) { .hero__top { grid-template-columns: auto minmax(0, 1fr); align-items: stretch; column-gap: clamp(2rem, 4vw, 4rem); }
+    /* right block spans the name's full height: intro top lines up with the
+       name, button bottom lines up with the designer line; sits on the right edge */
+    .hero__aside { justify-self: end; width: min(100%, 30rem); align-content: space-between; padding-block: .9em .35em !important; }
     /* the role line never widens the column, so nothing shifts */
     .hero__aside { padding: 0; } }
   /* invisible longest role: reserves the column width so nothing moves */
