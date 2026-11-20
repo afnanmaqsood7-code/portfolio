@@ -16,10 +16,10 @@ function bandTexture(cards: Card[], cardAspect: number) {
   cards.forEach((card, i) => {
     const x = i * cw + 12, y = 12, w = cw - 24, h = H - 24, r = 80;
     const grd = g.createLinearGradient(x, y, x + w, y + h);
-    if (i % 2) { grd.addColorStop(0, '#ff8f5e'); grd.addColorStop(1, '#ee4f1c'); } else { grd.addColorStop(0, '#d9fbf1'); grd.addColorStop(1, '#a9e9dc'); }
+    if (i % 2) { grd.addColorStop(0, '#ff8f5e'); grd.addColorStop(1, '#ee4f1c'); } else { grd.addColorStop(0, '#ffffff'); grd.addColorStop(1, '#f3f2ef'); }
     g.fillStyle = grd; g.beginPath(); g.roundRect(x, y, w, h, r); g.fill();
     g.strokeStyle = 'rgba(255,255,255,.7)'; g.lineWidth = 8; g.stroke();
-    const ink = i % 2 ? '#ffffff' : '#162a3a';
+    const ink = i % 2 ? '#ffffff' : '#0b0b0b';
     g.fillStyle = ink; g.globalAlpha = .7; g.font = '600 76px Archivo, Arial, sans-serif'; g.fillText(card.k, x + 68, y + 140); g.globalAlpha = 1;
     g.font = '700 132px Archivo, Arial, sans-serif';
     let size = 132; while (g.measureText(card.t).width > w - 136 && size > 72) { size -= 4; g.font = `700 ${size}px Archivo, Arial, sans-serif`; }
@@ -33,8 +33,8 @@ function ribbonTexture(words: string[], aspect: number) {
   // Words keep their natural shape: a whole number of repeats fills the
   // circle, and the leftover width goes into the gaps, never into the glyphs.
   const c = document.createElement('canvas'); c.width = 12288; c.height = Math.round(12288 / aspect); const g = c.getContext('2d')!;
-  g.fillStyle = '#ff6a3d'; g.fillRect(0, 0, c.width, c.height);
-  g.fillStyle = '#2a0f20'; const fs = Math.round(c.height * 0.56); g.font = `800 ${fs}px Archivo, Arial, sans-serif`; g.textBaseline = 'middle';
+  g.fillStyle = '#ee5a24'; g.fillRect(0, 0, c.width, c.height);
+  g.fillStyle = '#0b0b0b'; const fs = Math.round(c.height * 0.56); g.font = `800 ${fs}px Archivo, Arial, sans-serif`; g.textBaseline = 'middle';
   const items = [...words, '✦'];
   const minGap = fs * 0.55, wsum = items.reduce((n, w) => n + g.measureText(w).width, 0);
   const copies = Math.max(1, Math.floor(c.width / (wsum + minGap * items.length)));
@@ -50,15 +50,15 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
   renderer.setPixelRatio(Math.min(Math.max(devicePixelRatio, 1.5), 2));
   renderer.toneMapping = THREE.NoToneMapping; renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(0x2a1a4a, 14, 34);
+  scene.fog = new THREE.Fog(0x161616, 14, 34);
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
   camera.position.set(0, -0.4, 12.6); camera.lookAt(0, 1.3, 0);
   let mx = 0, my = 0, cx = 0, cy = 0;
   addEventListener('pointermove', (e) => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; }, { passive: true });
 
-  scene.add(new THREE.HemisphereLight(0xcab8ff, 0x2a1440, 1.1));
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x1a1a1a, 1.1));
   const key = new THREE.DirectionalLight(0xfff1e6, 1.8); key.position.set(-6, 5, 6); scene.add(key);
-  const rim = new THREE.PointLight(0xff5fb0, 35, 20); rim.position.set(5, 2, -2); scene.add(rim);
+  const rim = new THREE.PointLight(0xff7a45, 35, 20); rim.position.set(5, 2, -2); scene.add(rim);
   const warm = new THREE.PointLight(0xff8a50, 18, 12); warm.position.set(0, -0.5, 3.5); scene.add(warm);
 
   const tower = new THREE.Group(); scene.add(tower);
@@ -66,10 +66,10 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
   // with three fins, the main pod (curved underside, dark window band,
   // white "donut" deck), a narrower upper shaft, the small SkyPod and the
   // tall stepped antenna. Pod proportions are exaggerated so the cards fit.
-  const concrete = new THREE.MeshStandardMaterial({ color: 0xb9b0d6, roughness: .7, metalness: .1, flatShading: true });
-  const deck = new THREE.MeshStandardMaterial({ color: 0xf1ecfb, roughness: .45, metalness: .15 });
-  const glass = new THREE.MeshStandardMaterial({ color: 0x2b2148, roughness: .2, metalness: .6, emissive: 0x3a1f66, emissiveIntensity: .35 });
-  const steel = new THREE.MeshStandardMaterial({ color: 0xdcd6ee, roughness: .35, metalness: .7 });
+  const concrete = new THREE.MeshStandardMaterial({ color: 0xbdbdbd, roughness: .7, metalness: .1, flatShading: true });
+  const deck = new THREE.MeshStandardMaterial({ color: 0xf3f2ef, roughness: .45, metalness: .15 });
+  const glass = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: .2, metalness: .6, emissive: 0x2a2a2a, emissiveIntensity: .35 });
+  const steel = new THREE.MeshStandardMaterial({ color: 0xdcdcdc, roughness: .35, metalness: .7 });
   const led = new THREE.MeshBasicMaterial({ color: 0xff7a45 });
   const lathe = (pts: [number, number][], mat: THREE.Material, y = 0) => {
     const m = new THREE.Mesh(new THREE.LatheGeometry(pts.map(([r, h]) => new THREE.Vector2(r, h)), 96), mat); m.position.y = y; tower.add(m); return m;
@@ -111,7 +111,7 @@ export async function cnTower(canvas: HTMLCanvasElement, cards: Card[], reduce: 
   seg(0.2, 0.16, 3.24, 4.0); seg(0.12, 0.09, 4.0, 4.9); seg(0.07, 0.03, 4.9, 5.9);
   const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.08, 16, 16), new THREE.MeshBasicMaterial({ color: 0xff3b3b })); beacon.position.y = 5.96; tower.add(beacon);
   // Halo rings in the sky.
-  const halo = (r: number, y: number) => { const m = new THREE.Mesh(new THREE.TorusGeometry(r, 0.012, 8, 128), new THREE.MeshBasicMaterial({ color: 0xd8c8ff, transparent: true, opacity: .3 })); m.rotation.x = Math.PI / 2; m.position.y = y; tower.add(m); };
+  const halo = (r: number, y: number) => { const m = new THREE.Mesh(new THREE.TorusGeometry(r, 0.012, 8, 128), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .3 })); m.rotation.x = Math.PI / 2; m.position.y = y; tower.add(m); };
 
   // Bulbs around the pod rim.
   const bulbs = new THREE.InstancedMesh(new THREE.SphereGeometry(0.055, 10, 10), new THREE.MeshBasicMaterial({ color: 0xfff1c9 }), 64);

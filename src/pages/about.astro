@@ -51,14 +51,14 @@ const tools = ['Figma', 'Adobe XD', 'Illustrator', 'Photoshop', 'After Effects',
         <canvas class="cn__canvas" data-cn-canvas aria-label="3D CN Tower with a ring of cards: Product and UX, Brand, Web, Marketing, Motion, Games and XR, Painting, Contact. Drag or scroll to spin, click a card to explore." role="img"></canvas>
         <svg class="cn__tower" viewBox="0 0 240 640" aria-hidden="true">
           <defs>
-            <linearGradient id="cnS" x1="0" x2="1"><stop offset="0" stop-color="#2a2145"/><stop offset=".5" stop-color="#6b5a92"/><stop offset="1" stop-color="#2a2145"/></linearGradient>
+            <linearGradient id="cnS" x1="0" x2="1"><stop offset="0" stop-color="#1a1a1a"/><stop offset=".5" stop-color="#5a5a5a"/><stop offset="1" stop-color="#1a1a1a"/></linearGradient>
           </defs>
           <line x1="120" y1="0" x2="120" y2="120" stroke="#b9acd9" stroke-width="4"/>
-          <circle cx="120" cy="4" r="5" fill="#ff6a3d"/>
+          <circle cx="120" cy="4" r="5" fill="#ee5a24"/>
           <path d="M108 118 h24 l8 72 h-40 z" fill="url(#cnS)"/>
           <ellipse cx="120" cy="198" rx="30" ry="10" fill="#8f7fbf"/>
           <path d="M100 206 L72 640 H168 L140 206 Z" fill="url(#cnS)"/>
-          <path d="M112 206 L94 640 M128 206 L146 640" stroke="#3a2f5c" stroke-width="2.5"/>
+          <path d="M112 206 L94 640 M128 206 L146 640" stroke="#3a3a3a" stroke-width="2.5"/>
         </svg>
         <div class="cn__stage" aria-label="What I do, drag or scroll to spin">
           <ul class="cn__ring" role="list" data-ring>
@@ -195,21 +195,21 @@ const tools = ['Figma', 'Adobe XD', 'Illustrator', 'Photoshop', 'After Effects',
 </script>
 
 <style>
-  .ah { position: relative; overflow: hidden; color: #f4f1fb; background: linear-gradient(180deg, #0d0a1f 0%, #1c1440 55%, #4a2a6a 100%); }
+  .ah { position: relative; overflow: hidden; color: #ffffff; background: linear-gradient(180deg, #0b0b0b 0%, #141414 60%, #222 100%); }
   .ah__sky { position: absolute; inset: 0; pointer-events: none;
     background-image: radial-gradient(1.5px 1.5px at 12% 18%, #fff8 50%, transparent 51%), radial-gradient(1px 1px at 28% 62%, #fff6 50%, transparent 51%), radial-gradient(1.5px 1.5px at 44% 12%, #fff9 50%, transparent 51%), radial-gradient(1px 1px at 63% 34%, #fff7 50%, transparent 51%), radial-gradient(1.5px 1.5px at 82% 22%, #fff8 50%, transparent 51%), radial-gradient(1px 1px at 91% 58%, #fff6 50%, transparent 51%), radial-gradient(1px 1px at 55% 80%, #fff5 50%, transparent 51%), radial-gradient(1px 1px at 8% 82%, #fff5 50%, transparent 51%); }
   .ah__moon { position: absolute; top: 9%; right: 7%; width: 46px; height: 46px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fffbe8, #e8dcc0 60%, #b9a98a); box-shadow: 0 0 40px 8px rgb(255 240 200 / .25); }
   .ah__inner { position: relative; display: grid; gap: var(--space-l); padding-block: var(--space-xl) var(--space-m); align-items: center; }
   @media (min-width: 64rem) { .ah__inner { grid-template-columns: minmax(0, 1fr) minmax(24rem, 34rem); min-height: calc(100svh - var(--header-h) - 5rem); } }
   .ah__text { display: grid; gap: var(--space-s); justify-items: start; }
-  .ah__eyebrow { color: #cfc6ea; }
+  .ah__eyebrow { color: #bdbdbd; }
   .ah__title { font: 700 clamp(2.6rem, 1rem + 5.5vw, 6rem) / 0.98 var(--font-text); letter-spacing: -0.04em; max-width: 12ch; color: #fff; }
   .ah__title .accent { color: #ff7a45; }
-  .ah__lede { max-width: 34rem; font-size: var(--step-1); line-height: 1.5; color: #cfc6ea; }
+  .ah__lede { max-width: 34rem; font-size: var(--step-1); line-height: 1.5; color: #bdbdbd; }
   .ah__ctas { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: var(--space-xs); }
   .ah__btn { min-height: 48px; display: inline-flex; align-items: center; padding: 0 1.4rem; border-radius: 999px; border: 1px solid rgb(255 255 255 / .35); color: #fff; text-decoration: none; font-weight: 500; transition: background .25s, color .25s; }
   .ah__btn:hover { background: rgb(255 255 255 / .12); }
-  .ah__btn--solid { background: #fff; color: #0d0a1f; border-color: #fff; }
+  .ah__btn--solid { background: #fff; color: #0b0b0b; border-color: #fff; }
   .ah__btn--solid:hover { background: #ff7a45; border-color: #ff7a45; color: #fff; }
   .ah__btn:focus-visible { outline: 2px solid #ff7a45; outline-offset: 3px; }
 
@@ -227,17 +227,17 @@ const tools = ['Figma', 'Adobe XD', 'Illustrator', 'Photoshop', 'After Effects',
   .cn__stage { position: absolute; left: 50%; top: 31%; width: 0; height: 0; perspective: 1100px; }
   .cn__ring { position: absolute; left: 0; top: 0; margin: 0; padding: 0; list-style: none; transform-style: preserve-3d; transform: rotateX(-8deg) rotateY(var(--r, 0deg)); }
   .cn__card { position: absolute; left: -4.6rem; top: -3.2rem; width: 9.2rem; height: 6.4rem; transform: rotateY(calc(var(--i) * 360deg / var(--n))) translateZ(12.5rem); backface-visibility: hidden; }
-  .cn__card a { height: 100%; display: grid; align-content: space-between; padding: .8rem .9rem; border-radius: 14px; background: linear-gradient(160deg, #ffffff, #e9e2ff); color: #1a1238; text-decoration: none; box-shadow: 0 12px 30px -10px rgb(0 0 0 / .5); transition: background .25s, color .25s; }
+  .cn__card a { height: 100%; display: grid; align-content: space-between; padding: .8rem .9rem; border-radius: 14px; background: linear-gradient(160deg, #ffffff, #ececec); color: #1a1238; text-decoration: none; box-shadow: 0 12px 30px -10px rgb(0 0 0 / .5); transition: background .25s, color .25s; }
   .cn__card:nth-child(odd) a { background: linear-gradient(160deg, #ff8a5c, #ee5a24); color: #fff; }
   .cn__card a:hover { background: #fff; color: #ee5a24; }
   .cn__k { font-size: .72rem; font-weight: 600; opacity: .7; }
   .cn__card strong { font: 700 1.05rem / 1.1 var(--font-text); letter-spacing: -0.02em; }
-  .cn__pod { position: absolute; left: -5.6rem; top: 2.6rem; width: 11.2rem; height: 1.2rem; border-radius: 50%; background: #ff6a3d; box-shadow: 0 0 30px 6px rgb(255 106 61 / .45); transform: translateZ(0); }
+  .cn__pod { position: absolute; left: -5.6rem; top: 2.6rem; width: 11.2rem; height: 1.2rem; border-radius: 50%; background: #ee5a24; box-shadow: 0 0 30px 6px rgb(238 90 36 / .45); transform: translateZ(0); }
   .cn__ring { cursor: grab; touch-action: pan-y; }
   .cn__ring:active { cursor: grabbing; }
   .cn__hints { position: absolute; left: 50%; bottom: 1.2rem; translate: -50% 0; display: flex; gap: .5rem; }
-  .cn__hints span { padding: .35rem .8rem; border-radius: 999px; background: rgb(255 255 255 / .12); font-size: .75rem; color: #e9e2ff; backdrop-filter: blur(6px); white-space: nowrap; }
-  .ah__meta { position: relative; display: flex; justify-content: space-between; padding-block: var(--space-s) var(--space-m); font: 500 .72rem / 1.5 var(--font-text); letter-spacing: .08em; color: #b8aed8; }
+  .cn__hints span { padding: .35rem .8rem; border-radius: 999px; background: rgb(255 255 255 / .12); font-size: .75rem; color: #ececec; backdrop-filter: blur(6px); white-space: nowrap; }
+  .ah__meta { position: relative; display: flex; justify-content: space-between; padding-block: var(--space-s) var(--space-m); font: 500 .72rem / 1.5 var(--font-text); letter-spacing: .08em; color: #a3a3a3; }
   .ah__clock { text-align: right; }
   @media (max-width: 63.99rem) { .cn { height: 26rem; } .cn__stage { top: 30%; } .cn__card { transform: rotateY(calc(var(--i) * 360deg / var(--n))) translateZ(9rem); width: 7.6rem; height: 5.4rem; left: -3.8rem; top: -2.7rem; } .cn__pod { width: 8rem; left: -4rem; top: 2.2rem; } }
 
